@@ -1,5 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { dayLabel, todayLocal } from "../src/date.ts";
 import { currencyDigits, formatMoney, parseAmount, parsePercentToBps } from "../src/format.ts";
 
 describe("parseAmount", () => {
@@ -46,5 +47,13 @@ describe("moneda", () => {
   it("formatea para mostrar", () => {
     assert.match(formatMoney(1250, "USD", "en-US"), /12\.50/);
     assert.match(formatMoney(12500, "COP", "es-CO"), /12\.500/);
+  });
+});
+
+describe("date helpers", () => {
+  it("todayLocal usa la fecha local", () => { assert.equal(todayLocal(new Date(2026, 10, 4, 23, 59)), "2026-11-04"); });
+  it("dayLabel", () => {
+    assert.equal(dayLabel(0), "vence hoy"); assert.equal(dayLabel(1), "vence mañana");
+    assert.equal(dayLabel(-1), "venció ayer"); assert.equal(dayLabel(9), "vence en 9 días"); assert.equal(dayLabel(-3), "venció hace 3 días");
   });
 });

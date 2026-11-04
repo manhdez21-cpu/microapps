@@ -1,6 +1,6 @@
 {
   "updated": "2026-11-04",
-  "phase": "Fase 3 completa en lo local; Fase 5 iniciada (3 apps web)",
+  "phase": "Fase 5: las 7 apps tienen versión web local probada; el Control Center y la portada están listos. Falta desplegar y conectar cuentas",
   "notes": "Este archivo lo mantiene el equipo del proyecto. Nada aquí es una métrica de usuarios o ingresos: esas cifras siguen pendientes de integración.",
   "apps": [
     {
@@ -25,12 +25,13 @@
       "class": "Experimentar y validar",
       "state": {
         "Núcleo de cálculo": "probado",
-        "Interfaz web": "no implementado",
+        "Interfaz web": "probado",
         "Datos en la nube": "no implementado",
         "Anuncios": "pendiente de credenciales",
         "Premium": "pendiente de credenciales",
         "Publicación": "no implementado"
-      }
+      },
+      "path": "../caja-clara/index.html"
     },
     {
       "id": "priceright",
@@ -68,13 +69,14 @@
       "score": 73,
       "class": "Experimentar y validar",
       "state": {
-        "Núcleo de cálculo": "no implementado",
-        "Interfaz web": "no implementado",
+        "Núcleo de cálculo": "probado",
+        "Interfaz web": "probado",
         "Datos en la nube": "no implementado",
         "Anuncios": "pendiente de credenciales",
         "Premium": "no implementado",
         "Publicación": "no implementado"
-      }
+      },
+      "path": "../expiryhub/index.html"
     },
     {
       "id": "warranty-keeper",
@@ -82,13 +84,14 @@
       "score": 61,
       "class": "Reconsiderar antes de invertir",
       "state": {
-        "Núcleo de cálculo": "no implementado",
-        "Interfaz web": "no implementado",
+        "Núcleo de cálculo": "probado",
+        "Interfaz web": "probado",
         "Datos en la nube": "no implementado",
         "Anuncios": "pendiente de credenciales",
         "Premium": "no implementado",
         "Publicación": "no implementado"
-      }
+      },
+      "path": "../warranty-keeper/index.html"
     },
     {
       "id": "huella-al-dia",
@@ -96,20 +99,21 @@
       "score": 60,
       "class": "Reconsiderar antes de invertir",
       "state": {
-        "Núcleo de cálculo": "no implementado",
-        "Interfaz web": "no implementado",
+        "Núcleo de cálculo": "probado",
+        "Interfaz web": "probado",
         "Datos en la nube": "no implementado",
         "Anuncios": "pendiente de credenciales",
         "Premium": "no implementado",
         "Publicación": "no implementado"
-      }
+      },
+      "path": "../huella-al-dia/index.html"
     }
   ],
   "integrations": [
     {
       "name": "Google AdSense (web)",
       "state": "pendiente de credenciales",
-      "needs": "Cuenta AdSense, dominio propio y política de privacidad"
+      "needs": "Cuenta AdSense aprobada, dominio propio y ids en site-config.js. El código (consentimiento + carga) está probado con configuración simulada; sin ids no carga nada"
     },
     {
       "name": "Google AdMob (móvil)",
@@ -173,7 +177,7 @@
   },
   "roadmap": [
     {
-      "item": "SplitFlow web con pruebas E2E",
+      "item": "Las 7 apps en versión web local, con pruebas unitarias y E2E",
       "state": "probado"
     },
     {
@@ -181,24 +185,32 @@
       "state": "probado"
     },
     {
-      "item": "Calculadoras SEO (PriceRight y ¿Cuánto me sobra?)",
+      "item": "Carga de anuncios con consentimiento (config vacía = inactiva)",
       "state": "probado"
     },
     {
-      "item": "Caja Clara (interfaz)",
-      "state": "no implementado"
+      "item": "Portada y política de privacidad (plantilla)",
+      "state": "implementado"
     },
     {
-      "item": "ExpiryHub y Warranty Keeper",
-      "state": "no implementado"
-    },
-    {
-      "item": "Monetización real",
+      "item": "Despliegue en hosting",
       "state": "pendiente de credenciales"
     },
     {
-      "item": "Publicación en producción",
-      "state": "pendiente de aprobación"
+      "item": "Cuenta AdSense y ids",
+      "state": "pendiente de credenciales"
+    },
+    {
+      "item": "Premium con Stripe",
+      "state": "pendiente de credenciales"
+    },
+    {
+      "item": "Publicación en tiendas (TWA/Capacitor)",
+      "state": "pendiente de credenciales"
+    },
+    {
+      "item": "Datos en la nube (Supabase)",
+      "state": "pendiente de credenciales"
     }
   ],
   "blockers": [

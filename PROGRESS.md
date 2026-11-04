@@ -1,28 +1,8 @@
 # PROGRESS
 
-## Sesión 2026-11-04 (continuación): carpeta conectada
-**Hecho**
-- Repo sincronizado a `C:\Users\MALAU\OneDrive\Desktop\MicroApps` (42/42 pruebas pasan allí también).
-- Toolchain sin npm: `tsc` → JS de navegador; `tools/build.mjs` → `dist/` (D-009).
-- `@microapps/ui`: helper DOM, formato/lectura de montos sin floats, almacenamiento local, estilos base.
-- **SplitFlow** web (local-first, PWA con service worker): grupos, personas, gastos (iguales/%/exactos), pagos mínimos, CSV.
-- **Control Center**: 5 secciones; solo datos reales o "pendiente".
-- **PriceRight** y **¿Cuánto me sobra?**: páginas SEO con fórmulas visibles, JSON-LD, FAQ.
-
-**Verificado**
-- 76/76 pruebas unitarias (5 paquetes), typecheck web limpio.
-- E2E con Playwright: SplitFlow 13 pasos, Control Center 7, calculadoras 12; sin errores de consola; sin desborde horizontal en móvil; modo oscuro revisado con captura.
-
-**No implementado**: Caja Clara (UI), ExpiryHub, Warranty Keeper, Huella al Día, base de datos/auth, anuncios, Premium, dominios/SEO real (sitemap, canonical), CI, accesibilidad automatizada (solo revisión manual), agentes/skills propias.
-
-**Bloqueos**
-- npm bloqueado en nube y en el VM del equipo (403).
-- Sin cuentas: GitHub remoto, hosting, dominio, Supabase, AdSense, Stripe, tiendas.
-- La carpeta está en OneDrive: evitar `node_modules` allí; el sync usa tarball.
-
-**Siguiente tarea**
-1. Caja Clara (UI + historial local + exportación) y pruebas E2E.
-2. Pruebas de accesibilidad (axe no disponible: revisar a mano roles/contraste) y Lighthouse si hay forma.
-3. Skills propias (investigación, SEO, monetización, QA, publicación) con skill-creator.
-4. Segunda pasada de investigación: reseñas de competidores y políticas AdSense/AdMob/Stripe.
-5. Con cuentas de Manuel: repo remoto, hosting, dominio, AdSense.
+## Estado (2026-11-04, cierre de la fase de construcción)
+**Hecho y probado (unitarias + E2E):** las 7 apps web (SplitFlow, Caja Clara, PriceRight, ¿Cuánto me sobra?, ExpiryHub, Warranty Keeper, Huella al Día), Control Center, portada, política de privacidad (plantilla), PWA instalable (manifest, iconos, service worker) en las 7, carga de anuncios con consentimiento (inactiva sin configuración), workflow de despliegue en GitHub Pages, 5 skills propias en `.claude/skills/microapps-*`, `tools/check-all.mjs`.
+**Verificación:** `node tools/check-all.mjs` → 101/101 pruebas unitarias en 9 paquetes y 8 suites E2E (SplitFlow, Control Center, calculadoras, Caja Clara, trackers, Huella, sitio/monetización) sin fallos.
+**No verificado:** funcionamiento sin conexión del service worker (solo registro), Safari/Firefox, dispositivos reales, Lighthouse, accesibilidad automatizada.
+**Pendiente de Manuel (ver GUIA_MANUEL.md):** repositorio GitHub y Pages, dominio, AdSense, correo de contacto en privacidad, Stripe/Supabase (Premium), cuentas de tiendas.
+**Siguiente tarea (cuando haya URL/dominio):** canonical, sitemap, robots, ads.txt; verificación en producción; Search Console; ampliar contenido si AdSense lo pide.

@@ -7,17 +7,17 @@ Fábrica de microaplicaciones (web/PWA primero, móvil después) financiada con 
 ## Estado
 | Área | Estado |
 |---|---|
-| Investigación de mercado (1.ª pasada) | Hecha, con limitaciones → `MARKET_RESEARCH.md` |
 | Núcleo `@microapps/core` + `@microapps/ui` | Implementado y probado |
-| SplitFlow, PriceRight, ¿Cuánto me sobra?, Control Center | Implementados y probados (unitario + E2E), sin desplegar |
-| Caja Clara (UI), ExpiryHub, Warranty Keeper, Huella al Día | No implementado |
-| BD/auth, anuncios, Premium, dominio, CI | No implementado / pendiente de credenciales |
+| Las 7 apps web + Control Center + portada | Implementadas y probadas (unitario + E2E), sin desplegar |
+| PWA instalable en las 7 | Implementado y probado (registro del service worker; offline sin probar) |
+| Anuncios con consentimiento | Implementado, inactivo hasta tener ids de AdSense |
+| Premium, BD/auth, dominio, tiendas | Pendiente de credenciales (ver `GUIA_MANUEL.md`) |
 
 ## Comandos
 ```bash
 node tools/build.mjs        # tsc → dist/
 node tools/gen-status.mjs   # pruebas + datos del Control Center
-node tests/e2e/splitflow.e2e.mjs
+node tools/check-all.mjs   # todo: build, tipos, unitarias y E2E
 ```
 Sirve `dist/` con un servidor estático (`python3 -m http.server -d dist`).
 

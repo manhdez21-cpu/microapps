@@ -54,3 +54,15 @@ Formato: fecha · decisión · motivo · alternativas · estado.
 
 ## D-011 · 2026-11-04 · Copia de trabajo
 - Se desarrolla en la nube (Playwright + Chromium disponibles) y se sincroniza a `C:\Users\MALAU\OneDrive\Desktop\MicroApps` con un tarball. Git vive en ambas copias; la nube es la referencia.
+
+## D-012 · 2026-11-04 · Despliegue gratis en GitHub Pages
+- Workflow `.github/workflows/pages.yml` (sin secretos) compila con `tsc` y publica `dist/` sin el Control Center. Rutas relativas: funciona en subcarpeta o dominio propio.
+- Para AdSense hace falta dominio propio (decisión de Manuel, único gasto casi obligatorio).
+
+## D-013 · 2026-11-04 · Anuncios con consentimiento previo y configuración vacía por defecto
+- `packages/ui/src/monetize.ts`: sin `site-config.js` válido no hace nada; con él pregunta antes de cargar Google; rechazo = nada se carga. Ids de AdSense son públicos.
+- Limitación: no es un CMP certificado por Google (exigido para UE/Reino Unido/Suiza).
+- Premium: solo enlace; sin verificación de pago hasta tener Stripe + Supabase.
+
+## D-014 · 2026-11-04 · Factores de emisión de Huella al Día
+- Gasolina/diésel/gas natural de la EIA de EE. UU. (tabla del 2024-09-18), convertidos a L y m³; electricidad sin valor por defecto (depende del país). Todos editables.

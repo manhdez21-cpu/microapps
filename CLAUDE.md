@@ -21,6 +21,9 @@ Lee esto al inicio de CADA sesión, en este orden:
 - npm bloqueado (403): no instalar ni rodear. Apps en TypeScript sin dependencias (D-009).
 - Dinero en enteros; fórmulas visibles; el dashboard nunca muestra datos inventados.
 
+## Skills propias
+`microapps-qa`, `microapps-seo`, `microapps-monetization`, `microapps-market-research`, `microapps-store-publishing`. Comando de verificación total: `node tools/check-all.mjs`. Qué falta de Manuel: `GUIA_MANUEL.md`.
+
 ## Skills del proyecto (`.claude/skills/`)
 
 Origen: https://github.com/anthropics/skills (commit ca45fc4, 2026-10-28). Ver `SKILLS.md`.

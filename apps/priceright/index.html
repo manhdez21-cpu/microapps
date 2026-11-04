@@ -6,6 +6,9 @@
   <title>PriceRight: calcula el precio de tu trabajo con margen real</title>
   <meta name="description" content="Calculadora de precios para independientes y pequeños negocios: suma materiales, mano de obra, transporte y costos indirectos, elige tu margen o recargo y obtén el precio final. Explica la diferencia entre margen y recargo.">
   <meta name="theme-color" content="#1b6b45">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="stylesheet" href="../../packages/ui/src/base.css">
   <link rel="stylesheet" href="../../packages/ui/src/layout.css">
   <link rel="stylesheet" href="./styles.css">
@@ -19,6 +22,7 @@
     {"@type":"Question","name":"¿La calculadora incluye impuestos?","acceptedAnswer":{"@type":"Answer","text":"Solo si tú escribes el porcentaje. Las tasas dependen del país y de tu situación, por eso no se asume ninguna."}}
   ]}
   </script>
+  <script src="../../site-config.js"></script>
 </head>
 <body>
   <div class="shell">
@@ -50,5 +54,7 @@
     <p class="site-foot">Tus datos no salen de tu dispositivo. Los resultados son orientativos.</p>
   </div>
   <script type="module" src="./src/main.js"></script>
+  <script type="module" src="../../packages/ui/src/monetize.js"></script>
+  <script type="module" src="../../packages/ui/src/pwa.js"></script>
 </body>
 </html>

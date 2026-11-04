@@ -1,0 +1,19 @@
+/* Warranty Keeper: azul petróleo; ámbar cuando la garantía termina pronto, rojo cuando ya terminó. */
+:root { --accent: #0b5a78; --accent-ink: #fff; --soon: #9a5b00; --minus: #a81f1f; }
+@media (prefers-color-scheme: dark) { :root { --accent: #6cc6ea; --accent-ink: #04202c; --soon: #f0b45a; --minus: #ff8f8f; } }
+.moves { list-style: none; margin: 0 0 1rem; padding: 0; border-top: 1px solid var(--line); }
+.moves li { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--line); }
+.moves .main { flex: 1; min-width: 0; display: flex; flex-direction: column; font-weight: 600; }
+.moves .sub { font-size: 0.85rem; color: var(--ink-soft); font-weight: 400; }
+.moves button { min-height: 40px; padding: 0.25rem 0.7rem; }
+.group h3 { font-size: 1rem; margin: 1.25rem 0 0.4rem; padding-left: 0.6rem; border-left: 5px solid var(--line); }
+.group.expired h3 { border-left-color: var(--minus); color: var(--minus); }
+.group.today h3, .group.soon h3 { border-left-color: var(--soon); color: var(--soon); }
+.group.later h3 { border-left-color: var(--accent); }
+.label { margin: 0 0 0.25rem; }
+input[type="date"] { width: 100%; min-height: 44px; padding: 0.5rem 0.7rem; font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.chip { font-size: 0.75rem; font-weight: 700; padding: 0.1rem 0.55rem; border-radius: 999px; border: 1px solid var(--accent); color: var(--accent); white-space: nowrap; }
+.chip.soon, .chip.today { border-color: var(--soon); color: var(--soon); }
+.chip.expired { border-color: var(--minus); color: var(--minus); }
+li.expired .main { color: var(--ink-soft); }
+.actions { display: flex; gap: 0.5rem; }

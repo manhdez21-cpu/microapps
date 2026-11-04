@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ExpiryHub: controla qué se vence antes en tu casa o negocio</title>
+  <meta name="description" content="Anota la fecha de vencimiento de alimentos, medicinas o productos y mira qué se vence primero. Gratis, sin registro y sin salir de tu dispositivo.">
+  <meta name="theme-color" content="#0b6e4f">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="stylesheet" href="../../packages/ui/src/base.css">
+  <link rel="stylesheet" href="../../packages/ui/src/layout.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"ExpiryHub","applicationCategory":"LifestyleApplication","operatingSystem":"Web","inLanguage":"es","description":"Lista de fechas de vencimiento ordenada por urgencia.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  </script>
+  <script src="../../site-config.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="site-head">
+      <h1>ExpiryHub</h1>
+      <p class="lede">Que nada se te venza sin darte cuenta. Anota la fecha y mira primero lo que más urge.</p>
+    </header>
+    <main>
+      <div id="app"></div>
+      <article class="prose">
+        <h2>Cómo funciona</h2>
+        <p>Cada producto se clasifica según los días que faltan: vencido, vence hoy, vence pronto (según los días de aviso que elijas) o más adelante. La fecha usa tu día local.</p>
+        <p>«Fecha de vencimiento» y «consumir preferentemente antes de» no significan lo mismo; ante la duda con medicinas o alimentos delicados, sigue la indicación del envase.</p>
+      </article>
+    </main>
+    <p class="site-foot">Tus datos no salen de tu dispositivo.</p>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+  <script type="module" src="../../packages/ui/src/monetize.js"></script>
+  <script type="module" src="../../packages/ui/src/pwa.js"></script>
+</body>
+</html>

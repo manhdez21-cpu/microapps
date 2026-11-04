@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Warranty Keeper: no pierdas la garantía de lo que compras</title>
+  <meta name="description" content="Guarda la fecha de compra y los meses de garantía de tus aparatos y mira cuándo termina cada una. Gratis, sin registro y sin salir de tu dispositivo.">
+  <meta name="theme-color" content="#0b5a78">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="stylesheet" href="../../packages/ui/src/base.css">
+  <link rel="stylesheet" href="../../packages/ui/src/layout.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"Warranty Keeper","applicationCategory":"LifestyleApplication","operatingSystem":"Web","inLanguage":"es","description":"Registro de garantías con fecha de fin calculada.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  </script>
+  <script src="../../site-config.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="site-head">
+      <h1>Warranty Keeper</h1>
+      <p class="lede">Guarda cuándo compraste y cuánto dura la garantía. Te mostramos cuál termina primero.</p>
+    </header>
+    <main>
+      <div id="app"></div>
+      <article class="prose">
+        <h2>Cómo se calcula</h2>
+        <p>La garantía termina el mismo día de la compra, tantos meses después. Si ese día no existe en el mes final (por ejemplo, 31 de agosto + 6 meses), se usa el último día de ese mes.</p>
+        <p>Las condiciones reales las fija el vendedor o la ley de tu país: revisa la factura y las exclusiones. Esta herramienta solo te recuerda las fechas y no es asesoría legal.</p>
+      </article>
+    </main>
+    <p class="site-foot">Tus datos no salen de tu dispositivo.</p>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+  <script type="module" src="../../packages/ui/src/monetize.js"></script>
+  <script type="module" src="../../packages/ui/src/pwa.js"></script>
+</body>
+</html>

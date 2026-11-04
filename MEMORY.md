@@ -15,11 +15,11 @@
 - Monetización: anuncios (AdSense web / AdMob móvil) + Premium (hipótesis a validar: USD 2.99/mes, 19.99/año).
 - Stack a evaluar (no decidido): Next.js/PWA, Expo/React Native, TypeScript, Supabase, GitHub, hosting gratuito.
 
-## Estado (2026-11-04, tarde)
-- Carpeta del equipo conectada y sincronizada: `C:\Users\MALAU\OneDrive\Desktop\MicroApps` (VM del equipo: Node 22, git 2.34, sin pnpm; npm 403).
-- Hechas y probadas (E2E): SplitFlow, Control Center, PriceRight, ¿Cuánto me sobra?. 76 pruebas unitarias.
-- Siguiente: Caja Clara UI, skills propias, accesibilidad, cuentas (agrupadas) cuando haya que publicar.
-- Cuentas/credenciales: ninguna. Gasto actual: USD 0.
+## Estado (2026-11-04, fin de construcción)
+- Las 7 apps + Control Center + portada hechas y probadas (101 unitarias, 8 suites E2E). PWA, anuncios con consentimiento (inactivos), workflow de GitHub Pages.
+- Lo que falta depende de Manuel: GitHub/Pages, dominio, AdSense, Stripe/Supabase, tiendas → `GUIA_MANUEL.md`.
+- Siguiente (con URL/dominio): canonical, sitemap, robots, ads.txt, verificación en producción.
+- Gasto actual: USD 0.
 
 ## Decisiones
 - 2026-11-04: Skills externas del repo oficial anthropics/skills en `.claude/skills/` (ver `SKILLS.md`).

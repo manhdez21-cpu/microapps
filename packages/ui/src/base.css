@@ -87,3 +87,9 @@ button:hover { filter: brightness(0.97); }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* Anuncios y consentimiento (solo aparecen si hay configuración real) */
+.ad-box { margin: 1.5rem 0; min-height: 90px; }
+.ad-premium { display: inline-block; margin-top: 0.4rem; font-size: 0.85rem; }
+.consent { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: 0.9rem 1rem; display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; background: var(--surface); border-top: 2px solid var(--ink); }
+.consent p { flex: 1 1 100%; margin: 0; font-size: 0.9rem; }

@@ -18,3 +18,10 @@ Las columnas "Límites" y "Costo previsto" marcadas *(por verificar)* provienen 
 | AdSense / AdMob | Ingresos | Sin costo | 0 | — | Aprobación | Fase 6 | — |
 
 **Nada se contrata sin autorización de Manuel.**
+
+
+## Gastos futuros posibles (no autorizados ni realizados)
+- Dominio: ~USD 10–15/año (necesario para AdSense).
+- Google Play: USD 25 pago único.
+- Apple Developer: USD 99/año.
+Total real hasta hoy: USD 0.

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Caja Clara: cierre de caja diario para tu negocio</title>
+  <meta name="description" content="Cierra la caja de tu tienda en minutos: anota ventas, gastos y fiados, cuenta el efectivo y ve si cuadra, si falta o si sobra. Gratis, sin registro y sin salir de tu dispositivo.">
+  <meta name="theme-color" content="#8a4b00">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="stylesheet" href="../../packages/ui/src/base.css">
+  <link rel="stylesheet" href="../../packages/ui/src/layout.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"Caja Clara","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"es","description":"Cierre de caja diario para pequeños negocios, con ventas fiadas, gastos y diferencia de efectivo.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"¿Cómo se calcula el efectivo que debe haber en la caja?","acceptedAnswer":{"@type":"Answer","text":"Fondo inicial + ventas en efectivo + cobros de fiado en efectivo + ingresos de efectivo − gastos pagados de la caja − retiros."}},
+    {"@type":"Question","name":"¿Las ventas fiadas cuentan como efectivo?","acceptedAnswer":{"@type":"Answer","text":"No. Una venta fiada es una venta del día, pero el dinero aún no entró. Cuando el cliente paga en efectivo, ese cobro sí suma a la caja."}},
+    {"@type":"Question","name":"¿Qué hago si falta dinero en la caja?","acceptedAnswer":{"@type":"Answer","text":"Revisa que no falte anotar un gasto, un retiro o un cobro, y vuelve a contar. Guarda el cierre con la diferencia para ver si se repite."}}
+  ]}
+  </script>
+  <script src="../../site-config.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="site-head">
+      <h1>Caja Clara</h1>
+      <p class="lede">Cierra la caja del día sin sufrir. Anota lo que pasó, cuenta el efectivo y mira si cuadra.</p>
+    </header>
+    <main>
+      <div id="app"></div>
+      <article class="prose">
+        <h2>Cómo se calcula lo que debe haber</h2>
+        <p>Efectivo esperado = fondo inicial + ventas en efectivo + cobros de fiado + ingresos − gastos − retiros. Las ventas con tarjeta, por transferencia o fiadas cuentan como ventas, pero no como efectivo en la caja.</p>
+        <h2>Preguntas frecuentes</h2>
+        <details><summary>¿Las ventas fiadas cuentan como efectivo?</summary><p>No. Son ventas del día, pero el dinero entra cuando el cliente paga. Ese cobro lo anotas como «Cobro de fiado en efectivo».</p></details>
+        <details><summary>¿Qué hago si falta dinero?</summary><p>Revisa que no falte anotar un gasto, un retiro o un cobro y vuelve a contar. Guarda el cierre con la diferencia para ver si se repite.</p></details>
+        <details><summary>¿Dónde se guardan mis datos?</summary><p>Solo en este navegador. Descarga el CSV para respaldarlos o abrirlos en una hoja de cálculo; las cifras del CSV están en la unidad menor de la moneda (centavos).</p></details>
+      </article>
+    </main>
+    <p class="site-foot">Tus datos no salen de tu dispositivo. No sustituye la contabilidad de tu negocio.</p>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+  <script type="module" src="../../packages/ui/src/monetize.js"></script>
+  <script type="module" src="../../packages/ui/src/pwa.js"></script>
+</body>
+</html>

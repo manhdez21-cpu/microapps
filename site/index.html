@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Microapps: herramientas pequeñas y gratis para el día a día</title>
+  <meta name="description" content="Siete herramientas gratuitas y sin registro: dividir gastos, cerrar la caja, calcular precios, materiales, vencimientos, garantías y huella de carbono.">
+  <meta name="theme-color" content="#3640c9">
+  <link rel="stylesheet" href="./packages/ui/src/base.css">
+  <link rel="stylesheet" href="./packages/ui/src/layout.css">
+  <style>
+    .apps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    .apps a { display: block; padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); color: inherit; text-decoration: none; min-height: 44px; }
+    .apps a:hover { border-color: var(--accent); }
+    .apps strong { display: block; font-family: var(--font-figure); font-size: 1.15rem; }
+    .apps span { color: var(--ink-soft); font-size: 0.9rem; }
+  </style>
+  <script src="./site-config.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="site-head"><h1>Microapps</h1><p class="lede">Herramientas pequeñas para resolver una cosa bien. Gratis, sin registro y tus datos se quedan en tu dispositivo.</p></header>
+    <main>
+      <ul class="apps">
+        <li><a href="./apps/splitflow/index.html"><strong>SplitFlow</strong><span>Divide gastos entre amigos y ve quién paga a quién.</span></a></li>
+        <li><a href="./apps/caja-clara/index.html"><strong>Caja Clara</strong><span>Cierra la caja del día y mira si cuadra.</span></a></li>
+        <li><a href="./apps/priceright/index.html"><strong>PriceRight</strong><span>Pon precio a tu trabajo con margen real.</span></a></li>
+        <li><a href="./apps/cuanto-me-sobra/index.html"><strong>¿Cuánto me sobra?</strong><span>Cerámica y pintura: cuánto comprar para una obra.</span></a></li>
+        <li><a href="./apps/expiryhub/index.html"><strong>ExpiryHub</strong><span>Qué se vence primero en tu casa o negocio.</span></a></li>
+        <li><a href="./apps/warranty-keeper/index.html"><strong>Warranty Keeper</strong><span>Cuándo termina la garantía de cada compra.</span></a></li>
+        <li><a href="./apps/huella-al-dia/index.html"><strong>Huella al Día</strong><span>Tu huella de carbono por energía y combustibles.</span></a></li>
+      </ul>
+    </main>
+    <p class="site-foot"><a href="./privacidad.html">Privacidad</a></p>
+  </div>
+  <script type="module" src="./packages/ui/src/monetize.js"></script>
+</body>
+</html>

@@ -9,6 +9,7 @@
     "build": "node tools/build.mjs",
     "test": "node tools/gen-status.mjs",
     "e2e": "node tests/e2e/splitflow.e2e.mjs && node tests/e2e/control-center.e2e.mjs && node tests/e2e/calculators.e2e.mjs",
-    "typecheck": "tsc -p tsconfig.web.json --noEmit"
+    "typecheck": "tsc -p tsconfig.web.json --noEmit",
+    "check": "node tools/check-all.mjs"
   }
 }

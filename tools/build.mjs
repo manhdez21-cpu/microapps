@@ -36,4 +36,5 @@ function copySrcStatic(dir) {
 }
 for (const app of readdirSync(join(root, "apps"))) copyStatic(join("apps", app));
 copyStatic("packages/ui/src");
+for (const name of readdirSync(join(root, "site"))) { mkdirSync(dist, { recursive: true }); cpSync(join(root, "site", name), join(dist, name)); }
 console.log("build ok →", dist);

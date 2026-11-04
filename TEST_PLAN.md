@@ -1,9 +1,9 @@
 # TEST_PLAN
 
 ## Estado actual (2026-11-04)
-**76 pruebas unitarias, 76 pasan** (`node --test`) en 5 paquetes: core (42), ui (7), splitflow (12), priceright (7), cuanto-me-sobra (8). `tsc` estricto limpio (core y web).
-**E2E (Playwright + Chromium, nube)**: SplitFlow 13 pasos, Control Center 7, calculadoras 12. Cubren flujos principales, persistencia, errores, CSV, desborde horizontal en móvil (390 px), modo oscuro y consola sin errores.
-Estado: **Probado**. Nada está "Verificado" en producción (no hay despliegue).
+`node tools/check-all.mjs` ejecuta todo. **101 pruebas unitarias, 101 pasan**, en 9 paquetes (core, ui, splitflow, priceright, cuanto-me-sobra, caja-clara, expiryhub, warranty-keeper, huella-al-dia). Tipos estrictos limpios.
+**E2E (Playwright + Chromium):** SplitFlow, Control Center, calculadoras, Caja Clara, ExpiryHub + Warranty Keeper, Huella al Día, sitio/monetización (portada con 7 enlaces, consentimiento, manifest/iconos/service worker de las 7 apps, privacidad). Cubren flujo principal, errores, persistencia, datos corruptos, CSV, sin desborde en 390 px, modo oscuro, JSON-LD y consola limpia.
+Estado: **Probado**. Nada está «Verificado» en producción (no hay despliegue).
 
 ## Limitaciones honestas
 - Las pruebas son mías; falta revisión independiente (la auditará Claude Code).

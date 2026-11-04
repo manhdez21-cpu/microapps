@@ -1,0 +1,4 @@
+/* Huella al Día: verde hoja y un solo número grande (toneladas al año). */
+:root { --accent: #2d6a2d; --plus: #2d6a2d; }
+@media (prefers-color-scheme: dark) { :root { --accent: #86d486; } }
+.result .label { margin: 0; color: var(--ink-soft); }
