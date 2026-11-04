@@ -1,0 +1,52 @@
+/* SplitFlow: la cuenta del restaurante es el elemento memorable (líneas con puntos guía). */
+:root { --accent: #2f3bbd; }
+
+.shell { max-width: 640px; margin: 0 auto; padding: 1rem 1rem 3rem; }
+
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0 1rem; }
+.top h1 { margin: 0; }
+.picker { display: flex; gap: 0.5rem; align-items: center; }
+.picker select { width: auto; max-width: 11rem; }
+
+main > section, form.panel { margin-bottom: 2rem; }
+form.panel { padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+
+.row { display: grid; gap: 0.75rem; grid-template-columns: 1fr; margin-bottom: 0.75rem; }
+@media (min-width: 520px) { .row { grid-template-columns: 1fr 1fr; } }
+.field { margin-bottom: 0.75rem; }
+.field.inline { display: grid; grid-template-columns: 1fr 9rem; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+.field.inline label { margin: 0; }
+.checks { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; }
+.check { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 500; margin: 0; min-height: 44px; }
+.check input { width: 1.15rem; height: 1.15rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.detail { margin-bottom: 1rem; }
+
+/* La cuenta */
+.bill { padding: 1.25rem 0 1.5rem; border-bottom: 2px solid var(--ink); }
+.bill h2 { font-size: 1.5rem; }
+.ledger { list-style: none; margin: 0.5rem 0 0.75rem; padding: 0; }
+.ledger li { display: flex; align-items: baseline; gap: 0.5rem; padding: 0.55rem 0; font-size: 1.1rem; }
+.ledger .who { font-weight: 600; }
+.ledger .leader { flex: 1; border-bottom: 2px dotted var(--ink-soft); transform: translateY(-0.25em); min-width: 1rem; }
+.ledger .amt { font-family: var(--font-figure); font-size: 1.35rem; font-weight: 600; font-variant-numeric: tabular-nums lining-nums; }
+.total { color: var(--ink-soft); margin: 0; }
+.empty { color: var(--ink-soft); }
+.empty.settled { font-family: var(--font-figure); font-size: 1.3rem; color: var(--plus); }
+
+/* Listas */
+.rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.rows li { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0; border-bottom: 1px solid var(--line); }
+.rows .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.rows .sub { font-size: 0.85rem; color: var(--ink-soft); }
+.rows .amt { font-family: var(--font-figure); font-weight: 600; font-variant-numeric: tabular-nums lining-nums; text-align: right; }
+.rows .amt.plus { color: var(--plus); }
+.rows .amt.minus { color: var(--minus); }
+.rows button { min-height: 40px; padding: 0.25rem 0.7rem; }
+
+.inline-form { display: flex; gap: 0.5rem; align-items: flex-end; margin-top: 0.75rem; }
+.inline-form .field { flex: 1; margin: 0; }
+.tools { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 1rem; }
+.foot { text-align: center; font-size: 0.8rem; color: var(--ink-soft); margin-top: 2rem; }
+
+@media (prefers-color-scheme: dark) { :root { --accent: #8b94ff; } }

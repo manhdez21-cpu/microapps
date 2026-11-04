@@ -1,0 +1,244 @@
+{
+  "generatedAt": "2026-11-04T14:35:58.805Z",
+  "tests": [
+    {
+      "name": "packages/core",
+      "tests": 42,
+      "pass": 42,
+      "fail": 0
+    },
+    {
+      "name": "packages/ui",
+      "tests": 7,
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "name": "apps/cuanto-me-sobra",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "name": "apps/priceright",
+      "tests": 7,
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "name": "apps/splitflow",
+      "tests": 12,
+      "pass": 12,
+      "fail": 0
+    }
+  ],
+  "registry": {
+    "updated": "2026-11-04",
+    "phase": "Fase 3 completa en lo local; Fase 5 iniciada (3 apps web)",
+    "notes": "Este archivo lo mantiene el equipo del proyecto. Nada aquí es una métrica de usuarios o ingresos: esas cifras siguen pendientes de integración.",
+    "apps": [
+      {
+        "id": "splitflow",
+        "name": "SplitFlow",
+        "score": 72,
+        "class": "Experimentar y validar",
+        "state": {
+          "Núcleo de cálculo": "probado",
+          "Interfaz web": "probado",
+          "Datos en la nube": "no implementado",
+          "Anuncios": "pendiente de credenciales",
+          "Premium": "pendiente de credenciales",
+          "Publicación": "no implementado"
+        },
+        "path": "../splitflow/index.html"
+      },
+      {
+        "id": "caja-clara",
+        "name": "Caja Clara",
+        "score": 78,
+        "class": "Experimentar y validar",
+        "state": {
+          "Núcleo de cálculo": "probado",
+          "Interfaz web": "no implementado",
+          "Datos en la nube": "no implementado",
+          "Anuncios": "pendiente de credenciales",
+          "Premium": "pendiente de credenciales",
+          "Publicación": "no implementado"
+        }
+      },
+      {
+        "id": "priceright",
+        "name": "PriceRight",
+        "score": 64,
+        "class": "Reconsiderar antes de invertir",
+        "state": {
+          "Núcleo de cálculo": "probado",
+          "Interfaz web": "probado",
+          "Datos en la nube": "no implementado",
+          "Anuncios": "pendiente de credenciales",
+          "Premium": "no implementado",
+          "Publicación": "no implementado"
+        },
+        "path": "../priceright/index.html"
+      },
+      {
+        "id": "cuanto-me-sobra",
+        "name": "¿Cuánto me sobra?",
+        "score": 59,
+        "class": "Reconsiderar antes de invertir",
+        "state": {
+          "Núcleo de cálculo": "probado",
+          "Interfaz web": "probado",
+          "Datos en la nube": "no implementado",
+          "Anuncios": "pendiente de credenciales",
+          "Premium": "no implementado",
+          "Publicación": "no implementado"
+        },
+        "path": "../cuanto-me-sobra/index.html"
+      },
+      {
+        "id": "expiryhub",
+        "name": "ExpiryHub",
+        "score": 73,
+        "class": "Experimentar y validar",
+        "state": {
+          "Núcleo de cálculo": "no implementado",
+          "Interfaz web": "no implementado",
+          "Datos en la nube": "no implementado",
+          "Anuncios": "pendiente de credenciales",
+          "Premium": "no implementado",
+          "Publicación": "no implementado"
+        }
+      },
+      {
+        "id": "warranty-keeper",
+        "name": "Warranty Keeper",
+        "score": 61,
+        "class": "Reconsiderar antes de invertir",
+        "state": {
+          "Núcleo de cálculo": "no implementado",
+          "Interfaz web": "no implementado",
+          "Datos en la nube": "no implementado",
+          "Anuncios": "pendiente de credenciales",
+          "Premium": "no implementado",
+          "Publicación": "no implementado"
+        }
+      },
+      {
+        "id": "huella-al-dia",
+        "name": "Huella al Día",
+        "score": 60,
+        "class": "Reconsiderar antes de invertir",
+        "state": {
+          "Núcleo de cálculo": "no implementado",
+          "Interfaz web": "no implementado",
+          "Datos en la nube": "no implementado",
+          "Anuncios": "pendiente de credenciales",
+          "Premium": "no implementado",
+          "Publicación": "no implementado"
+        }
+      }
+    ],
+    "integrations": [
+      {
+        "name": "Google AdSense (web)",
+        "state": "pendiente de credenciales",
+        "needs": "Cuenta AdSense, dominio propio y política de privacidad"
+      },
+      {
+        "name": "Google AdMob (móvil)",
+        "state": "no implementado",
+        "needs": "Cuenta AdMob y app publicada"
+      },
+      {
+        "name": "Stripe (pagos web)",
+        "state": "pendiente de credenciales",
+        "needs": "Cuenta Stripe verificada a nombre del propietario"
+      },
+      {
+        "name": "RevenueCat / facturación nativa",
+        "state": "no implementado",
+        "needs": "Cuentas de tiendas"
+      },
+      {
+        "name": "Supabase (auth y datos)",
+        "state": "pendiente de credenciales",
+        "needs": "Proyecto Supabase"
+      },
+      {
+        "name": "Analítica de producto",
+        "state": "no implementado",
+        "needs": "Proveedor por elegir y consentimiento"
+      },
+      {
+        "name": "Search Console (SEO)",
+        "state": "pendiente de credenciales",
+        "needs": "Dominio verificado"
+      },
+      {
+        "name": "Hosting y despliegue",
+        "state": "pendiente de credenciales",
+        "needs": "Cuenta de hosting y repositorio remoto"
+      }
+    ],
+    "costs": {
+      "currentUsd": 0,
+      "source": "COST_TRACKER.md",
+      "note": "No incluye la suscripción Claude Pro del propietario."
+    },
+    "pendingMetrics": {
+      "Marketing": [
+        "Tráfico",
+        "Países",
+        "Palabras clave",
+        "Conversiones",
+        "Instalaciones",
+        "Posicionamiento orgánico"
+      ],
+      "Negocio": [
+        "Usuarios activos",
+        "Nuevos usuarios",
+        "Retención D1, D7 y D30",
+        "Ingresos publicitarios",
+        "Ingresos Premium",
+        "eCPM",
+        "Suscriptores y cancelaciones"
+      ]
+    },
+    "roadmap": [
+      {
+        "item": "SplitFlow web con pruebas E2E",
+        "state": "probado"
+      },
+      {
+        "item": "Control Center mínimo",
+        "state": "probado"
+      },
+      {
+        "item": "Calculadoras SEO (PriceRight y ¿Cuánto me sobra?)",
+        "state": "probado"
+      },
+      {
+        "item": "Caja Clara (interfaz)",
+        "state": "no implementado"
+      },
+      {
+        "item": "ExpiryHub y Warranty Keeper",
+        "state": "no implementado"
+      },
+      {
+        "item": "Monetización real",
+        "state": "pendiente de credenciales"
+      },
+      {
+        "item": "Publicación en producción",
+        "state": "pendiente de aprobación"
+      }
+    ],
+    "blockers": [
+      "El registro de npm está bloqueado en las sesiones en la nube: no hay frameworks; se usa TypeScript sin dependencias.",
+      "No hay cuentas de hosting, anuncios, pagos ni tiendas.",
+      "No hay volúmenes de búsqueda verificados (Google Trends / Keyword Planner)."
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+/* PriceRight: verde bosque sobre papel neutro; el precio final es lo único grande. */
+:root { --accent: #1b6b45; --plus: #1b6b45; }
+@media (prefers-color-scheme: dark) { :root { --accent: #5fd09b; } }
+.result .label { color: var(--ink-soft); margin: 0; }

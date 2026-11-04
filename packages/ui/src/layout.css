@@ -1,0 +1,28 @@
+/* Maquetación común de las calculadoras (una columna, formulario y resultado). */
+.shell { max-width: 760px; margin: 0 auto; padding: 1rem 1rem 3rem; }
+.site-head { padding: 0.75rem 0 0.25rem; }
+.site-head h1 { margin: 0 0 0.35rem; font-size: clamp(1.6rem, 5vw, 2.2rem); }
+.lede { color: var(--ink-soft); max-width: 60ch; margin-bottom: 1.25rem; }
+.panel { padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 1.5rem; }
+.row { display: grid; gap: 0.75rem; grid-template-columns: 1fr; margin-bottom: 0.75rem; }
+@media (min-width: 560px) { .row { grid-template-columns: 1fr 1fr; } .row.three { grid-template-columns: 1fr 1fr 1fr; } }
+.field { margin-bottom: 0.75rem; }
+.field .hint { margin: 0.25rem 0 0; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.tabs { display: flex; gap: 0.25rem; margin-bottom: 1rem; border-bottom: 1px solid var(--line); }
+.tabs button { border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: transparent; }
+.tabs button[aria-selected="true"] { border-bottom-color: var(--accent); }
+.result { padding: 1rem 0 1.25rem; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--line); margin-bottom: 1.5rem; }
+.result .big { font-family: var(--font-figure); font-size: clamp(2rem, 8vw, 2.8rem); font-weight: 600; line-height: 1.1; margin: 0.25rem 0 0.5rem; font-variant-numeric: tabular-nums lining-nums; }
+.result dl { display: grid; grid-template-columns: 1fr auto; gap: 0.35rem 1rem; margin: 0.5rem 0 1rem; }
+.result dt { color: var(--ink-soft); }
+.result dd { margin: 0; text-align: right; font-family: var(--font-figure); font-weight: 600; font-variant-numeric: tabular-nums lining-nums; }
+.formulas { margin: 0; padding-left: 1.1rem; color: var(--ink-soft); font-size: 0.9rem; }
+.formulas li { margin-bottom: 0.3rem; }
+.prose { max-width: 62ch; }
+.prose h2 { margin-top: 2rem; }
+.prose table { border-collapse: collapse; margin: 0.5rem 0 1rem; font-variant-numeric: tabular-nums; }
+.prose th, .prose td { text-align: left; padding: 0.35rem 1rem 0.35rem 0; border-bottom: 1px solid var(--line); }
+.prose details { border-bottom: 1px solid var(--line); padding: 0.6rem 0; }
+.prose summary { cursor: pointer; font-weight: 600; }
+.site-foot { color: var(--ink-soft); font-size: 0.8rem; margin-top: 2rem; }

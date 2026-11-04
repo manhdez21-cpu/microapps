@@ -1,0 +1,89 @@
+/* Base compartida: tokens y componentes mínimos. Cada app define su acento en :root. */
+:root {
+  --ink: #15192b;
+  --ink-soft: #4a5170;
+  --paper: #edf1f7;
+  --surface: #ffffff;
+  --line: #c9d1e2;
+  --accent: #3640c9;
+  --accent-ink: #ffffff;
+  --plus: #0b7a52;
+  --minus: #a81f55;
+  --focus: #1a73e8;
+  --radius: 10px;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-figure: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8ecf8;
+    --ink-soft: #a6aecd;
+    --paper: #0f1324;
+    --surface: #181d33;
+    --line: #2d3558;
+    --accent: #8b94ff;
+    --accent-ink: #0f1324;
+    --plus: #4fd1a1;
+    --minus: #ff8fb5;
+    --focus: #8ab4f8;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.5 var(--font-body);
+}
+
+h1, h2 { font-family: var(--font-figure); font-weight: 600; line-height: 1.2; margin: 0 0 0.6rem; }
+h1 { font-size: 1.7rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.25rem; }
+p { margin: 0 0 0.75rem; }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
+input[type="text"], input[type="number"], select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.5rem 0.7rem;
+  font: inherit;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+fieldset { border: 0; padding: 0; margin: 0 0 1rem; }
+legend { font-size: 0.9rem; font-weight: 600; padding: 0; margin-bottom: 0.3rem; }
+
+button {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.danger { background: var(--minus); color: var(--paper); border-color: var(--minus); }
+button.ghost { background: transparent; }
+button:hover { filter: brightness(0.97); }
+
+.hint { font-size: 0.85rem; color: var(--ink-soft); }
+.note { padding: 0.6rem 0.8rem; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); }
+.note.error { border-color: var(--minus); }
+.note.ok { border-color: var(--plus); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

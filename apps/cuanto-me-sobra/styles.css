@@ -1,0 +1,8 @@
+/* ¿Cuánto me sobra?: papel milimetrado (plano de obra) y azul de plano. */
+:root { --accent: #0b5fa5; --plus: #0b5fa5; --grid: rgba(11, 95, 165, 0.08); }
+@media (prefers-color-scheme: dark) { :root { --accent: #7cb8f0; --grid: rgba(124, 184, 240, 0.07); } }
+body {
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.big small { font-size: 0.45em; font-weight: 500; color: var(--ink-soft); margin-left: 0.3rem; }

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>¿Cuánto me sobra? Calculadora de cerámica, piso y pintura con desperdicio</title>
+  <meta name="description" content="Calcula cuántas piezas y cajas de cerámica o piso necesitas, y cuántos litros de pintura, con desperdicio incluido y las fórmulas a la vista para verificarlas.">
+  <meta name="theme-color" content="#0b5fa5">
+  <link rel="stylesheet" href="../../packages/ui/src/base.css">
+  <link rel="stylesheet" href="../../packages/ui/src/layout.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"¿Cuánto me sobra?","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"es","description":"Calculadora de cerámica, piso y pintura con desperdicio y fórmulas visibles.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"¿Cuánta cerámica debo comprar?","acceptedAnswer":{"@type":"Answer","text":"Divide el área entre el área de una pieza (con la junta) y suma un porcentaje de desperdicio por cortes y reposiciones. Después redondea hacia arriba a cajas completas."}},
+    {"@type":"Question","name":"¿Cuántos litros de pintura necesito?","acceptedAnswer":{"@type":"Answer","text":"Multiplica la superficie por el número de manos y divide entre el rendimiento por litro que indica la etiqueta del fabricante."}}
+  ]}
+  </script>
+</head>
+<body>
+  <div class="shell">
+    <header class="site-head">
+      <h1>¿Cuánto me sobra?</h1>
+      <p class="lede">Calcula lo que necesitas comprar para tu remodelación y cuánto va a sobrar. Cada resultado muestra la fórmula para que lo verifiques.</p>
+    </header>
+    <main>
+      <div id="app"></div>
+      <article class="prose">
+        <h2>Cómo calculamos la cerámica</h2>
+        <p>Área de la habitación ÷ área de una pieza (sumando la junta a cada lado) = piezas netas. Luego se suma el desperdicio y se redondea hacia arriba. Si indicas las piezas por caja, calculamos las cajas y las piezas que sobran.</p>
+        <h2>Cuánto desperdicio poner</h2>
+        <p>Depende del diseño del piso y de las piezas que se rompan al cortar. Los cortes en diagonal desperdician más que los rectos. Usa el valor que recomiende tu instalador o el fabricante.</p>
+        <h2>Cómo calculamos la pintura</h2>
+        <p>Superficie (paredes, y techo si lo marcas, menos puertas y ventanas) × manos ÷ rendimiento por litro. El rendimiento viene en la etiqueta del producto; por eso no lo rellenamos por ti.</p>
+      </article>
+    </main>
+    <p class="site-foot">Resultados orientativos. Confirma las cantidades con tu proveedor antes de comprar.</p>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

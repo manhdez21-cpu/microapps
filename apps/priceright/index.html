@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PriceRight: calcula el precio de tu trabajo con margen real</title>
+  <meta name="description" content="Calculadora de precios para independientes y pequeños negocios: suma materiales, mano de obra, transporte y costos indirectos, elige tu margen o recargo y obtén el precio final. Explica la diferencia entre margen y recargo.">
+  <meta name="theme-color" content="#1b6b45">
+  <link rel="stylesheet" href="../../packages/ui/src/base.css">
+  <link rel="stylesheet" href="../../packages/ui/src/layout.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"PriceRight","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"es","description":"Calculadora de precios con margen y recargo para independientes y pequeños negocios.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"¿Cuál es la diferencia entre margen y recargo?","acceptedAnswer":{"@type":"Answer","text":"El margen es la ganancia dividida entre el precio de venta. El recargo (markup) es la ganancia dividida entre el costo. Un margen del 20 % equivale a un recargo del 25 %."}},
+    {"@type":"Question","name":"¿Cómo calculo el precio con un margen objetivo?","acceptedAnswer":{"@type":"Answer","text":"Divide el costo total entre (1 − margen). Si el costo es 80 y quieres 20 % de margen, el precio es 80 ÷ 0,80 = 100."}},
+    {"@type":"Question","name":"¿La calculadora incluye impuestos?","acceptedAnswer":{"@type":"Answer","text":"Solo si tú escribes el porcentaje. Las tasas dependen del país y de tu situación, por eso no se asume ninguna."}}
+  ]}
+  </script>
+</head>
+<body>
+  <div class="shell">
+    <header class="site-head">
+      <h1>PriceRight</h1>
+      <p class="lede">Pon precio a tu trabajo sin regalarlo. Suma tus costos, elige cuánto quieres ganar y mira el precio que debes cobrar.</p>
+    </header>
+    <main>
+      <div id="app"></div>
+      <article class="prose">
+        <h2>Margen y recargo no son lo mismo</h2>
+        <p>El margen se mide sobre el precio de venta; el recargo, sobre el costo. Confundirlos hace que cobres menos de lo que crees. Esta tabla muestra qué recargo necesitas para lograr cada margen.</p>
+        <table>
+          <thead><tr><th scope="col">Margen que quieres</th><th scope="col">Recargo sobre el costo</th></tr></thead>
+          <tbody>
+            <tr><td>10 %</td><td>11,11 %</td></tr>
+            <tr><td>20 %</td><td>25,00 %</td></tr>
+            <tr><td>30 %</td><td>42,86 %</td></tr>
+            <tr><td>40 %</td><td>66,67 %</td></tr>
+            <tr><td>50 %</td><td>100,00 %</td></tr>
+          </tbody>
+        </table>
+        <h2>Preguntas frecuentes</h2>
+        <details><summary>¿Cómo se calcula el precio?</summary><p>Precio sin impuesto = costo total ÷ (1 − margen − comisión). Con costo 80 y margen del 20 %, el precio es 80 ÷ 0,80 = 100 y tu ganancia es 20.</p></details>
+        <details><summary>¿Para qué sirve la comisión?</summary><p>Si una plataforma o pasarela se queda un porcentaje del precio, se descuenta de tu ganancia. Al incluirla, el precio sube para que tu margen siga intacto.</p></details>
+        <details><summary>¿Y los impuestos?</summary><p>Las tasas dependen del país y de tu situación. Escribe el porcentaje que te corresponda o déjalo en blanco; consulta a un contador si tienes dudas. Esta herramienta no da asesoría fiscal.</p></details>
+      </article>
+    </main>
+    <p class="site-foot">Tus datos no salen de tu dispositivo. Los resultados son orientativos.</p>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
