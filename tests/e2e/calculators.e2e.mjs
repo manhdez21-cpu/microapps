@@ -73,7 +73,7 @@ await step("cerámica 4×3 m, pieza 50×50, 10 %, 8 por caja → 7 cajas", async
   await page.getByLabel("Piezas por caja").fill("8");
   assert.match(await page.getByTestId("headline").innerText(), /7 cajas/);
   const t = norm(await page.getByTestId("output").innerText());
-  assert.match(t, /Piezas netas 48/);
+  assert.match(t, /Piezas netas 48/i);
   assert.match(t, /Piezas con desperdicio 53/);
   assert.match(t, /Piezas que sobran de las cajas 3/);
   assert.match(t, /Área = 4 m × 3 m = 12 m²/);

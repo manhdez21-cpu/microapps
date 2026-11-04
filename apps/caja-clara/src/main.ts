@@ -1,6 +1,6 @@
 import { currencyDigits, formatMoney, h, loadJson, parseAmount, replaceChildren, saveJson } from "../../../packages/ui/src/index.ts";
 import type { MovementType } from "../../../packages/core/src/index.ts";
-import { addMovement, closeDay, emptyDraft, parseDraft, parseHistory, removeMovement, toCsv, TYPE_LABEL, TYPES, type ClosedDay, type Draft } from "./state.ts";
+import { addMovement, closeDay, emptyDraft, parseDraft, parseHistory, periodRange, removeMovement, report, toCsv, TYPE_LABEL, TYPES, type ClosedDay, type Draft, type Period } from "./state.ts";
 
 const CURRENCIES = ["COP", "USD", "EUR", "MXN", "ARS", "PEN", "CLP", "BRL"];
 const DRAFT_KEY = "cajaclara.draft.v1", HIST_KEY = "cajaclara.history.v1";
@@ -8,6 +8,7 @@ let draft: Draft = loadJson(DRAFT_KEY, parseDraft, emptyDraft());
 let history: ClosedDay[] = loadJson(HIST_KEY, parseHistory, []);
 let message: { kind: "ok" | "error"; text: string } | null = null;
 let form = { openingText: draft.opening === null ? "" : String(draft.opening / 10 ** currencyDigits(draft.currency)), type: "cash_sale" as MovementType, amount: "", note: "", counted: "", date: new Date().toISOString().slice(0, 10) };
+let period: Period = "day";
 const root = document.getElementById("app")!;
 const money = (m: number) => formatMoney(m, draft.currency);
 const persist = () => { if (!saveJson(DRAFT_KEY, draft)) message = { kind: "error", text: "No se pudo guardar en este navegador (¿modo privado?). Exporta tus cierres." }; };
@@ -73,11 +74,12 @@ function render(): void {
         h("div", { class: "field" }, h("label", { for: "counted" }, "Efectivo contado en la caja"),
           h("input", { id: "counted", type: "text", inputmode: "decimal", autocomplete: "off", value: form.counted, onInput: (e: Event) => { form.counted = (e.target as HTMLInputElement).value; updateResult(); } })),
         h("div", { class: "field" }, h("label", { for: "date" }, "Fecha"),
-          h("input", { id: "date", type: "date", value: form.date, onInput: (e: Event) => { form.date = (e.target as HTMLInputElement).value; } })),
+          h("input", { id: "date", type: "date", value: form.date, onInput: (e: Event) => { form.date = (e.target as HTMLInputElement).value; }, onChange: () => render() })),
       ),
       h("div", { id: "result", "aria-live": "polite", "data-testid": "result" }),
     ),
     t && h("p", { class: "hint", "data-testid": "totals" }, `Ventas del día: ${money(t.totalSales)} (efectivo ${money(t.cashSales)}, tarjeta ${money(t.cardSales)}, transferencia ${money(t.transferSales)}, fiado ${money(t.creditSales)}).`),
+    reportSection(),
     historySection(),
   );
   void result;
@@ -95,7 +97,7 @@ function updateResult(): void {
   const diff = counted - exp;
   const verdict = diff === 0 ? "La caja cuadra." : diff < 0 ? `Faltan ${money(-diff)}.` : `Sobran ${money(diff)}.`;
   replaceChildren(el,
-    h("div", { class: `result ${diff === 0 ? "even" : diff < 0 ? "short" : "over"}` },
+    h("div", { class: `result lcd ${diff === 0 ? "even" : diff < 0 ? "short" : "over"}` },
       h("p", { class: "label" }, "Debería haber: ", h("strong", { "data-testid": "expected" }, money(exp)), " · Contaste: ", money(counted)),
       h("p", { class: "big", "data-testid": "verdict" }, verdict),
       h("p", { class: "hint" }, "Esperado = fondo inicial + ventas en efectivo + cobros de fiado + ingresos − gastos − retiros."),
@@ -112,6 +114,24 @@ function saveClose(): void {
   draft = emptyDraft(draft.currency); form.counted = ""; form.openingText = ""; persist();
   message = { kind: "ok", text: `Cierre del ${c.date} guardado. Caja nueva lista.` };
   render();
+}
+
+const PERIODS: [Period, string][] = [["day", "Día"], ["week", "Semana"], ["month", "Mes"]];
+function reportSection(): HTMLElement {
+  const { from, to } = periodRange(period, form.date);
+  const r = report(history, draft.currency, from, to);
+  const f = (m: number) => formatMoney(m, draft.currency);
+  const row = (label: string, v: string, id?: string) => h("div", { class: "line" }, h("dt", {}, label), h("dd", id ? { "data-testid": id } : {}, v));
+  const days = history.filter((c) => c.currency === draft.currency && c.date >= from && c.date <= to).sort((a, b) => (a.date < b.date ? -1 : 1));
+  return h("section", { class: "panel report", "aria-labelledby": "s5", "data-testid": "report" },
+    h("h2", { id: "s5" }, "Reporte"),
+    h("div", { class: "tabs", role: "group", "aria-label": "Periodo" }, ...PERIODS.map(([k, l]) => h("button", { type: "button", "aria-pressed": String(period === k), onClick: () => { period = k; render(); } }, l))),
+    h("p", { class: "hint" }, `${from === to ? from : `${from} al ${to}`} · ${draft.currency} · usa la fecha del paso 3 como referencia`),
+    r.days === 0 ? h("p", { class: "hint", "data-testid": "report-empty" }, "No hay cierres guardados en este periodo.") : h("dl", { class: "lines" },
+      row("Cierres", String(r.days), "r-days"), row("Ventas totales", f(r.sales), "r-sales"), row("· en efectivo", f(r.cash)), row("· con tarjeta", f(r.card)), row("· por transferencia", f(r.transfer)), row("· fiadas", f(r.credit)),
+      row("Cobros de fiado", f(r.creditPayments)), row("Gastos de caja", f(r.expenses)), row("Retiros", f(r.withdrawals)), row("Faltantes", f(r.short), "r-short"), row("Sobrantes", f(r.over), "r-over"), row("Días que cuadran", `${r.even} de ${r.days}`)),
+    days.length > 0 && h("details", { class: "conc" }, h("summary", {}, "Conciliación por día"), h("table", { class: "recon" }, h("thead", {}, h("tr", {}, ...["Fecha", "Esperado", "Contado", "Diferencia"].map((x) => h("th", { scope: "col" }, x)))),
+      h("tbody", {}, ...days.map((c) => h("tr", {}, h("td", {}, c.date), h("td", {}, f(c.result.expectedCash)), h("td", {}, f(c.counted)), h("td", { class: c.result.difference < 0 ? "minus" : c.result.difference > 0 ? "plus" : "" }, c.result.difference === 0 ? "Cuadra" : f(c.result.difference))))))));
 }
 
 function historySection(): HTMLElement {

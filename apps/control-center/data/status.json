@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T15:14:55.803Z",
+  "generatedAt": "2026-11-04T15:55:02.833Z",
   "tests": [
     {
       "name": "packages/core",
@@ -15,8 +15,8 @@
     },
     {
       "name": "apps/caja-clara",
-      "tests": 5,
-      "pass": 5,
+      "tests": 7,
+      "pass": 7,
       "fail": 0
     },
     {
@@ -27,14 +27,14 @@
     },
     {
       "name": "apps/expiryhub",
-      "tests": 4,
-      "pass": 4,
+      "tests": 7,
+      "pass": 7,
       "fail": 0
     },
     {
       "name": "apps/huella-al-dia",
-      "tests": 4,
-      "pass": 4,
+      "tests": 7,
+      "pass": 7,
       "fail": 0
     },
     {
@@ -51,14 +51,14 @@
     },
     {
       "name": "apps/warranty-keeper",
-      "tests": 4,
-      "pass": 4,
+      "tests": 5,
+      "pass": 5,
       "fail": 0
     }
   ],
   "registry": {
     "updated": "2026-11-04",
-    "phase": "Fase 5: las 7 apps tienen versión web local probada; el Control Center y la portada están listos. Falta desplegar y conectar cuentas",
+    "phase": "Fase 5: las 7 apps tienen versión web local probada, cada una con identidad visual propia; el Control Center y la portada están listos. Falta desplegar y conectar cuentas",
     "notes": "Este archivo lo mantiene el equipo del proyecto. Nada aquí es una métrica de usuarios o ingresos: esas cifras siguen pendientes de integración.",
     "apps": [
       {
@@ -132,14 +132,15 @@
           "Datos en la nube": "no implementado",
           "Anuncios": "pendiente de credenciales",
           "Premium": "no implementado",
-          "Publicación": "no implementado"
+          "Publicación": "no implementado",
+          "OCR de facturas/documentos": "no implementado"
         },
         "path": "../expiryhub/index.html"
       },
       {
         "id": "warranty-keeper",
         "name": "Warranty Keeper",
-        "score": 61,
+        "score": 64,
         "class": "Reconsiderar antes de invertir",
         "state": {
           "Núcleo de cálculo": "probado",
@@ -147,15 +148,16 @@
           "Datos en la nube": "no implementado",
           "Anuncios": "pendiente de credenciales",
           "Premium": "no implementado",
-          "Publicación": "no implementado"
+          "Publicación": "no implementado",
+          "OCR de facturas/documentos": "no implementado"
         },
         "path": "../warranty-keeper/index.html"
       },
       {
         "id": "huella-al-dia",
         "name": "Huella al Día",
-        "score": 60,
-        "class": "Reconsiderar antes de invertir",
+        "score": 66,
+        "class": "Experimentar y validar",
         "state": {
           "Núcleo de cálculo": "probado",
           "Interfaz web": "probado",
@@ -284,8 +286,8 @@
         "pass": 12
       },
       "e2eSteps": 13,
-      "sourceLines": 797,
-      "buildKb": 41.6,
+      "sourceLines": 809,
+      "buildKb": 43.1,
       "seo": {
         "title": 57,
         "description": 128,
@@ -300,12 +302,12 @@
     },
     "caja-clara": {
       "unitTests": {
-        "tests": 5,
-        "pass": 5
+        "tests": 7,
+        "pass": 7
       },
-      "e2eSteps": 12,
-      "sourceLines": 279,
-      "buildKb": 37.3,
+      "e2eSteps": 14,
+      "sourceLines": 358,
+      "buildKb": 44.1,
       "seo": {
         "title": 49,
         "description": 123,
@@ -324,8 +326,8 @@
         "pass": 7
       },
       "e2eSteps": 8,
-      "sourceLines": 238,
-      "buildKb": 31.1,
+      "sourceLines": 250,
+      "buildKb": 32.6,
       "seo": {
         "title": 59,
         "description": 131,
@@ -344,8 +346,8 @@
         "pass": 8
       },
       "e2eSteps": 4,
-      "sourceLines": 244,
-      "buildKb": 30.2,
+      "sourceLines": 258,
+      "buildKb": 31.6,
       "seo": {
         "title": 73,
         "description": 159,
@@ -360,17 +362,17 @@
     },
     "expiryhub": {
       "unitTests": {
-        "tests": 4,
-        "pass": 4
+        "tests": 7,
+        "pass": 7
       },
-      "e2eSteps": 5,
-      "sourceLines": 153,
-      "buildKb": 24.8,
+      "e2eSteps": 9,
+      "sourceLines": 370,
+      "buildKb": 49.1,
       "seo": {
-        "title": 59,
-        "description": 146,
-        "jsonLd": 1,
-        "faq": false
+        "title": 63,
+        "description": 145,
+        "jsonLd": 2,
+        "faq": true
       },
       "pwa": {
         "manifest": true,
@@ -380,15 +382,15 @@
     },
     "warranty-keeper": {
       "unitTests": {
-        "tests": 4,
-        "pass": 4
+        "tests": 5,
+        "pass": 5
       },
-      "e2eSteps": 4,
-      "sourceLines": 146,
-      "buildKb": 29.4,
+      "e2eSteps": 6,
+      "sourceLines": 243,
+      "buildKb": 41.9,
       "seo": {
-        "title": 57,
-        "description": 149,
+        "title": 53,
+        "description": 150,
         "jsonLd": 1,
         "faq": false
       },
@@ -400,15 +402,15 @@
     },
     "huella-al-dia": {
       "unitTests": {
-        "tests": 4,
-        "pass": 4
+        "tests": 7,
+        "pass": 7
       },
-      "e2eSteps": 5,
-      "sourceLines": 121,
-      "buildKb": 29.4,
+      "e2eSteps": 11,
+      "sourceLines": 440,
+      "buildKb": 60.3,
       "seo": {
-        "title": 53,
-        "description": 143,
+        "title": 52,
+        "description": 146,
         "jsonLd": 2,
         "faq": true
       },

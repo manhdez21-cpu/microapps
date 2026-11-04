@@ -8,7 +8,7 @@ const dist = join(root, "dist");
 if (existsSync(dist)) rmSync(dist, { recursive: true, force: true });
 execFileSync("tsc", ["-p", "tsconfig.web.json"], { cwd: root, stdio: "inherit" });
 
-const STATIC = new Set([".html", ".css", ".json", ".svg", ".png", ".webmanifest", ".js", ".txt", ".xml"]);
+const STATIC = new Set([".html", ".css", ".json", ".svg", ".png", ".webmanifest", ".js", ".txt", ".xml", ".ttf"]);
 function copyStatic(dir) {
   for (const name of readdirSync(join(root, dir))) {
     const rel = join(dir, name);

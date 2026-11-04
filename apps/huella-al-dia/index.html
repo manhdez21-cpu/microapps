@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Huella al Día: calcula tu huella de carbono del hogar</title>
-  <meta name="description" content="Calcula cuántas toneladas de CO2 al año emites por electricidad, gasolina, diésel y gas natural. Factores con fuente y editables, sin registro.">
-  <meta name="theme-color" content="#2d6a2d">
+  <title>Huella al Día: historial de salud de tu perro o gato</title>
+  <meta name="description" content="Carnet digital para tu mascota: vacunas, desparasitación, peso, baños, consultas y gastos, con recordatorios de lo próximo. Gratis y sin registro.">
+  <meta name="theme-color" content="#0f766e">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon-192.png">
@@ -13,12 +13,13 @@
   <link rel="stylesheet" href="../../packages/ui/src/layout.css">
   <link rel="stylesheet" href="./styles.css">
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"WebApplication","name":"Huella al Día","applicationCategory":"LifestyleApplication","operatingSystem":"Web","inLanguage":"es","description":"Calculadora de huella de carbono del hogar con factores de emisión citados.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  {"@context":"https://schema.org","@type":"WebApplication","name":"Huella al Día","applicationCategory":"LifestyleApplication","operatingSystem":"Web","inLanguage":"es","description":"Historial de vacunas, desparasitación, peso, baños, consultas y gastos de perros y gatos, con recordatorios.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
   </script>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-    {"@type":"Question","name":"¿Cómo se calcula la huella de carbono del hogar?","acceptedAnswer":{"@type":"Answer","text":"Se multiplica cada consumo (kWh, litros, m³) por su factor de emisión en kg de CO2 por unidad y se suman los resultados."}},
-    {"@type":"Question","name":"¿Qué factor uso para la electricidad?","acceptedAnswer":{"@type":"Answer","text":"Depende del país y del año, porque cada red eléctrica usa fuentes distintas. Busca el factor de emisión de la red de tu autoridad energética."}}
+    {"@type":"Question","name":"¿Qué puedo registrar de mi mascota?","acceptedAnswer":{"@type":"Answer","text":"Vacunas, desparasitaciones, peso, baños, consultas veterinarias, medicamentos que recetó el veterinario y gastos, cada uno con su fecha y, si quieres, la próxima fecha."}},
+    {"@type":"Question","name":"¿Cada cuánto debo vacunar o desparasitar a mi mascota?","acceptedAnswer":{"@type":"Answer","text":"Depende de la especie, la edad y el lugar donde vivas. Pregunta a tu veterinario y anota aquí la próxima fecha que te indique."}},
+    {"@type":"Question","name":"¿Puedo compartir la ficha con alguien?","acceptedAnswer":{"@type":"Answer","text":"Sí. La ficha es un resumen en texto con vacunas, desparasitación, peso y medicamentos registrados, que puedes copiar o compartir desde el celular."}}
   ]}
   </script>
   <script src="../../site-config.js"></script>
@@ -27,19 +28,20 @@
   <div class="shell">
     <header class="site-head">
       <h1>Huella al Día</h1>
-      <p class="lede">Escribe cuánto consumes al mes y mira cuántas toneladas de CO₂ emites al año por la energía de tu casa y tu vehículo.</p>
+      <p class="lede">El carnet de tu perro o gato, siempre a mano: vacunas, peso, baños y gastos, y lo próximo que le toca.</p>
     </header>
     <main>
       <div id="app"></div>
       <article class="prose">
-        <h2>De dónde salen los números</h2>
-        <p>Los factores de gasolina, diésel y gas natural vienen de la tabla de coeficientes de emisión de CO₂ de la U.S. Energy Information Administration (publicada el 18 de septiembre de 2024) y se convierten a litros y metros cúbicos. Son promedios de Estados Unidos: puedes reemplazarlos por los de tu país.</p>
-        <p>El factor de la electricidad no se asume: cambia mucho de un país a otro, así que debes escribirlo.</p>
+        <h2>Cómo funciona</h2>
+        <p>Registra a tu mascota y anota cada vacuna, desparasitación, baño, consulta o gasto. Si pones la próxima fecha, la verás en «Lo próximo» con los días que faltan. Al repetir la dosis con el mismo nombre, el recordatorio anterior se cierra solo.</p>
         <h2>Preguntas frecuentes</h2>
-        <details><summary>¿Es una medición exacta?</summary><p>No. Es una estimación que sirve para seguir tu consumo en el tiempo. No incluye alimentación, vuelos ni compras.</p></details>
+        <details><summary>¿Cada cuánto debo vacunar o desparasitar a mi mascota?</summary><p>Depende de la especie, la edad y el lugar donde vivas. Pregunta a tu veterinario y anota aquí la próxima fecha que te indique.</p></details>
+        <details><summary>¿Esta app da diagnósticos o dosis?</summary><p>No. Solo guarda lo que tú registras. Los medicamentos son los que recetó tu veterinario.</p></details>
+        <details><summary>¿Dónde se guardan los datos y las fotos?</summary><p>Solo en este navegador. Descarga el historial en CSV como respaldo: si borras los datos del sitio, se pierden.</p></details>
       </article>
     </main>
-    <p class="site-foot">Tus datos no salen de tu dispositivo.</p>
+    <p class="site-foot">Tus datos no salen de tu dispositivo. No reemplaza la atención veterinaria.</p>
   </div>
   <script type="module" src="./src/main.js"></script>
   <script type="module" src="../../packages/ui/src/monetize.js"></script>

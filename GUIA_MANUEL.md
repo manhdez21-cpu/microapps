@@ -45,7 +45,8 @@ Importante: **AdSense no se permite dentro de apps**; para anuncios en la app ha
 - No creé cuentas, no pagué nada y no conecté AdSense, Stripe ni Supabase: son tuyos.
 - No hay analítica de usuarios; el panel (`apps/control-center`, no se publica) muestra solo datos reales o «pendiente».
 - Datos en la nube: las apps guardan solo en el navegador de cada persona.
-- Los factores de Huella al Día vienen de la EIA de EE. UU. (2024); el de electricidad lo escribe el usuario.
+- OCR (leer facturas o documentos desde la foto) no está implementado en Warranty Keeper ni ExpiryHub: hoy se adjunta la foto y se escriben los datos a mano.
+- Huella al Día no da dosis ni consejos veterinarios; solo registra lo que anota la persona.
 - Asegúrate de revisar la política de privacidad: es una plantilla, no asesoría legal.
 
 ## Costos actuales

@@ -1,3 +1,17 @@
+/* ¿Cuánto me sobra? — identidad: plano técnico. Azul cianotipia, líneas blancas y cotas.
+   Tipografía: Tektur (rótulos técnicos) + IBM Plex Mono (cifras). */
+:root { --font-body: "Instrument Sans", system-ui, sans-serif; --font-figure: "IBM Plex Mono", ui-monospace, monospace; --font-tech: "Tektur", "IBM Plex Mono", monospace;
+  --paper: #eaf1f8; --surface: #f7fbff; --card: #f7fbff; --ink: #0c2a4a; --ink-soft: #46647f; --line: #b9cde0; --radius: 2px; }
+@media (prefers-color-scheme: dark) { :root { --paper: #0a2540; --surface: #0f3358; --card: #0f3358; --ink: #e6f2ff; --ink-soft: #9fc0e0; --line: #2c5784; } }
+.site-head h1, h2 { font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+.site-head h1 { font-size: clamp(1.5rem, 6vw, 2.1rem); }
+.site-head h1::before { content: "PLANO Nº 01 · "; font: 500 0.7rem var(--font-figure); letter-spacing: 0.14em; display: block; color: var(--ink-soft); }
+.panel, .result { border: 1px solid var(--ink); border-radius: 2px; background: var(--surface); position: relative; }
+.panel::before, .result::before { content: ""; position: absolute; left: -1px; top: -1px; width: 14px; height: 14px; border-top: 3px solid var(--accent); border-left: 3px solid var(--accent); }
+.result { padding: 1rem 1.1rem 1.25rem; }
+.result .big { font-family: var(--font-figure); font-weight: 600; letter-spacing: -0.03em; }
+.result dt { font-family: var(--font-tech); font-size: 0.8rem; letter-spacing: 0.04em; }
+
 /* ¿Cuánto me sobra?: papel milimetrado (plano de obra) y azul de plano. */
 :root { --accent: #0b5fa5; --plus: #0b5fa5; --grid: rgba(11, 95, 165, 0.08); }
 @media (prefers-color-scheme: dark) { :root { --accent: #7cb8f0; --grid: rgba(124, 184, 240, 0.07); } }

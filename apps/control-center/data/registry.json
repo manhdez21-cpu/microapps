@@ -1,6 +1,6 @@
 {
   "updated": "2026-11-04",
-  "phase": "Fase 5: las 7 apps tienen versión web local probada; el Control Center y la portada están listos. Falta desplegar y conectar cuentas",
+  "phase": "Fase 5: las 7 apps tienen versión web local probada, cada una con identidad visual propia; el Control Center y la portada están listos. Falta desplegar y conectar cuentas",
   "notes": "Este archivo lo mantiene el equipo del proyecto. Nada aquí es una métrica de usuarios o ingresos: esas cifras siguen pendientes de integración.",
   "apps": [
     {
@@ -74,14 +74,15 @@
         "Datos en la nube": "no implementado",
         "Anuncios": "pendiente de credenciales",
         "Premium": "no implementado",
-        "Publicación": "no implementado"
+        "Publicación": "no implementado",
+        "OCR de facturas/documentos": "no implementado"
       },
       "path": "../expiryhub/index.html"
     },
     {
       "id": "warranty-keeper",
       "name": "Warranty Keeper",
-      "score": 61,
+      "score": 64,
       "class": "Reconsiderar antes de invertir",
       "state": {
         "Núcleo de cálculo": "probado",
@@ -89,15 +90,16 @@
         "Datos en la nube": "no implementado",
         "Anuncios": "pendiente de credenciales",
         "Premium": "no implementado",
-        "Publicación": "no implementado"
+        "Publicación": "no implementado",
+        "OCR de facturas/documentos": "no implementado"
       },
       "path": "../warranty-keeper/index.html"
     },
     {
       "id": "huella-al-dia",
       "name": "Huella al Día",
-      "score": 60,
-      "class": "Reconsiderar antes de invertir",
+      "score": 66,
+      "class": "Experimentar y validar",
       "state": {
         "Núcleo de cálculo": "probado",
         "Interfaz web": "probado",

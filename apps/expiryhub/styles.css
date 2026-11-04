@@ -1,14 +1,70 @@
-/* ExpiryHub: el color solo marca urgencia (rojo vencido, ámbar pronto). */
-:root { --accent: #0b6e4f; --accent-ink: #fff; --soon: #9a5b00; --minus: #a81f1f; }
-@media (prefers-color-scheme: dark) { :root { --accent: #5fd09b; --accent-ink: #06231a; --soon: #f0b45a; --minus: #ff8f8f; } }
-.moves { list-style: none; margin: 0 0 1rem; padding: 0; border-top: 1px solid var(--line); }
-.moves li { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--line); }
-.moves .main { flex: 1; min-width: 0; display: flex; flex-direction: column; font-weight: 600; }
-.moves .sub { font-size: 0.85rem; color: var(--ink-soft); font-weight: 400; }
-.moves button { min-height: 40px; padding: 0.25rem 0.7rem; }
-.group h3 { font-size: 1rem; margin: 1.25rem 0 0.4rem; padding-left: 0.6rem; border-left: 5px solid var(--line); }
-.group.expired h3 { border-left-color: var(--minus); color: var(--minus); }
-.group.today h3, .group.soon h3 { border-left-color: var(--soon); color: var(--soon); }
-.group.later h3 { border-left-color: var(--accent); }
-.label { margin: 0 0 0.25rem; }
-input[type="date"] { width: 100%; min-height: 44px; padding: 0.5rem 0.7rem; font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+/* ExpiryHub: cartera de documentos. El motivo es la hoja de calendario: su franja cambia de color según la urgencia.
+   Tipografía: IBM Plex Serif para títulos, Red Hat Mono para las fechas, Instrument Sans para el texto. */
+:root {
+  --font-body: "Instrument Sans", system-ui, sans-serif; --font-figure: "IBM Plex Serif", Georgia, serif; --font-date: "Red Hat Mono", ui-monospace, monospace;
+  --paper: #edf0f5; --surface: #ffffff; --card: #ffffff; --ink: #14233b; --ink-soft: #4a5a73; --line: #cdd5e2;
+  --accent: #1f3a6e; --accent-ink: #ffffff; --ok: #2f5aa8; --soon: #b36b00; --urgent: #b8321f; --minus: #b8321f; --plus: #2f5aa8; --radius: 10px;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --paper: #0e1420; --surface: #151e2f; --card: #151e2f; --ink: #e8edf7; --ink-soft: #a3b1c9; --line: #26334a;
+  --accent: #8fb0ff; --accent-ink: #0c1629; --ok: #8fb0ff; --soon: #f0b45a; --urgent: #ff8f85; --minus: #ff8f85; --plus: #8fb0ff;
+} }
+.shell { max-width: 680px; }
+h1 { font-weight: 700; }
+.site-head h1 { letter-spacing: -0.02em; }
+.lead, .hint { color: var(--ink-soft); }
+
+.profiles { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.25rem; }
+.chipro { border-radius: 8px; white-space: nowrap; background: var(--card); }
+.chipro[aria-current="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.newprof { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0 1rem; }
+.newprof input { flex: 1 1 11rem; min-height: 40px; }
+.small { min-height: 38px; padding: 0.15rem 0.7rem; font-size: 0.9rem; }
+input[type="date"], input[type="file"] { width: 100%; min-height: 44px; padding: 0.5rem 0.7rem; font: inherit; color: inherit; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+
+.tabs { margin-top: 0.5rem; }
+.summary { font-family: var(--font-figure); font-size: 1.15rem; margin: 0 0 0.5rem; }
+.group h3 { font-family: var(--font-figure); font-size: 1.05rem; margin: 1.4rem 0 0.5rem; }
+.group.expired h3 { color: var(--urgent); } .group.today h3, .group.soon h3 { color: var(--soon); }
+.docs, .history { list-style: none; margin: 0 0 1rem; padding: 0; }
+.doc { display: flex; gap: 0.9rem; align-items: flex-start; padding: 0.75rem; margin-bottom: 0.6rem; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+.main strong { font-size: 1.05rem; }
+.sub { font-size: 0.85rem; color: var(--ink-soft); }
+.when { font-family: var(--font-date); font-size: 0.85rem; font-weight: 700; color: var(--ok); }
+.when.soon, .when.today { color: var(--soon); } .when.expired { color: var(--urgent); }
+
+/* La hoja de calendario */
+.leaf { flex: none; width: 62px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); text-align: center; display: flex; flex-direction: column; box-shadow: 0 2px 0 var(--line); }
+.leaf .mon { background: var(--ok); color: #fff; font: 700 0.72rem/1.5 var(--font-date); letter-spacing: 0.06em; text-transform: uppercase; }
+.leaf .day { font: 700 1.7rem/1.1 var(--font-date); padding-top: 0.15rem; color: var(--ink); }
+.leaf .yr { font: 0.68rem/1.4 var(--font-date); color: var(--ink-soft); padding-bottom: 0.2rem; }
+.leaf.soon .mon, .leaf.today .mon { background: var(--soon); } .leaf.expired .mon { background: var(--urgent); }
+@media (prefers-color-scheme: dark) { .leaf .mon { color: #0c1629; } }
+
+.doc-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+.button { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); font-weight: 600; cursor: pointer; margin: 0; }
+.attach input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.attach:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
+.renew { margin: 0.5rem 0; padding: 0.6rem; border: 1px dashed var(--line); border-radius: 10px; }
+.renew .actions { margin-top: 0.5rem; }
+
+.add-wrap { margin: 1.5rem 0; }
+.add-wrap summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+.add h2 { font-size: 1.3rem; }
+
+.cal-head { display: flex; align-items: center; justify-content: space-between; margin: 1rem 0 0.5rem; }
+.cal-head h3 { margin: 0; text-transform: capitalize; font-family: var(--font-figure); }
+.grid { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 1rem; }
+.grid th { font: 700 0.75rem var(--font-date); color: var(--ink-soft); padding: 0.3rem 0; }
+.grid td { height: 46px; text-align: center; vertical-align: top; border: 1px solid var(--line); background: var(--card); font-family: var(--font-date); font-size: 0.85rem; position: relative; padding-top: 4px; }
+.grid td.blank { background: transparent; border-color: transparent; }
+.grid td.today { outline: 2px solid var(--accent); outline-offset: -2px; font-weight: 700; }
+.grid td.has { background: color-mix(in srgb, var(--soon) 16%, var(--card)); font-weight: 700; }
+.dot { position: absolute; left: 50%; bottom: 6px; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: var(--soon); }
+
+.history li { display: flex; flex-direction: column; padding: 0.4rem 0; border-bottom: 1px solid var(--line); }
+.tools { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.viewer { width: min(94vw, 560px); border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); padding: 1rem; }
+.viewer::backdrop { background: rgba(0, 0, 0, 0.6); }
+.viewer img { max-width: 100%; max-height: 65vh; display: block; margin: 0 auto 0.75rem; }

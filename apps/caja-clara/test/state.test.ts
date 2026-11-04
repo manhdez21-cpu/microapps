@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import { expect } from "../../../packages/core/test/expect.ts";
-import { addMovement, closeDay, emptyDraft, parseDraft, parseHistory, removeMovement, toCsv } from "../src/state.ts";
+import { addMovement, closeDay, emptyDraft, parseDraft, parseHistory, periodRange, removeMovement, report, toCsv } from "../src/state.ts";
 
 describe("caja clara", () => {
   const base = () => {
@@ -39,5 +39,21 @@ describe("caja clara", () => {
     expect(out?.[0].result.expectedCash).toBe(135000);
     expect(parseHistory({})).toBe(null);
     expect(parseDraft({ currency: "COP", movements: [{ id: "1", type: "x", amount: 1 }], nextId: 2, opening: 0 })).toBe(null);
+  });
+  it("rangos de día, semana (lunes a domingo) y mes", () => {
+    expect(periodRange("day", "2026-11-04")).toEqual({ from: "2026-11-04", to: "2026-11-04" });
+    expect(periodRange("week", "2026-11-04")).toEqual({ from: "2026-11-02", to: "2026-11-08" });
+    expect(periodRange("week", "2026-11-08")).toEqual({ from: "2026-11-02", to: "2026-11-08" });
+    expect(periodRange("week", "2026-11-02")).toEqual({ from: "2026-11-02", to: "2026-11-08" });
+    expect(periodRange("month", "2024-02-10")).toEqual({ from: "2024-02-01", to: "2024-02-29" });
+    expect(() => periodRange("day", "x")).toThrow();
+  });
+  it("reporte suma cierres del rango y de una sola moneda", () => {
+    const days = [closeDay(base(), 135000, "2026-11-03", "a"), closeDay(base(), 130000, "2026-11-04", "b"), closeDay(base(), 140000, "2026-11-20", "c"), closeDay({ ...base(), currency: "USD" }, 135000, "2026-11-04", "d")];
+    const w = report(days, "COP", "2026-11-02", "2026-11-08");
+    expect([w.days, w.sales, w.cash, w.credit, w.expenses, w.difference, w.short, w.over, w.even]).toEqual([2, 280000, 200000, 80000, 30000, -5000, 5000, 0, 1]);
+    const m = report(days, "COP", "2026-11-01", "2026-11-30");
+    expect([m.days, m.difference, m.over]).toEqual([3, 0, 5000]);
+    expect(report(days, "COP", "2027-01-01", "2027-01-31").days).toBe(0);
   });
 });

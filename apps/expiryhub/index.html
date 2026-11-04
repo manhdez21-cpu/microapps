@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ExpiryHub: controla qué se vence antes en tu casa o negocio</title>
-  <meta name="description" content="Anota la fecha de vencimiento de alimentos, medicinas o productos y mira qué se vence primero. Gratis, sin registro y sin salir de tu dispositivo.">
-  <meta name="theme-color" content="#0b6e4f">
+  <title>ExpiryHub: vencimientos de SOAT, seguros, licencias y contratos</title>
+  <meta name="description" content="Anota cuándo vencen tu SOAT, seguros, licencias, contratos y suscripciones, recibe el aviso a tiempo y renueva sin sustos. Gratis y sin registro.">
+  <meta name="theme-color" content="#1f3a6e">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon-192.png">
@@ -13,7 +13,13 @@
   <link rel="stylesheet" href="../../packages/ui/src/layout.css">
   <link rel="stylesheet" href="./styles.css">
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"WebApplication","name":"ExpiryHub","applicationCategory":"LifestyleApplication","operatingSystem":"Web","inLanguage":"es","description":"Lista de fechas de vencimiento ordenada por urgencia.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  {"@context":"https://schema.org","@type":"WebApplication","name":"ExpiryHub","applicationCategory":"LifestyleApplication","operatingSystem":"Web","inLanguage":"es","description":"Control de vencimientos de documentos, seguros, licencias, contratos y suscripciones, con perfiles y calendario.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"¿Con cuánta anticipación debo renovar el SOAT o un seguro?","acceptedAnswer":{"@type":"Answer","text":"Depende del documento y de las reglas de tu país o de tu aseguradora. Elige los días de aviso que te convengan."}},
+    {"@type":"Question","name":"¿Puedo llevar los vencimientos al calendario del teléfono?","acceptedAnswer":{"@type":"Answer","text":"Sí. La app exporta un archivo .ics con una alarma antes de cada vencimiento."}}
+  ]}
   </script>
   <script src="../../site-config.js"></script>
 </head>
@@ -21,14 +27,18 @@
   <div class="shell">
     <header class="site-head">
       <h1>ExpiryHub</h1>
-      <p class="lede">Que nada se te venza sin darte cuenta. Anota la fecha y mira primero lo que más urge.</p>
+      <p class="lede">Que no se te pase el SOAT, el seguro ni la licencia. Anota la fecha, elige con cuántos días de antelación quieres el aviso y renueva a tiempo.</p>
     </header>
     <main>
       <div id="app"></div>
       <article class="prose">
         <h2>Cómo funciona</h2>
-        <p>Cada producto se clasifica según los días que faltan: vencido, vence hoy, vence pronto (según los días de aviso que elijas) o más adelante. La fecha usa tu día local.</p>
-        <p>«Fecha de vencimiento» y «consumir preferentemente antes de» no significan lo mismo; ante la duda con medicinas o alimentos delicados, sigue la indicación del envase.</p>
+        <p>Agrupa tus documentos por perfil (tú, tu carro, tu casa o tu negocio), elige el tipo y la fecha de vencimiento y decide con cuántos días de antelación quieres que se marquen «en aviso». La hoja de calendario de cada documento cambia de color: azul si hay tiempo, ámbar si está en aviso y rojo si venció.</p>
+        <p>Puedes adjuntar una foto o un PDF, renovar guardando el historial y llevar los vencimientos al calendario de tu teléfono con un archivo .ics.</p>
+        <h2>Preguntas frecuentes</h2>
+        <details><summary>¿Con cuánta anticipación debo renovar el SOAT o un seguro?</summary><p>Depende del documento y de las reglas de tu país o de tu aseguradora. Los días de aviso que sugiere la app son solo un punto de partida: cámbialos a lo que te convenga.</p></details>
+        <details><summary>¿La app me envía notificaciones?</summary><p>Todavía no. Muestra el estado cuando la abres y puedes exportar los vencimientos con alarma a tu calendario, que sí te avisará.</p></details>
+        <details><summary>¿Dónde se guardan mis documentos?</summary><p>Solo en este navegador, incluidas las fotos y los PDF. No se suben a ningún servidor. Descarga el CSV como respaldo.</p></details>
       </article>
     </main>
     <p class="site-foot">Tus datos no salen de tu dispositivo.</p>

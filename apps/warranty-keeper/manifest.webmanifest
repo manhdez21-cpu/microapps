@@ -1,12 +1,12 @@
 {
   "name": "Warranty Keeper",
   "short_name": "Garantías",
-  "description": "Cuándo termina cada garantía.",
+  "description": "Garantías de tus compras con factura.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#edf1f7",
-  "theme_color": "#0b5a78",
+  "background_color": "#e9e6dd",
+  "theme_color": "#1b3d8f",
   "lang": "es",
   "icons": [
     {

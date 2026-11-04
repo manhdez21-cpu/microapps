@@ -1,48 +1,136 @@
-import { dayLabel, h, loadJson, replaceChildren, saveJson, todayLocal } from "../../../packages/ui/src/index.ts";
-import { addItem, emptyData, group, parseData, removeItem, setWarnDays, toCsv, type Data } from "./state.ts";
+import { dayLabel, deleteFile, getFile, h, loadJson, prepareAttachment, putFile, replaceChildren, saveJson, todayLocal } from "../../../packages/ui/src/index.ts";
+import { addDays, parseYmd } from "../../../packages/core/src/index.ts";
+import { addDoc, addProfile, CATEGORIES, CATEGORY_LABEL, DEFAULT_WARN, emptyData, groups, monthGrid, parseData, removeDoc, removeProfile, renewDoc, rowsFor, setFile, toCsv, toIcs, type Category, type Data, type Row } from "./state.ts";
 
-const KEY = "expiryhub.v1";
+const KEY = "expiryhub.v2";
 let data: Data = loadJson(KEY, parseData, emptyData());
+let profile = ""; // "" = todos
+let view: "next" | "calendar" = "next";
+let monthRef = todayLocal().slice(0, 7);
+let renewing = "", confirming = "", viewing: { title: string; url: string; pdf: boolean } | null = null;
 let msg: { kind: "ok" | "error"; text: string } | null = null;
-const form = { name: "", expiry: "", place: "" };
+const form = { category: "soat" as Category, profileId: "", title: "", expiry: "", warn: "", note: "", file: null as File | null, newProfile: "", renewDate: "" };
 const root = document.getElementById("app")!;
-const commit = (d: Data) => { data = d; if (!saveJson(KEY, data)) msg = { kind: "error", text: "No se pudo guardar en este navegador. Descarga el CSV como respaldo." }; render(); };
+const MONTHS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 
-function submit(): void {
-  try { msg = null; const d = addItem(data, form.name, form.expiry, form.place); form.name = ""; form.place = ""; commit(d); (document.getElementById("name") as HTMLInputElement | null)?.focus(); }
-  catch (e) { msg = { kind: "error", text: (e as Error).message }; render(); }
+const commit = (d: Data) => { data = d; if (!saveJson(KEY, d)) msg = { kind: "error", text: "No se pudo guardar en este navegador. Descarga el CSV como respaldo." }; };
+const fail = (e: unknown) => { msg = { kind: "error", text: (e as Error).message }; render(); };
+const download = (name: string, text: string, type: string) => { const url = URL.createObjectURL(new Blob([text], { type })); const a = h("a", { href: url, download: name }); document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
+const field = (id: string, label: string, el: HTMLElement) => h("div", { class: "field" }, h("label", { for: id }, label), el);
+
+function leaf(r: Row): HTMLElement {
+  const [y, m, d] = r.doc.expiry.split("-");
+  return h("div", { class: `leaf ${r.state}`, "aria-hidden": "true" }, h("span", { class: "mon" }, MONTHS[Number(m) - 1]!.slice(0, 3)), h("span", { class: "day" }, String(Number(d))), h("span", { class: "yr" }, y));
+}
+
+async function attach(docId: string, file: File): Promise<void> {
+  try {
+    const blob = await prepareAttachment(file);
+    const old = data.docs.find((x) => x.id === docId)?.file;
+    const key = `exp-${docId}`;
+    await putFile(key, blob);
+    commit(setFile(data, docId, key));
+    if (old && old !== key) await deleteFile(old).catch(() => undefined);
+    msg = { kind: "ok", text: "Adjunto guardado en este dispositivo." };
+  } catch (e) { msg = { kind: "error", text: (e as Error).message }; }
+  render();
+}
+async function openFile(docId: string): Promise<void> {
+  const doc = data.docs.find((x) => x.id === docId);
+  try {
+    const blob = doc?.file ? await getFile(doc.file) : undefined;
+    if (!blob) throw new Error("No encontré el archivo en este dispositivo.");
+    viewing = { title: doc!.title, url: URL.createObjectURL(blob), pdf: blob.type === "application/pdf" };
+  } catch (e) { msg = { kind: "error", text: (e as Error).message }; }
+  render();
+}
+
+function addForm(): HTMLElement {
+  if (!form.profileId || !data.profiles.some((p) => p.id === form.profileId)) form.profileId = profile || data.profiles[0]!.id;
+  return h("form", { class: "panel add", "data-testid": "doc-form", onSubmit: async (e: Event) => {
+    e.preventDefault();
+    try {
+      msg = null;
+      const warn = form.warn.trim() === "" ? undefined : /^\d+$/.test(form.warn.trim()) ? Number(form.warn) : NaN;
+      const d = addDoc(data, { profileId: form.profileId, category: form.category, title: form.title, expiry: form.expiry, warnDays: warn as number | undefined, note: form.note });
+      const id = d.docs[d.docs.length - 1]!.id;
+      commit(d);
+      if (form.file) await attach(id, form.file);
+      Object.assign(form, { title: "", expiry: "", warn: "", note: "", file: null });
+      if (!msg) msg = { kind: "ok", text: "Documento añadido." };
+      render();
+    } catch (err) { fail(err); }
+  } },
+    h("h2", {}, data.docs.length === 0 ? "Añade tu primer documento" : "Añadir documento"),
+    data.docs.length === 0 && h("p", { class: "lead" }, "SOAT, seguros, licencias, contratos, suscripciones… Anota cuándo vencen y te mostramos qué sigue."),
+    h("div", { class: "row" },
+      field("cat", "Tipo", h("select", { id: "cat", onChange: (e: Event) => { form.category = (e.target as HTMLSelectElement).value as Category; render(); } }, ...CATEGORIES.map((c) => h("option", { value: c, selected: c === form.category }, CATEGORY_LABEL[c])))),
+      field("prof", "Perfil", h("select", { id: "prof", onChange: (e: Event) => { form.profileId = (e.target as HTMLSelectElement).value; } }, ...data.profiles.map((p) => h("option", { value: p.id, selected: p.id === form.profileId }, p.name))))),
+    field("title", "Nombre del documento", h("input", { id: "title", type: "text", maxlength: "60", autocomplete: "off", placeholder: form.category === "soat" ? "SOAT del carro" : "", value: form.title, onInput: (e: Event) => { form.title = (e.target as HTMLInputElement).value; } })),
+    h("div", { class: "row" },
+      field("expiry", "Vence el", h("input", { id: "expiry", type: "date", value: form.expiry, onInput: (e: Event) => { form.expiry = (e.target as HTMLInputElement).value; } })),
+      field("warn", "Avisarme (días antes)", h("input", { id: "warn", type: "text", inputmode: "numeric", placeholder: String(DEFAULT_WARN[form.category]), value: form.warn, onInput: (e: Event) => { form.warn = (e.target as HTMLInputElement).value; } }))),
+    field("note", "Nota (opcional)", h("input", { id: "note", type: "text", maxlength: "160", autocomplete: "off", value: form.note, onInput: (e: Event) => { form.note = (e.target as HTMLInputElement).value; } })),
+    field("file", "Foto o PDF del documento (opcional)", h("input", { id: "file", type: "file", accept: "image/*,application/pdf", onChange: (e: Event) => { form.file = (e.target as HTMLInputElement).files?.[0] ?? null; } })),
+    h("button", { type: "submit", class: "primary" }, "Añadir documento"));
+}
+
+function item(r: Row): HTMLElement {
+  const prof = data.profiles.find((p) => p.id === r.doc.profileId)?.name ?? "";
+  const open = renewing === r.doc.id;
+  return h("li", { class: `doc ${r.state}`, "data-testid": `doc-${r.doc.id}` },
+    leaf(r),
+    h("div", { class: "main" }, h("strong", {}, r.doc.title), h("span", { class: "sub" }, `${CATEGORY_LABEL[r.doc.category]} · ${prof}`), h("span", { class: `when ${r.state}` }, dayLabel(r.daysLeft)), r.doc.note && h("span", { class: "sub" }, r.doc.note),
+      open && h("form", { class: "renew", onSubmit: (e: Event) => { e.preventDefault(); try { msg = null; commit(renewDoc(data, r.doc.id, form.renewDate, todayLocal())); renewing = ""; msg = { kind: "ok", text: `«${r.doc.title}» renovado hasta ${form.renewDate}.` }; render(); } catch (err) { fail(err); } } },
+        h("label", { for: `rn-${r.doc.id}` }, "Nueva fecha de vencimiento"), h("input", { id: `rn-${r.doc.id}`, type: "date", value: form.renewDate, onInput: (e: Event) => { form.renewDate = (e.target as HTMLInputElement).value; } }),
+        h("div", { class: "actions" }, h("button", { type: "submit", class: "primary small" }, "Guardar renovación"), h("button", { type: "button", class: "ghost small", onClick: () => { renewing = ""; render(); } }, "Cancelar"))),
+      h("div", { class: "doc-actions" },
+        h("button", { type: "button", class: "small", onClick: () => { renewing = r.doc.id; const base = parseYmd(r.doc.expiry); form.renewDate = base ? `${base.y + 1}-${String(base.m).padStart(2, "0")}-${String(Math.min(base.d, 28)).padStart(2, "0")}` : ""; render(); } }, "Renovar"),
+        r.doc.file ? h("button", { type: "button", class: "small", onClick: () => openFile(r.doc.id) }, "Ver adjunto") : h("label", { class: "button small attach" }, "Adjuntar", h("input", { type: "file", accept: "image/*,application/pdf", onChange: (e: Event) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) void attach(r.doc.id, f); } })),
+        confirming === r.doc.id ? h("button", { type: "button", class: "danger small", onClick: () => { const f = r.doc.file; commit(removeDoc(data, r.doc.id)); if (f) void deleteFile(f).catch(() => undefined); confirming = ""; render(); } }, "Sí, quitar") : h("button", { type: "button", class: "ghost small", "aria-label": `Quitar ${r.doc.title}`, onClick: () => { confirming = r.doc.id; render(); } }, "Quitar"))));
+}
+
+function nextView(rows: Row[]): HTMLElement {
+  if (rows.length === 0) return h("p", { class: "hint", "data-testid": "empty" }, "Aquí aparecerán tus documentos ordenados por lo que vence primero.");
+  const urgent = rows.filter((r) => r.state !== "ok").length;
+  return h("div", {}, h("p", { class: "summary", "data-testid": "summary" }, urgent === 0 ? "Nada necesita atención por ahora." : `${urgent} ${urgent === 1 ? "documento necesita" : "documentos necesitan"} atención.`),
+    ...groups(rows).map((g) => h("section", { class: `group ${g.key}`, "data-testid": `group-${g.key}` }, h("h3", {}, `${g.title} (${g.rows.length})`), h("ul", { class: "docs" }, ...g.rows.map(item)))));
+}
+
+function calendarView(rows: Row[]): HTMLElement {
+  const [y, m] = monthRef.split("-").map(Number) as [number, number];
+  const today = todayLocal();
+  const weeks = monthGrid(y, m, rows.map((r) => r.doc));
+  const shift = (n: number) => { const t = y * 12 + (m - 1) + n; monthRef = `${Math.floor(t / 12)}-${String((t % 12) + 1).padStart(2, "0")}`; render(); };
+  const inMonth = rows.filter((r) => r.doc.expiry.startsWith(monthRef));
+  return h("div", { class: "cal" },
+    h("div", { class: "cal-head" }, h("button", { type: "button", class: "small", "aria-label": "Mes anterior", onClick: () => shift(-1) }, "‹"), h("h3", { "data-testid": "month" }, `${MONTHS[m - 1]} ${y}`), h("button", { type: "button", class: "small", "aria-label": "Mes siguiente", onClick: () => shift(1) }, "›")),
+    h("table", { class: "grid", "aria-label": `Calendario de ${MONTHS[m - 1]} ${y}` }, h("thead", {}, h("tr", {}, ...["L", "M", "X", "J", "V", "S", "D"].map((d) => h("th", { scope: "col" }, d)))),
+      h("tbody", {}, ...weeks.map((wk) => h("tr", {}, ...wk.map((c) => h("td", { class: c ? `${c.ymd === today ? "today " : ""}${c.docs.length ? "has" : ""}` : "blank", "aria-label": c && c.docs.length ? `${c.day}: ${c.docs.map((x) => x.title).join(", ")}` : null }, ...(c ? [h("span", {}, String(c.day)), c.docs.length ? h("i", { class: "dot" }) : null] : []))))))),
+    inMonth.length === 0 ? h("p", { class: "hint" }, "No vence nada este mes.") : h("ul", { class: "docs" }, ...inMonth.map(item)));
 }
 
 function render(): void {
-  const today = todayLocal();
-  const groups = group(data, today);
-  const urgent = groups.filter((g) => g.state !== "later").reduce((n, g) => n + g.items.length, 0);
+  const rows = rowsFor(data, todayLocal(), profile);
+  const renewals = data.docs.flatMap((d) => d.renewals.map((r) => ({ ...r, title: d.title }))).sort((a, b) => (a.on < b.on ? 1 : -1)).slice(0, 8);
   replaceChildren(root,
+    h("nav", { class: "profiles", "aria-label": "Perfiles" },
+      h("button", { type: "button", class: "chipro", "aria-current": profile === "" ? "true" : null, onClick: () => { profile = ""; render(); } }, "Todos"),
+      ...data.profiles.map((p) => h("button", { type: "button", class: "chipro", "aria-current": profile === p.id ? "true" : null, onClick: () => { profile = p.id; form.profileId = p.id; render(); } }, p.name))),
+    h("form", { class: "newprof", onSubmit: (e: Event) => { e.preventDefault(); try { msg = null; const d = addProfile(data, form.newProfile); commit(d); form.newProfile = ""; profile = d.profiles[d.profiles.length - 1]!.id; form.profileId = profile; render(); } catch (err) { fail(err); } } },
+      h("label", { for: "np", class: "sr-only" }, "Nuevo perfil"), h("input", { id: "np", type: "text", maxlength: "30", placeholder: "Nuevo perfil (ej. Mi carro)", autocomplete: "off", value: form.newProfile, onInput: (e: Event) => { form.newProfile = (e.target as HTMLInputElement).value; } }), h("button", { type: "submit", class: "small" }, "Crear perfil"),
+      profile && data.profiles.length > 1 && h("button", { type: "button", class: "ghost small", onClick: () => { try { msg = null; commit(removeProfile(data, profile)); profile = ""; render(); } catch (err) { fail(err); } } }, "Borrar este perfil")),
     msg && h("p", { class: `note ${msg.kind}`, role: msg.kind === "error" ? "alert" : "status" }, msg.text),
-    h("section", { class: "panel", "aria-labelledby": "add" },
-      h("h2", { id: "add" }, "Añadir producto"),
-      h("div", { class: "row" },
-        h("div", { class: "field" }, h("label", { for: "name" }, "Producto"), h("input", { id: "name", type: "text", maxlength: "60", autocomplete: "off", value: form.name, onInput: (e: Event) => { form.name = (e.target as HTMLInputElement).value; }, onKeydown: (e: KeyboardEvent) => { if (e.key === "Enter") { e.preventDefault(); submit(); } } })),
-        h("div", { class: "field" }, h("label", { for: "exp" }, "Vence el"), h("input", { id: "exp", type: "date", value: form.expiry, onInput: (e: Event) => { form.expiry = (e.target as HTMLInputElement).value; } })),
-      ),
-      h("div", { class: "field" }, h("label", { for: "place" }, "Dónde está (opcional)"), h("input", { id: "place", type: "text", maxlength: "40", autocomplete: "off", value: form.place, onInput: (e: Event) => { form.place = (e.target as HTMLInputElement).value; } })),
-      h("button", { type: "button", class: "primary", onClick: submit }, "Añadir")),
-    h("section", { "aria-labelledby": "list" },
-      h("h2", { id: "list" }, "Tu lista"),
-      data.items.length === 0 ? h("p", { class: "hint" }, "Aún no hay productos. Añade el primero y verás aquí qué se vence antes.") :
-        h("p", { class: "label", "data-testid": "summary" }, urgent === 0 ? "Nada vence pronto." : `${urgent} ${urgent === 1 ? "producto necesita" : "productos necesitan"} atención.`),
-      ...groups.map((g) => h("div", { class: `group ${g.state}`, "data-testid": `group-${g.state}` },
-        h("h3", {}, `${g.title} (${g.items.length})`),
-        h("ul", { class: "moves" }, ...g.items.map(({ item, daysLeft }) => h("li", {},
-          h("span", { class: "main" }, item.name, h("span", { class: "sub" }, `${item.expiry} · ${dayLabel(daysLeft)}${item.place ? " · " + item.place : ""}`)),
-          h("button", { type: "button", class: "ghost", "aria-label": `Quitar ${item.name}`, onClick: () => commit(removeItem(data, item.id)) }, "Quitar")))))),
-    ),
-    h("section", { class: "panel", "aria-labelledby": "cfg" },
-      h("h2", { id: "cfg" }, "Ajustes"),
-      h("div", { class: "field" }, h("label", { for: "warn" }, "Avisarme con (días de antelación)"),
-        h("input", { id: "warn", type: "number", min: "1", max: "365", value: String(data.warnDays), onChange: (e: Event) => { try { msg = null; commit(setWarnDays(data, Number((e.target as HTMLInputElement).value))); } catch (err) { msg = { kind: "error", text: (err as Error).message }; render(); } } })),
-      h("p", { class: "hint" }, "La lista se ordena al abrir la página. Esta versión no envía notificaciones: ábrela de vez en cuando."),
-      data.items.length > 0 && h("button", { type: "button", onClick: () => { const url = URL.createObjectURL(new Blob(["﻿" + toCsv(data, todayLocal())], { type: "text/csv" })); const a = h("a", { href: url, download: "vencimientos.csv" }); document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); } }, "Descargar CSV")),
+    data.docs.length === 0 ? addForm() : h("div", {},
+      h("div", { class: "tabs", role: "tablist" }, ...([["next", "Próximos"], ["calendar", "Calendario"]] as const).map(([v, l]) => h("button", { type: "button", role: "tab", "aria-selected": String(view === v), onClick: () => { view = v; render(); } }, l))),
+      view === "next" ? nextView(rows) : calendarView(rows),
+      h("details", { class: "add-wrap" }, h("summary", {}, "Añadir documento"), addForm()),
+      renewals.length > 0 && h("section", {}, h("h3", {}, "Historial de renovaciones"), h("ul", { class: "history", "data-testid": "renewals" }, ...renewals.map((r) => h("li", {}, h("strong", {}, r.title), h("span", { class: "sub" }, `${r.from} → ${r.to}, renovado el ${r.on}`))))),
+      h("div", { class: "tools" }, h("button", { type: "button", onClick: () => download("vencimientos.ics", toIcs(data, todayLocal()), "text/calendar") }, "Añadir al calendario del teléfono (.ics)"), h("button", { type: "button", onClick: () => download("vencimientos.csv", "﻿" + toCsv(data, todayLocal()), "text/csv") }, "Descargar CSV"))),
+    viewing && h("dialog", { class: "viewer", "data-testid": "viewer", onClose: () => { if (viewing) URL.revokeObjectURL(viewing.url); viewing = null; } }, h("h2", {}, viewing.title), viewing.pdf ? h("a", { href: viewing.url, target: "_blank", rel: "noopener" }, "Abrir el PDF") : h("img", { src: viewing.url, alt: `Adjunto de ${viewing.title}` }), h("div", { class: "actions" }, h("button", { type: "button", class: "primary", onClick: (e: Event) => (e.target as HTMLElement).closest("dialog")!.close() }, "Cerrar"))),
   );
+  const dlg = root.querySelector("dialog.viewer") as HTMLDialogElement | null;
+  if (dlg && !dlg.open) { try { dlg.showModal(); } catch { /* sin soporte */ } }
 }
 render();
+void addDays;

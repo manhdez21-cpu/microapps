@@ -1,15 +1,48 @@
-/* Caja Clara: papel de libro de caja con una sola decisión visible: ¿cuadra o no? */
-:root { --accent: #8a4b00; --accent-ink: #fff; --plus: #1b6b45; --minus: #a81f1f; }
-@media (prefers-color-scheme: dark) { :root { --accent: #f0b45a; --accent-ink: #1b1204; --plus: #5fd09b; --minus: #ff8f8f; } }
-.moves { list-style: none; margin: 1rem 0 0; padding: 0; border-top: 1px solid var(--line); }
-.moves li { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--line); }
+/* Caja Clara: caja registradora. Panel LCD con el veredicto (cuadra / falta / sobra), cintas de papel y latón.
+   Tipografía: Big Shoulders (rótulos), DM Mono (cifras), Work Sans (texto). */
+:root {
+  --font-body: "Work Sans", system-ui, sans-serif; --font-figure: "DM Mono", ui-monospace, monospace; --font-display: "Big Shoulders", "Arial Narrow", sans-serif;
+  --paper: #efe9da; --surface: #fbf7ea; --card: #fbf7ea; --ink: #2a2113; --ink-soft: #6a5d45; --line: #d5c9aa;
+  --accent: #8a4b00; --accent-ink: #fff; --plus: #1b6b45; --minus: #a81f1f; --radius: 4px;
+  --lcd-bg: #1f2a1c; --lcd-fg: #b7f27a; --lcd-dim: #6f8f50;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --paper: #17140e; --surface: #221d13; --card: #221d13; --ink: #f1e8d0; --ink-soft: #b7a985; --line: #3a3220;
+  --accent: #f0b45a; --accent-ink: #1b1204; --plus: #5fd09b; --minus: #ff8f8f; --lcd-bg: #0d150c; --lcd-fg: #c6ff8a; --lcd-dim: #6f8f50;
+} }
+.shell { max-width: 640px; }
+.site-head h1 { font-family: var(--font-display); font-weight: 800; font-size: 2.6rem; letter-spacing: 0.02em; text-transform: uppercase; color: var(--accent); }
+h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 1.15rem; }
+.panel { border-top: 4px solid var(--accent); border-radius: var(--radius); }
+
+.moves { list-style: none; margin: 1rem 0 0; padding: 0.4rem 0.8rem; background: var(--surface); border: 1px dashed var(--line); font-family: var(--font-figure); }
+.moves li { display: flex; align-items: center; gap: 0.75rem; padding: 0.55rem 0; border-bottom: 1px dotted var(--line); }
+.moves li:last-child { border-bottom: 0; }
 .moves .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.moves .sub { font-size: 0.85rem; color: var(--ink-soft); }
-.moves .amt { font-family: var(--font-figure); font-weight: 600; font-variant-numeric: tabular-nums lining-nums; }
+.moves .sub { font-size: 0.82rem; color: var(--ink-soft); }
+.moves .amt { font-weight: 500; font-variant-numeric: tabular-nums lining-nums; }
 .moves .amt.plus { color: var(--plus); } .moves .amt.minus { color: var(--minus); }
 .moves button { min-height: 40px; padding: 0.25rem 0.7rem; }
-.result.even .big { color: var(--plus); } .result.short .big { color: var(--minus); } .result.over .big { color: var(--accent); }
-.result { margin-bottom: 0; }
+
+.result.lcd { background: var(--lcd-bg); color: var(--lcd-fg); border: 3px solid #0a0f09; border-radius: 6px; padding: 1rem; font-family: var(--font-figure); box-shadow: inset 0 0 18px rgba(0,0,0,.55), 0 2px 0 var(--line); }
+.result.lcd .label, .result.lcd .hint { color: var(--lcd-dim); }
+.result.lcd .big { font-family: var(--font-display); font-weight: 800; font-size: 2.4rem; letter-spacing: 0.04em; text-transform: uppercase; margin: 0.2rem 0; text-shadow: 0 0 8px currentColor; }
+.result.even .big { color: var(--lcd-fg); } .result.short .big { color: #ff8f7a; } .result.over .big { color: #ffd166; }
+.result.lcd button.primary { margin-top: 0.5rem; }
 .label { margin: 0 0 0.25rem; }
 input[type="date"] { width: 100%; min-height: 44px; padding: 0.5rem 0.7rem; font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
 .actions { margin-top: 0.75rem; }
+
+.tabs { display: flex; gap: 0.4rem; margin: 0.4rem 0; }
+.tabs button { flex: 1; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.06em; font-size: 1rem; }
+.tabs button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.lines { margin: 0.5rem 0 0; padding: 0.6rem 0.8rem; background: var(--surface); border: 1px dashed var(--line); font-family: var(--font-figure); }
+.lines .line { display: flex; gap: 0.5rem; align-items: baseline; padding: 0.18rem 0; }
+.lines dt { color: var(--ink-soft); }
+.lines .line::after { content: ""; order: 2; flex: 1; border-bottom: 1px dotted var(--line); }
+.lines dt { order: 1; } .lines dd { order: 3; margin: 0; font-variant-numeric: tabular-nums; }
+.conc { margin-top: 0.75rem; } .conc summary { cursor: pointer; }
+.recon { width: 100%; border-collapse: collapse; font-family: var(--font-figure); font-size: 0.85rem; display: block; overflow-x: auto; }
+.recon th, .recon td { text-align: right; padding: 0.3rem 0.5rem; border-bottom: 1px dotted var(--line); white-space: nowrap; }
+.recon th:first-child, .recon td:first-child { text-align: left; }
+.recon .plus { color: var(--plus); } .recon .minus { color: var(--minus); }

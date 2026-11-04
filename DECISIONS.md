@@ -64,7 +64,7 @@ Formato: fecha · decisión · motivo · alternativas · estado.
 - Limitación: no es un CMP certificado por Google (exigido para UE/Reino Unido/Suiza).
 - Premium: solo enlace; sin verificación de pago hasta tener Stripe + Supabase.
 
-## D-014 · 2026-11-04 · Factores de emisión de Huella al Día
+## D-014 · 2026-11-04 · Factores de emisión de Huella al Día (REEMPLAZADA por D-017)
 - Gasolina/diésel/gas natural de la EIA de EE. UU. (tabla del 2024-09-18), convertidos a L y m³; electricidad sin valor por defecto (depende del país). Todos editables.
 
 ## D-015 · 2026-11-04 · iPhone por web, Android primero
@@ -73,3 +73,15 @@ Formato: fecha · decisión · motivo · alternativas · estado.
 ## D-016 · 2026-11-04 · Control Center con cifras por aplicación
 - `tools/gen-status.mjs` calcula por app (medido, no inventado): pruebas unitarias, pasos E2E definidos, líneas de código, peso compilado, SEO on-page (descripción ≤160, JSON-LD, FAQ), PWA. Las métricas de usuarios/ingresos por app quedan como «Sin datos / Pendiente».
 - `check-all` vuelve a compilar tras generar `status.json` para que `dist/` tenga datos frescos.
+
+## D-017 · 2026-11-04 · Corrección de alcance: Huella al Día y ExpiryHub
+- Releyendo PROMPT_MAESTRO.md se vio que Huella al Día es una app de MASCOTAS (carnet, vacunas, desparasitación, peso, baños, consultas, medicamentos, gastos, recordatorios, ficha para compartir) y ExpiryHub es de DOCUMENTOS Y OBLIGACIONES (SOAT, seguros, licencias, contratos, suscripciones, permisos), no de alimentos. Se habían construido mal (calculadora de carbono y vencimiento de comida); se reconstruyeron. Se eliminó la calculadora de carbono (D-014).
+- Huella: límite de 5 mascotas en la versión gratuita (`MAX_PETS`, gancho para Premium, no cobrado aún). Sin dosis de medicamentos: la app solo registra lo que recetó el veterinario. La ficha lleva el aviso «No es un documento veterinario».
+- ExpiryHub: perfiles, avisos configurables por categoría, renovación con historial, calendario mensual, exportación `.ics` y CSV, adjuntos en IndexedDB (en el dispositivo, nunca subidos).
+- Warranty Keeper: añade marca, modelo, factura adjunta, búsqueda sin tildes y filtros por estado.
+- Caja Clara: añade reportes por día, semana (lunes a domingo) y mes, y conciliación por día; una moneda a la vez.
+- OCR de facturas/documentos: NO implementado (requiere un servicio externo o una librería no disponible: npm está bloqueado). Queda como «No implementado» en el panel.
+
+## D-018 · 2026-11-04 · Una identidad visual por app y fuentes propias
+- Cada app tiene su propia tipografía, paleta y motivo: Huella (carnet con patrón de huellas, Outfit), ExpiryHub (hoja de calendario que cambia de color por estado, IBM Plex Serif/Red Hat Mono), Warranty Keeper (ticket con talón perforado y sello, IBM Plex Mono), Caja Clara (caja registradora con panel LCD, Big Shoulders/DM Mono), SplitFlow (cuenta de restaurante, Young Serif), PriceRight (etiqueta de precio, Bricolage Grotesque), ¿Cuánto me sobra? (plano técnico, Tektur).
+- Fuentes alojadas en `packages/ui/src/fonts` (OFL, licencias en `OFL-licenses.txt`): sin pedir nada a Google en cada visita (privacidad y velocidad). Cada app redefine tokens de color claro/oscuro.

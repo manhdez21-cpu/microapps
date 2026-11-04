@@ -1,12 +1,12 @@
 {
   "name": "Huella al Día",
   "short_name": "Huella",
-  "description": "Tu huella de carbono del hogar.",
+  "description": "Carnet de salud de tu perro o gato.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#edf1f7",
-  "theme_color": "#2d6a2d",
+  "background_color": "#eef7f5",
+  "theme_color": "#0f766e",
   "lang": "es",
   "icons": [
     {

@@ -1,4 +1,5 @@
 import { closeCashRegister, type CloseResult, type Movement, type MovementType } from "../../../packages/core/src/index.ts";
+import { addDays, daysInMonth, formatYmd, parseYmd } from "../../../packages/core/src/index.ts";
 
 export const TYPE_LABEL: Record<MovementType, string> = {
   cash_sale: "Venta en efectivo",
@@ -65,5 +66,30 @@ export function parseDraft(raw: unknown): Draft | null {
   const r = raw as Draft | null;
   if (!r || typeof r.currency !== "string" || !Array.isArray(r.movements) || !r.movements.every(isMovement) || !Number.isSafeInteger(r.nextId)) return null;
   if (r.opening !== null && !Number.isSafeInteger(r.opening)) return null;
+  return r;
+}
+
+export type Period = "day" | "week" | "month";
+/** Rango [desde, hasta] (AAAA-MM-DD, inclusivo) que contiene `ref`: el día, la semana lunes–domingo o el mes. */
+export function periodRange(kind: Period, ref: string): { from: string; to: string } {
+  const p = parseYmd(ref);
+  if (!p) throw new RangeError("Fecha inválida.");
+  if (kind === "day") return { from: ref, to: ref };
+  if (kind === "month") return { from: formatYmd({ y: p.y, m: p.m, d: 1 }), to: formatYmd({ y: p.y, m: p.m, d: daysInMonth(p.y, p.m) }) };
+  const dow = (new Date(Date.UTC(p.y, p.m - 1, p.d)).getUTCDay() + 6) % 7; // lunes = 0
+  const from = addDays(ref, -dow);
+  return { from, to: addDays(from, 6) };
+}
+export interface Report { days: number; sales: number; cash: number; card: number; transfer: number; credit: number; creditPayments: number; expenses: number; withdrawals: number; deposits: number; difference: number; short: number; over: number; even: number }
+/** Suma los cierres de una moneda dentro del rango. Una moneda a la vez: nunca se mezclan. */
+export function report(days: readonly ClosedDay[], currency: string, from: string, to: string): Report {
+  const r: Report = { days: 0, sales: 0, cash: 0, card: 0, transfer: 0, credit: 0, creditPayments: 0, expenses: 0, withdrawals: 0, deposits: 0, difference: 0, short: 0, over: 0, even: 0 };
+  for (const c of days) {
+    if (c.currency !== currency || c.date < from || c.date > to) continue;
+    const t = c.result.totals, d = c.result.difference;
+    r.days++; r.sales += t.totalSales; r.cash += t.cashSales; r.card += t.cardSales; r.transfer += t.transferSales; r.credit += t.creditSales;
+    r.creditPayments += t.creditPaymentsCash; r.expenses += t.expensesCash; r.withdrawals += t.withdrawalsCash; r.deposits += t.depositsCash; r.difference += d;
+    if (d < 0) r.short += -d; else if (d > 0) r.over += d; else r.even++;
+  }
   return r;
 }

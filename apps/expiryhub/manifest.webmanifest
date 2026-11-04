@@ -1,12 +1,12 @@
 {
   "name": "ExpiryHub",
   "short_name": "ExpiryHub",
-  "description": "Qué se vence primero.",
+  "description": "Vencimientos de SOAT, seguros, licencias y contratos.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#edf1f7",
-  "theme_color": "#0b6e4f",
+  "background_color": "#edf0f5",
+  "theme_color": "#1f3a6e",
   "lang": "es",
   "icons": [
     {

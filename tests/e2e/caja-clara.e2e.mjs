@@ -38,11 +38,11 @@ await step("fiado no suma al efectivo esperado", async () => {
 });
 await step("faltante de 5.000", async () => {
   await page.getByLabel("Efectivo contado en la caja").fill("130.000");
-  assert.match(norm(await page.getByTestId("verdict").innerText()), /Faltan \$\s?5\.000/);
+  assert.match(norm(await page.getByTestId("verdict").innerText()), /Faltan \$\s?5\.000/i);
 });
 await step("cuadra exacto", async () => {
   await page.getByLabel("Efectivo contado en la caja").fill("135.000");
-  assert.match(await page.getByTestId("verdict").innerText(), /cuadra/);
+  assert.match(await page.getByTestId("verdict").innerText(), /cuadra/i);
 });
 await step("quitar un movimiento recalcula", async () => {
   await page.getByRole("button", { name: /Quitar Gasto/ }).click();
@@ -63,6 +63,22 @@ await step("persiste al recargar", async () => {
   await page.reload();
   assert.equal(await page.getByTestId("history").locator("li").count(), 1);
 });
+await step("reporte del día, la semana y el mes suma el cierre guardado", async () => {
+  const r = page.getByTestId("report");
+  assert.match(norm(await r.getByTestId("r-days").innerText()), /^1$/);
+  assert.match(norm(await r.getByTestId("r-sales").innerText()), /\$\s?\d/);
+  for (const p of ["Semana", "Mes"]) {
+    await r.getByRole("button", { name: p, exact: true }).click();
+    assert.match(norm(await page.getByTestId("report").getByTestId("r-days").innerText()), /^1$/);
+  }
+  await page.getByTestId("report").getByRole("button", { name: "Día", exact: true }).click();
+  await page.getByTestId("report").locator("summary").click();
+  assert.equal(await page.getByTestId("report").locator("table.recon tbody tr").count(), 1);
+});
+await step("periodo sin cierres lo dice", async () => {
+  await page.getByLabel("Fecha").fill("2020-01-15");
+  assert.equal(await page.getByTestId("report-empty").count(), 1);
+});
 await step("descarga CSV", async () => {
   const [dl] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "Descargar CSV" }).click()]);
   assert.equal(dl.suggestedFilename(), "cierres-caja-clara.csv");
@@ -70,7 +86,7 @@ await step("descarga CSV", async () => {
 await step("datos corruptos en localStorage no rompen la app", async () => {
   await page.evaluate(() => { localStorage.setItem("cajaclara.history.v1", "{no json"); localStorage.setItem("cajaclara.draft.v1", "[]"); });
   await page.reload();
-  assert.match(await page.locator("h1").innerText(), /Caja Clara/);
+  assert.match(await page.locator("h1").innerText(), /Caja Clara/i);
 });
 await step("modo oscuro", async () => {
   await page.emulateMedia({ colorScheme: "dark" });
