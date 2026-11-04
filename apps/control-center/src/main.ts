@@ -14,8 +14,18 @@ interface Registry {
   roadmap: { item: string; state: State }[];
   blockers: string[];
 }
+interface PerApp {
+  unitTests: { tests: number; pass: number } | null;
+  e2eSteps: number;
+  sourceLines: number;
+  buildKb: number | null;
+  seo: { title: number; description: number; jsonLd: number; faq: boolean };
+  pwa: { manifest: boolean; serviceWorker: boolean };
+  adsReady: boolean;
+}
 interface Status {
   generatedAt: string;
+  perApp: Record<string, PerApp>;
   tests: { name: string; tests: number; pass: number; fail: number }[];
   registry: Registry;
 }
@@ -78,35 +88,39 @@ function resumen(s: Status): HTMLElement {
   );
 }
 
+const APP_PENDING = ["Visitas", "Usuarios activos", "Instalaciones", "Retención a 7 días", "Ingresos por anuncios", "Ingresos Premium"];
+
+function appCard(s: Status, a: AppRow): HTMLElement {
+  const m = s.perApp[a.id];
+  if (!m) return h("section", { class: "app-card" }, h("h3", {}, a.name), h("p", { class: "hint" }, "Sin métricas medidas todavía."));
+  const ok = (v: boolean) => (v ? "Sí" : "No");
+  const seoOk = m.seo.jsonLd > 0 && m.seo.description <= 160;
+  return h(
+    "section",
+    { class: "app-card", "aria-labelledby": `a-${a.id}`, "data-testid": `app-${a.id}` },
+    h("h3", { id: `a-${a.id}` }, a.path ? h("a", { href: a.path }, a.name) : a.name, h("span", { class: "sub" }, `${a.class}. Puntuación estimada ${a.score}/100.`)),
+    h("div", { class: "chips" }, ...Object.entries(a.state).map(([k, v]) => h("span", { class: "chipset" }, h("span", { class: "sub" }, k), chip(v)))),
+    h(
+      "div",
+      { class: "tiles" },
+      tile("Pruebas unitarias", m.unitTests ? `${m.unitTests.pass} de ${m.unitTests.tests}` : "—", "Real", "Solo las de esta app; el núcleo compartido se cuenta aparte."),
+      tile("Pasos E2E definidos", String(m.e2eSteps), "Real", "Navegador real simulado; el resultado se ve en Operaciones."),
+      tile("Líneas de código", String(m.sourceLines), "Real", "TypeScript, HTML y CSS de la app."),
+      tile("Peso de la app", m.buildKb === null ? "—" : `${m.buildKb} KB`, "Real", "Sin el núcleo compartido."),
+      tile("SEO en la página", seoOk ? "Completo" : "Revisar", "Real", `Descripción de ${m.seo.description} caracteres (máx. 160), ${m.seo.jsonLd} bloque(s) JSON-LD, FAQ: ${ok(m.seo.faq)}.`),
+      tile("Instalable y sin conexión", m.pwa.manifest && m.pwa.serviceWorker ? "Sí" : "No", "Real", "Manifest y service worker presentes."),
+      ...APP_PENDING.map((k) => tile(k, "Sin datos", "Pendiente", "Sin analítica ni cuentas conectadas.")),
+    ),
+  );
+}
+
 function apps(s: Status): HTMLElement {
-  const cols = Object.keys(s.registry.apps[0]?.state ?? {});
   return h(
     "section",
     { "aria-labelledby": "t-apps" },
     h("h2", { id: "t-apps" }, "Aplicaciones"),
-    h("p", { class: "lead" }, "La puntuación es una estimación de la investigación de mercado, no una medición de usuarios."),
-    h(
-      "div",
-      { class: "table-wrap" },
-      h(
-        "table",
-        { "data-testid": "apps-table" },
-        h("thead", {}, h("tr", {}, h("th", { scope: "col" }, "Aplicación"), h("th", { scope: "col" }, "Puntuación estimada"), ...cols.map((c) => h("th", { scope: "col" }, c)))),
-        h(
-          "tbody",
-          {},
-          ...s.registry.apps.map((a) =>
-            h(
-              "tr",
-              {},
-              h("th", { scope: "row" }, a.path ? h("a", { href: a.path }, a.name) : a.name),
-              h("td", {}, `${a.score}/100`, h("span", { class: "sub" }, a.class)),
-              ...cols.map((c) => h("td", {}, chip(a.state[c] ?? "no implementado"))),
-            ),
-          ),
-        ),
-      ),
-    ),
+    h("p", { class: "lead" }, "Cada aplicación con sus cifras. Las marcadas Real se miden en el repositorio; las Pendientes necesitan analítica y cuentas que todavía no existen."),
+    ...s.registry.apps.map((a) => appCard(s, a)),
   );
 }
 

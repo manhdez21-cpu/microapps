@@ -29,13 +29,17 @@ await step("métricas de negocio aparecen como pendientes, sin cifras inventadas
   assert.doesNotMatch(t, /Usuarios activos\s*Pendiente\s*\d/);
   assert.match(t, /Sin datos/);
 });
-await step("tabla de apps con 7 filas y estados con texto", async () => {
+await step("cada app tiene su ficha con cifras reales y pendientes etiquetadas", async () => {
   await page.getByRole("link", { name: "Aplicaciones" }).click();
-  await page.getByTestId("apps-table").waitFor();
-  assert.equal(await page.getByTestId("apps-table").locator("tbody tr").count(), 7);
-  const t = await page.getByTestId("apps-table").innerText();
-  assert.match(t, /pendiente de credenciales/);
-  assert.match(t, /no implementado/);
+  await page.getByTestId("app-splitflow").waitFor();
+  for (const id of ["splitflow", "caja-clara", "priceright", "cuanto-me-sobra", "expiryhub", "warranty-keeper", "huella-al-dia"]) {
+    const t = await page.getByTestId(`app-${id}`).innerText();
+    assert.match(t, /Pruebas unitarias\s*Real\s*\d+ de \d+/, id);
+    assert.match(t, /Líneas de código\s*Real\s*\d+/, id);
+    assert.match(t, /Ingresos por anuncios\s*Pendiente\s*Sin datos/, id);
+    assert.doesNotMatch(t, /Usuarios activos\s*Pendiente\s*\d/, id);
+  }
+  assert.match(await page.getByTestId("app-caja-clara").innerText(), /pendiente de credenciales/);
 });
 await step("operaciones lista pruebas por paquete sin fallos", async () => {
   await page.getByRole("link", { name: "Operaciones" }).click();
@@ -59,7 +63,7 @@ await step("responsive sin desborde de página", async () => {
 });
 await page.setViewportSize({ width: 1100, height: 900 });
 await page.getByRole("link", { name: "Aplicaciones" }).click();
-await page.getByTestId("apps-table").waitFor();
+await page.getByTestId("app-splitflow").waitFor();
 await page.screenshot({ path: `${OUT}/cc-apps.png`, fullPage: true });
 await step("sin errores de consola", async () => assert.deepEqual(errors, []));
 

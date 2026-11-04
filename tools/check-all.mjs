@@ -8,6 +8,7 @@ run("node", ["tools/build.mjs"]);
 run("tsc", ["-p", "tsconfig.web.json", "--noEmit"]);
 run("tsc", ["-p", "packages/core/tsconfig.json", "--noEmit"]);
 run("node", ["tools/gen-status.mjs"]);
+run("node", ["tools/build.mjs"]); // vuelve a copiar status.json actualizado a dist/
 const bad = JSON.parse((await import("node:fs")).readFileSync(join(root, "apps/control-center/data/status.json"), "utf8")).tests.filter((t) => t.fail > 0 || t.pass !== t.tests);
 if (bad.length) { console.error("Pruebas unitarias con fallos:", bad); process.exit(1); }
 for (const f of readdirSync(join(root, "tests/e2e")).filter((f) => f.endsWith(".e2e.mjs"))) run("node", [join("tests/e2e", f)]);

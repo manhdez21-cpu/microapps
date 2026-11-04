@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T15:01:20.911Z",
+  "generatedAt": "2026-11-04T15:14:55.803Z",
   "tests": [
     {
       "name": "packages/core",
@@ -276,5 +276,147 @@
       "No hay cuentas de hosting, anuncios, pagos ni tiendas.",
       "No hay volúmenes de búsqueda verificados (Google Trends / Keyword Planner)."
     ]
+  },
+  "perApp": {
+    "splitflow": {
+      "unitTests": {
+        "tests": 12,
+        "pass": 12
+      },
+      "e2eSteps": 13,
+      "sourceLines": 797,
+      "buildKb": 41.6,
+      "seo": {
+        "title": 57,
+        "description": 128,
+        "jsonLd": 1,
+        "faq": false
+      },
+      "pwa": {
+        "manifest": true,
+        "serviceWorker": true
+      },
+      "adsReady": true
+    },
+    "caja-clara": {
+      "unitTests": {
+        "tests": 5,
+        "pass": 5
+      },
+      "e2eSteps": 12,
+      "sourceLines": 279,
+      "buildKb": 37.3,
+      "seo": {
+        "title": 49,
+        "description": 123,
+        "jsonLd": 2,
+        "faq": true
+      },
+      "pwa": {
+        "manifest": true,
+        "serviceWorker": true
+      },
+      "adsReady": true
+    },
+    "priceright": {
+      "unitTests": {
+        "tests": 7,
+        "pass": 7
+      },
+      "e2eSteps": 8,
+      "sourceLines": 238,
+      "buildKb": 31.1,
+      "seo": {
+        "title": 59,
+        "description": 131,
+        "jsonLd": 2,
+        "faq": true
+      },
+      "pwa": {
+        "manifest": true,
+        "serviceWorker": true
+      },
+      "adsReady": true
+    },
+    "cuanto-me-sobra": {
+      "unitTests": {
+        "tests": 8,
+        "pass": 8
+      },
+      "e2eSteps": 4,
+      "sourceLines": 244,
+      "buildKb": 30.2,
+      "seo": {
+        "title": 73,
+        "description": 159,
+        "jsonLd": 2,
+        "faq": true
+      },
+      "pwa": {
+        "manifest": true,
+        "serviceWorker": true
+      },
+      "adsReady": true
+    },
+    "expiryhub": {
+      "unitTests": {
+        "tests": 4,
+        "pass": 4
+      },
+      "e2eSteps": 5,
+      "sourceLines": 153,
+      "buildKb": 24.8,
+      "seo": {
+        "title": 59,
+        "description": 146,
+        "jsonLd": 1,
+        "faq": false
+      },
+      "pwa": {
+        "manifest": true,
+        "serviceWorker": true
+      },
+      "adsReady": true
+    },
+    "warranty-keeper": {
+      "unitTests": {
+        "tests": 4,
+        "pass": 4
+      },
+      "e2eSteps": 4,
+      "sourceLines": 146,
+      "buildKb": 29.4,
+      "seo": {
+        "title": 57,
+        "description": 149,
+        "jsonLd": 1,
+        "faq": false
+      },
+      "pwa": {
+        "manifest": true,
+        "serviceWorker": true
+      },
+      "adsReady": true
+    },
+    "huella-al-dia": {
+      "unitTests": {
+        "tests": 4,
+        "pass": 4
+      },
+      "e2eSteps": 5,
+      "sourceLines": 121,
+      "buildKb": 29.4,
+      "seo": {
+        "title": 53,
+        "description": 143,
+        "jsonLd": 2,
+        "faq": true
+      },
+      "pwa": {
+        "manifest": true,
+        "serviceWorker": true
+      },
+      "adsReady": true
+    }
   }
 }

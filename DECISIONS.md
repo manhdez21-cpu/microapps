@@ -69,3 +69,7 @@ Formato: fecha · decisión · motivo · alternativas · estado.
 
 ## D-015 · 2026-11-04 · iPhone por web, Android primero
 - Sin App Store por ahora: iOS se instala desde Safari (instrucciones en `install.ts` e `instalar.html`). Android: PWA y, después, Play vía PWABuilder/TWA con `playUrl` en `site-config.js`.
+
+## D-016 · 2026-11-04 · Control Center con cifras por aplicación
+- `tools/gen-status.mjs` calcula por app (medido, no inventado): pruebas unitarias, pasos E2E definidos, líneas de código, peso compilado, SEO on-page (descripción ≤160, JSON-LD, FAQ), PWA. Las métricas de usuarios/ingresos por app quedan como «Sin datos / Pendiente».
+- `check-all` vuelve a compilar tras generar `status.json` para que `dist/` tenga datos frescos.

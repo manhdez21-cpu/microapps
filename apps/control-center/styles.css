@@ -51,3 +51,9 @@ tbody th a { color: var(--accent); }
 .rows .bad { color: var(--warn); font-weight: 700; }
 .plain { padding-left: 1.1rem; color: var(--ink-soft); }
 .empty { font-family: var(--font-figure); font-size: 1.3rem; color: var(--ink-soft); }
+
+.app-card { margin-bottom: 2rem; padding-top: 1rem; border-top: 2px solid var(--ink); }
+.app-card h3 { font-family: var(--font-figure); font-size: 1.3rem; margin: 0 0 0.5rem; }
+.app-card h3 a { color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-bottom: 0.75rem; }
+.chipset { display: flex; flex-direction: column; gap: 0.15rem; }
