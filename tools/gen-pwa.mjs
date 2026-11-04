@@ -11,10 +11,10 @@ const SHAPES = {
 };
 const APPS = [
   { id: "caja-clara", name: "Caja Clara", short: "Caja Clara", glyph: "C", color: "#8a4b00", bg: "#efe9da", desc: "Cierre de caja diario para tu negocio." },
-  { id: "priceright", name: "PriceRight", short: "PriceRight", glyph: "$", color: "#1b6b45", bg: "#efe6d3", desc: "Calcula el precio de tu trabajo con margen real." },
+  { id: "priceright", name: "PriceRight · Precio Justo", short: "PriceRight", glyph: "$", color: "#1b6b45", bg: "#efe6d3", desc: "Calcula el precio de tu trabajo con margen real." },
   { id: "cuanto-me-sobra", name: "¿Cuánto me sobra?", short: "¿Cuánto me sobra?", glyph: "m²", color: "#0b5fa5", bg: "#eaf1f8", desc: "Cerámica y pintura: cuánto comprar." },
-  { id: "expiryhub", name: "ExpiryHub", short: "ExpiryHub", glyph: "31", color: "#1f3a6e", bg: "#edf0f5", desc: "Vencimientos de SOAT, seguros, licencias y contratos." },
-  { id: "warranty-keeper", name: "Warranty Keeper", short: "Garantías", glyph: "tick", color: "#1b3d8f", bg: "#e9e6dd", desc: "Garantías de tus compras con factura." },
+  { id: "expiryhub", name: "ExpiryHub · Centro de Vencimientos", short: "ExpiryHub", glyph: "31", color: "#1f3a6e", bg: "#edf0f5", desc: "Vencimientos de SOAT, seguros, licencias y contratos." },
+  { id: "warranty-keeper", name: "Warranty Keeper · Guardián de Garantías", short: "Garantías", glyph: "tick", color: "#1b3d8f", bg: "#e9e6dd", desc: "Garantías de tus compras con factura." },
   { id: "huella-al-dia", name: "Huella al Día", short: "Huella", glyph: "paw", color: "#0f766e", bg: "#eef7f5", desc: "Carnet de salud de tu perro o gato." },
 ];
 const sw = (id) => readFileSync(join(root, "apps/splitflow/sw.js"), "utf8").replace('"splitflow-v1"', '"' + id + '-v1"');

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T15:55:02.833Z",
+  "generatedAt": "2026-11-04T16:01:22.254Z",
   "tests": [
     {
       "name": "packages/core",
@@ -286,8 +286,8 @@
         "pass": 12
       },
       "e2eSteps": 13,
-      "sourceLines": 809,
-      "buildKb": 43.1,
+      "sourceLines": 813,
+      "buildKb": 43.5,
       "seo": {
         "title": 57,
         "description": 128,
@@ -306,8 +306,8 @@
         "pass": 7
       },
       "e2eSteps": 14,
-      "sourceLines": 358,
-      "buildKb": 44.1,
+      "sourceLines": 360,
+      "buildKb": 44.2,
       "seo": {
         "title": 49,
         "description": 123,
@@ -327,7 +327,7 @@
       },
       "e2eSteps": 8,
       "sourceLines": 250,
-      "buildKb": 32.6,
+      "buildKb": 32.8,
       "seo": {
         "title": 59,
         "description": 131,
@@ -347,7 +347,7 @@
       },
       "e2eSteps": 4,
       "sourceLines": 258,
-      "buildKb": 31.6,
+      "buildKb": 31.7,
       "seo": {
         "title": 73,
         "description": 159,
@@ -367,7 +367,7 @@
       },
       "e2eSteps": 9,
       "sourceLines": 370,
-      "buildKb": 49.1,
+      "buildKb": 49.2,
       "seo": {
         "title": 63,
         "description": 145,
@@ -387,7 +387,7 @@
       },
       "e2eSteps": 6,
       "sourceLines": 243,
-      "buildKb": 41.9,
+      "buildKb": 42.1,
       "seo": {
         "title": 53,
         "description": 150,
@@ -407,7 +407,7 @@
       },
       "e2eSteps": 11,
       "sourceLines": 440,
-      "buildKb": 60.3,
+      "buildKb": 60.4,
       "seo": {
         "title": 52,
         "description": 146,

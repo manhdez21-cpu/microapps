@@ -12,6 +12,9 @@
     .apps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
     .apps a { display: block; padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); color: inherit; text-decoration: none; min-height: 44px; }
     .apps a:hover { border-color: var(--accent); }
+    .apps a { display: grid; grid-template-columns: 40px 1fr; column-gap: 0.75rem; align-items: center; }
+    .apps img { grid-row: span 2; border-radius: 10px; }
+    .apps small { font: 500 0.8rem var(--font-body); color: var(--ink-soft); }
     .apps strong { display: block; font-family: var(--font-figure); font-size: 1.15rem; }
     .apps span { color: var(--ink-soft); font-size: 0.9rem; }
   </style>
@@ -22,13 +25,13 @@
     <header class="site-head"><h1>Microapps</h1><p class="lede">Herramientas pequeñas para resolver una cosa bien. Gratis, sin registro y tus datos se quedan en tu dispositivo.</p></header>
     <main>
       <ul class="apps">
-        <li><a href="./apps/splitflow/index.html"><strong>SplitFlow</strong><span>Divide gastos entre amigos y ve quién paga a quién.</span></a></li>
-        <li><a href="./apps/caja-clara/index.html"><strong>Caja Clara</strong><span>Cierra la caja del día y mira si cuadra.</span></a></li>
-        <li><a href="./apps/priceright/index.html"><strong>PriceRight</strong><span>Pon precio a tu trabajo con margen real.</span></a></li>
-        <li><a href="./apps/cuanto-me-sobra/index.html"><strong>¿Cuánto me sobra?</strong><span>Cerámica y pintura: cuánto comprar para una obra.</span></a></li>
-        <li><a href="./apps/expiryhub/index.html"><strong>ExpiryHub</strong><span>SOAT, seguros, licencias y contratos: qué vence y cuándo renovar.</span></a></li>
-        <li><a href="./apps/warranty-keeper/index.html"><strong>Warranty Keeper</strong><span>Garantías con factura: cuándo termina cada una y dónde la guardaste.</span></a></li>
-        <li><a href="./apps/huella-al-dia/index.html"><strong>Huella al Día</strong><span>Carnet de tu perro o gato: vacunas, peso, gastos y lo próximo.</span></a></li>
+        <li><a href="./apps/splitflow/index.html"><img src="./apps/splitflow/icon.svg" alt="" width="40" height="40"><strong>SplitFlow <small>· Dividir Cuentas</small></strong><span>Divide gastos entre amigos y ve quién paga a quién.</span></a></li>
+        <li><a href="./apps/caja-clara/index.html"><img src="./apps/caja-clara/icon.svg" alt="" width="40" height="40"><strong>Caja Clara</strong><span>Cierra la caja del día y mira si cuadra.</span></a></li>
+        <li><a href="./apps/priceright/index.html"><img src="./apps/priceright/icon.svg" alt="" width="40" height="40"><strong>PriceRight <small>· Precio Justo</small></strong><span>Pon precio a tu trabajo con margen real.</span></a></li>
+        <li><a href="./apps/cuanto-me-sobra/index.html"><img src="./apps/cuanto-me-sobra/icon.svg" alt="" width="40" height="40"><strong>¿Cuánto me sobra?</strong><span>Cerámica y pintura: cuánto comprar para una obra.</span></a></li>
+        <li><a href="./apps/expiryhub/index.html"><img src="./apps/expiryhub/icon.svg" alt="" width="40" height="40"><strong>ExpiryHub <small>· Centro de Vencimientos</small></strong><span>SOAT, seguros, licencias y contratos: qué vence y cuándo renovar.</span></a></li>
+        <li><a href="./apps/warranty-keeper/index.html"><img src="./apps/warranty-keeper/icon.svg" alt="" width="40" height="40"><strong>Warranty Keeper <small>· Guardián de Garantías</small></strong><span>Garantías con factura: cuándo termina cada una y dónde la guardaste.</span></a></li>
+        <li><a href="./apps/huella-al-dia/index.html"><img src="./apps/huella-al-dia/icon.svg" alt="" width="40" height="40"><strong>Huella al Día</strong><span>Carnet de tu perro o gato: vacunas, peso, gastos y lo próximo.</span></a></li>
       </ul>
     </main>
     <p class="site-foot"><a href="./instalar.html">Instalar en tu celular</a> · <a href="./privacidad.html">Privacidad</a></p>

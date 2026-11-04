@@ -4,7 +4,7 @@
   --paper: #f6efe1; --surface: #fffaf0; --card: #fffaf0; --ink: #1f2250; --ink-soft: #5d5f86; --line: #dccfb4; --accent: #2f3bbd; --coral: #e4573d; --radius: 10px; }
 @media (prefers-color-scheme: dark) { :root { --paper: #14152b; --surface: #1c1e3d; --card: #1c1e3d; --ink: #f1ecdd; --ink-soft: #aeb0d4; --line: #33365e; --accent: #9aa6ff; --coral: #ff8f78; } }
 .top h1, .bill h2, h2 { font-family: var(--font-figure); font-weight: 400; letter-spacing: -0.01em; }
-.top h1 { font-size: 2rem; } .top h1::after { content: ""; display: block; width: 2.4rem; height: 4px; margin-top: 0.3rem; background: var(--coral); border-radius: 2px; }
+.top h1 { font-size: 2rem; } .top h1 span { display: block; border-bottom: 4px solid var(--coral); padding-bottom: 0.25rem; }
 .bill { position: relative; background: var(--surface); padding: 1.25rem 1.1rem 1.5rem; border: 1px solid var(--line); border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; box-shadow: 0 3px 0 var(--line);
   -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 18px 100% repeat-x; mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 18px 100% repeat-x; padding-bottom: 2.2rem; }
 .ledger .amt { color: var(--accent); font-family: var(--font-figure); font-weight: 400; }
@@ -62,3 +62,7 @@ form.panel { padding: 1rem; background: var(--surface); border: 1px solid var(--
 .foot { text-align: center; font-size: 0.8rem; color: var(--ink-soft); margin-top: 2rem; }
 
 @media (prefers-color-scheme: dark) { :root { --accent: #8b94ff; } }
+
+.brand { display: flex; align-items: center; gap: 0.65rem; }
+.brand .logo { width: 44px; height: 44px; flex: none; border-radius: 11px; }
+.brand .es { display: block; font: 500 0.42em/1.2 var(--font-body); opacity: 0.75; margin-top: 0.15em; }

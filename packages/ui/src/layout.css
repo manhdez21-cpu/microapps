@@ -26,3 +26,8 @@
 .prose details { border-bottom: 1px solid var(--line); padding: 0.6rem 0; }
 .prose summary { cursor: pointer; font-weight: 600; }
 .site-foot { color: var(--ink-soft); font-size: 0.8rem; margin-top: 2rem; }
+
+/* Marca: logo de la app + nombre; el nombre en español va debajo del inglés */
+.brand { display: flex; align-items: center; gap: 0.65rem; }
+.brand .logo { width: 44px; height: 44px; flex: none; border-radius: 11px; box-shadow: 0 1px 0 rgba(0,0,0,.15); }
+.brand .es { display: block; font: 500 0.42em/1.2 var(--font-body); letter-spacing: 0.02em; text-transform: none; opacity: 0.75; margin-top: 0.15em; }

@@ -80,7 +80,7 @@ function render(): void {
   const g = active();
   replaceChildren(
     root!,
-    h("header", { class: "top" }, h("h1", {}, "SplitFlow"), g ? groupPicker(g) : null),
+    h("header", { class: "top" }, h("h1", { class: "brand" }, h("img", { class: "logo", src: "./icon.svg", alt: "", width: "44", height: "44" }), h("span", {}, "SplitFlow", h("small", { class: "es" }, "Dividir Cuentas"))), g ? groupPicker(g) : null),
     message ? h("p", { class: `note ${message.kind}`, role: message.kind === "error" ? "alert" : "status" }, message.text) : null,
     !g || creatingGroup ? newGroupForm(state.groups.length > 0) : null,
     g && !creatingGroup ? groupView(g) : null,
