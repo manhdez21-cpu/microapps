@@ -15,19 +15,22 @@
 - Monetización: anuncios (AdSense web / AdMob móvil) + Premium (hipótesis a validar: USD 2.99/mes, 19.99/año).
 - Stack a evaluar (no decidido): Next.js/PWA, Expo/React Native, TypeScript, Supabase, GitHub, hosting gratuito.
 
-## Estado (2026-11-04)
-- Fase actual: 0 → preparación. Fase 1 (diagnóstico e investigación) aún NO iniciada.
-- Hecho: carpeta del proyecto, git init, prompt guardado, skills descargadas, memoria creada.
-- Cuentas/credenciales: ninguna configurada. Ningún servicio de pago contratado.
+## Estado (2026-11-04, fin de sesión 1)
+- Fases 1–2 hechas en primera pasada; Fase 3 parcial. Núcleo `@microapps/core` implementado y probado (42/42). Ver `PROGRESS.md`.
+- Cuentas/credenciales: ninguna. Ningún servicio de pago contratado. Gasto actual: USD 0.
+- Bloqueo: npm bloqueado (403) en la sesión en la nube. Equipo de Manuel: Windows `laptop-mlcjbk6g`, sin carpeta conectada.
 
 ## Decisiones
-- 2026-11-04: Skills externas tomadas del repo oficial anthropics/skills y copiadas a `.claude/skills/` (ver `SKILLS.md`).
+- 2026-11-04: Skills externas del repo oficial anthropics/skills en `.claude/skills/` (ver `SKILLS.md`).
+- Web/PWA primero; local-first; dinero en enteros; núcleo sin dependencias (ver `DECISIONS.md` D-001…D-008).
+- Orden de lanzamiento tentativo: SplitFlow → Caja Clara → calculadoras SEO → ExpiryHub(+Warranty) → Huella al Día.
 
 ## Pendientes
-- Iniciar Fase 1: inspeccionar entorno de Manuel (Windows) con Git/Node/Claude Code; investigación de mercado de las 7 apps.
-- Conectar carpeta de la computadora de Manuel si se quiere trabajar allí (la sesión actual trabaja en el espacio en la nube).
-- Crear documentos base listados en la sección 15 del prompt (aún no creados salvo PROGRESS/MEMORY/SKILLS/CLAUDE).
+- Manuel: conectar carpeta de proyecto en Claude Desktop (para npm/Next.js).
+- Construir UI de SplitFlow, Control Center mínimo, segunda pasada de investigación, skills propias.
+- Cuentas necesarias más adelante (agrupadas): GitHub, hosting, dominio, Supabase, AdSense, Stripe, tiendas.
 
 ## Notas de entorno
 - Esta sesión: espacio Linux en la nube (/home/claude/Microapps). Sin acceso aún a archivos del equipo de Manuel.
-- Acceso de red del shell limitado (GitHub y registros de paquetes funcionan).
+- Red de la nube: GitHub accesible; registry.npmjs.org bloqueado por política (403). No reintentar ni rodear.
+- Node 22.23, pnpm 10, tsc 7 global, Git 2.43.
