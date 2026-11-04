@@ -93,3 +93,9 @@ button:hover { filter: brightness(0.97); }
 .ad-premium { display: inline-block; margin-top: 0.4rem; font-size: 0.85rem; }
 .consent { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: 0.9rem 1rem; display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; background: var(--surface); border-top: 2px solid var(--ink); }
 .consent p { flex: 1 1 100%; margin: 0; font-size: 0.9rem; }
+
+/* Instalación como app */
+.install-link { min-height: 36px; padding: 0.15rem 0.7rem; font-size: 0.85rem; margin-left: 0.4rem; }
+.install-dialog { max-width: min(92vw, 420px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--ink); padding: 1.25rem; }
+.install-dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+.install-dialog ol { padding-left: 1.2rem; }

@@ -11,6 +11,7 @@ Fábrica de microaplicaciones (web/PWA primero, móvil después) financiada con 
 | Las 7 apps web + Control Center + portada | Implementadas y probadas (unitario + E2E), sin desplegar |
 | PWA instalable en las 7 | Implementado y probado (registro del service worker; offline sin probar) |
 | Anuncios con consentimiento | Implementado, inactivo hasta tener ids de AdSense |
+| Instalación en iPhone (Safari) y Android (Chrome) con botón y página `instalar.html` | Implementada y probada con navegadores simulados; sin probar en dispositivo real |
 | Premium, BD/auth, dominio, tiendas | Pendiente de credenciales (ver `GUIA_MANUEL.md`) |
 
 ## Comandos

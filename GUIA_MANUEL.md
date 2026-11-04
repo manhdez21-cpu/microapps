@@ -32,9 +32,14 @@ Ingresos: no hay ninguna cifra prometida. Dependen del tráfico, que hoy es cero
 ## 4. Premium (hoy NO funciona; no lo actives aún)
 Existe solo el enlace «Quitar anuncios con Premium» si pones `premiumUrl`. No hay cuentas ni verificación de pago, así que cobrar hoy no quitaría los anuncios. Recomendación: espera a tener tráfico. Cuando quieras, necesitas cuenta Stripe verificada y un proyecto Supabase; me das las claves **como variables de entorno del hosting**, nunca por el chat.
 
-## 5. Tiendas de apps (opcional, después de tener tráfico web)
-- **Google Play**: pago único de USD 25, verificación de identidad. Cuentas personales nuevas deben tener 12 testers durante 14 días antes de pasar a producción. Puedes empaquetar la web como app con https://www.pwabuilder.com (gratis, pega la URL). Importante: **AdSense no se permite dentro de apps**; para anuncios en la app haría falta AdMob y reconstruir con Capacitor (trabajo que puedo hacer cuando decidas).
-- **App Store**: USD 99 al año y un Mac con Xcode. Yo no lo recomiendo hasta que la web demuestre uso.
+## 5. Android en Google Play y iPhone desde la web
+**iPhone/iPad (ya listo, sin tienda):** cada app muestra al pie «Instalar en tu celular» y la portada enlaza `instalar.html`, con los pasos de Safari (Compartir → Añadir a pantalla de inicio). Así quien no te encuentre en la tienda la instala desde la web. No necesitas cuenta de Apple.
+**Android:** por ahora también funciona desde Chrome con el mismo botón. Para Google Play:
+1. Cuenta de desarrollador: pago único de USD 25 y verificación de identidad.
+2. Empaqueta cada app (o la portada) en https://www.pwabuilder.com pegando la URL del sitio publicado; descarga el paquete de Android que te da.
+3. Sube el paquete en Play Console. Cuentas personales nuevas deben tener 12 testers durante 14 días antes de pasar a producción (verifica la regla vigente).
+4. Cuando Play te dé la URL de la ficha, pégala en `playUrl` de `site/site-config.js`: aparece el botón «Descargar desde Google Play» en `instalar.html`.
+Importante: **AdSense no se permite dentro de apps**; para anuncios en la app haría falta AdMob y reconstruir con Capacitor (puedo hacerlo cuando decidas). App Store: USD 99/año y un Mac; no lo necesitas gracias a la instalación web.
 
 ## Qué NO hice y por qué
 - No creé cuentas, no pagué nada y no conecté AdSense, Stripe ni Supabase: son tuyos.

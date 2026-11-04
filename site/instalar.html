@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Instalar las Microapps en tu celular</title>
+  <meta name="description" content="Cómo instalar las Microapps en Android y en iPhone o iPad desde el navegador, sin tienda de aplicaciones.">
+  <meta name="theme-color" content="#3640c9">
+  <link rel="stylesheet" href="./packages/ui/src/base.css">
+  <link rel="stylesheet" href="./packages/ui/src/layout.css">
+  <script src="./site-config.js"></script>
+</head>
+<body>
+  <div class="shell"><main class="prose">
+    <h1>Instala las Microapps en tu celular</h1>
+    <p>No necesitas tienda de aplicaciones: cada herramienta se instala desde el navegador, ocupa muy poco y sigue funcionando sin conexión.</p>
+    <p id="play" hidden><a data-testid="play-link" class="note ok" style="display:inline-block;text-decoration:none">Descargar desde Google Play</a></p>
+    <h2>iPhone y iPad</h2>
+    <ol>
+      <li>Abre la herramienta que quieres en <strong>Safari</strong> (lista abajo).</li>
+      <li>Toca <strong>Compartir</strong> (el cuadrado con la flecha hacia arriba).</li>
+      <li>Elige <strong>Añadir a pantalla de inicio</strong> y toca <strong>Añadir</strong>.</li>
+    </ol>
+    <p class="hint">Cada herramienta se instala por separado, desde su propia página.</p>
+    <h2>Android</h2>
+    <ol>
+      <li>Abre la herramienta en <strong>Chrome</strong>.</li>
+      <li>Toca <strong>Instalar en tu celular</strong> al pie de la página, o el menú ⋮ → <strong>Instalar aplicación</strong>.</li>
+    </ol>
+    <h2>Elige una herramienta</h2>
+    <ul>
+      <li><a href="./apps/splitflow/index.html">SplitFlow</a>: divide gastos entre amigos.</li>
+      <li><a href="./apps/caja-clara/index.html">Caja Clara</a>: cierre de caja diario.</li>
+      <li><a href="./apps/priceright/index.html">PriceRight</a>: precios con margen real.</li>
+      <li><a href="./apps/cuanto-me-sobra/index.html">¿Cuánto me sobra?</a>: cerámica y pintura.</li>
+      <li><a href="./apps/expiryhub/index.html">ExpiryHub</a>: vencimientos.</li>
+      <li><a href="./apps/warranty-keeper/index.html">Warranty Keeper</a>: garantías.</li>
+      <li><a href="./apps/huella-al-dia/index.html">Huella al Día</a>: huella de carbono.</li>
+    </ul>
+    <p><a href="./index.html">Volver a la portada</a></p>
+  </main></div>
+  <script>
+    var c = window.MICROAPPS_CONFIG || {};
+    if (/^https:\/\/play\.google\.com\//.test(c.playUrl || "")) { var p = document.getElementById("play"); p.hidden = false; p.firstElementChild.href = c.playUrl; }
+  </script>
+</body>
+</html>

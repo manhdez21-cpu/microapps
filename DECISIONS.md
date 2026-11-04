@@ -66,3 +66,6 @@ Formato: fecha · decisión · motivo · alternativas · estado.
 
 ## D-014 · 2026-11-04 · Factores de emisión de Huella al Día
 - Gasolina/diésel/gas natural de la EIA de EE. UU. (tabla del 2024-09-18), convertidos a L y m³; electricidad sin valor por defecto (depende del país). Todos editables.
+
+## D-015 · 2026-11-04 · iPhone por web, Android primero
+- Sin App Store por ahora: iOS se instala desde Safari (instrucciones en `install.ts` e `instalar.html`). Android: PWA y, después, Play vía PWABuilder/TWA con `playUrl` en `site-config.js`.

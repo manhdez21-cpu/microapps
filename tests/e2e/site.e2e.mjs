@@ -70,6 +70,33 @@ await step("las 7 apps son instalables: manifest, iconos y service worker", asyn
     await page.waitForFunction(() => navigator.serviceWorker.getRegistration().then((r) => !!r), null, { timeout: 5000 });
   }
 });
+await step("iPhone: el botón abre los pasos de Compartir → Añadir a pantalla de inicio", async () => {
+  const ctx = await browser.newContext({ userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile/15E148 Safari/604.1", viewport: { width: 390, height: 844 } });
+  const page = await ctx.newPage();
+  for (const app of ["splitflow", "caja-clara"]) {
+    await page.goto(`${base}/apps/${app}/index.html`);
+    await page.getByTestId("install-link").click();
+    assert.match(await page.getByTestId("ios-install").innerText(), /Compartir[\s\S]*Añadir a pantalla de inicio/);
+  }
+});
+await step("Android: usa el aviso nativo de instalación", async () => {
+  const ctx = await browser.newContext({ userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36", viewport: { width: 390, height: 844 } });
+  const page = await ctx.newPage();
+  await page.goto(`${base}/apps/expiryhub/index.html`);
+  await page.evaluate(() => { const e = new Event("beforeinstallprompt"); e.prompt = () => { window.__prompted = true; return Promise.resolve(); }; e.userChoice = Promise.resolve({ outcome: "accepted" }); window.dispatchEvent(e); });
+  await page.getByTestId("install-link").click();
+  assert.equal(await page.evaluate(() => window.__prompted), true);
+});
+await step("escritorio sin soporte: no aparece el botón; /instalar.html carga y muestra Play solo si hay URL", async () => {
+  const { page } = await newPage();
+  await page.goto(`${base}/apps/expiryhub/index.html`);
+  assert.equal(await page.getByTestId("install-link").count(), 0);
+  await page.goto(`${base}/instalar.html`);
+  assert.equal(await page.getByTestId("play-link").isVisible(), false);
+  const p2 = (await newPage({ playUrl: "https://play.google.com/store/apps/details?id=x" })).page;
+  await p2.goto(`${base}/instalar.html`);
+  assert.equal(await p2.getByTestId("play-link").isVisible(), true);
+});
 await step("política de privacidad accesible", async () => {
   const { page } = await newPage();
   const r = await page.goto(`${base}/privacidad.html`);
