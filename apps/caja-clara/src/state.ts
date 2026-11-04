@@ -93,3 +93,28 @@ export function report(days: readonly ClosedDay[], currency: string, from: strin
   }
   return r;
 }
+
+export interface ClientDebt { client: string; sold: number; paid: number; pending: number }
+const clientOf = (m: Movement) => (m.note ?? "").trim().replace(/\s+/g, " ") || "Sin nombre";
+/** Fiados por cliente (el nombre va en la nota): lo vendido a crédito menos lo cobrado en efectivo. Solo una moneda. */
+export function creditByClient(days: readonly ClosedDay[], draft: Draft): ClientDebt[] {
+  const map = new Map<string, ClientDebt & { key: string }>();
+  const add = (m: Movement) => {
+    if (m.type !== "credit_sale" && m.type !== "credit_payment_cash") return;
+    const name = clientOf(m), key = name.toLowerCase();
+    const e = map.get(key) ?? { key, client: name, sold: 0, paid: 0, pending: 0 };
+    if (m.type === "credit_sale") e.sold += m.amount; else e.paid += m.amount;
+    map.set(key, e);
+  };
+  for (const c of days) if (c.currency === draft.currency) c.movements.forEach(add);
+  draft.movements.forEach(add);
+  return [...map.values()].map(({ key: _k, ...e }) => ({ ...e, pending: e.sold - e.paid })).filter((e) => e.pending !== 0).sort((a, b) => b.pending - a.pending);
+}
+
+export interface DayPoint { date: string; sales: number }
+/** Ventas totales por día dentro del rango (para la gráfica). */
+export function salesByDay(days: readonly ClosedDay[], currency: string, from: string, to: string): DayPoint[] {
+  const m = new Map<string, number>();
+  for (const c of days) if (c.currency === currency && c.date >= from && c.date <= to) m.set(c.date, (m.get(c.date) ?? 0) + c.result.totals.totalSales);
+  return [...m].map(([date, sales]) => ({ date, sales })).sort((a, b) => (a.date < b.date ? -1 : 1));
+}

@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import { expect } from "../../../packages/core/test/expect.ts";
-import { addPet, addRecord, ageLabel, emptyData, fichaText, history, parseData, removePet, reminders, toCsv, totalSpent, weightSeries, type Data } from "../src/state.ts";
+import { addPet, addRecord, ageLabel, emptyData, fichaText, history, parseData, removePet, reminders, spendByMonth, spendByType, toCsv, totalSpent, updatePet, updateRecord, weightSeries, type Data } from "../src/state.ts";
 
 const T = "2026-11-04";
 const base = (): Data => addPet(emptyData(), { name: "Luna", species: "perro", breed: "Criollo", birth: "2023-05-10" }, T);
@@ -69,5 +69,45 @@ describe("huella al día", () => {
     const bad = JSON.parse(JSON.stringify(d)); bad.records.push({ id: "r9", petId: "zzz", type: "bano", date: T, title: "", detail: "" }); bad.records.push({ id: "r8", petId: id, type: "bano", date: "2026-13-01", title: "", detail: "" });
     expect(parseData(bad)?.records.length).toBe(1);
     expect(parseData({})).toBe(null);
+  });
+  it("repetir cada N meses calcula la próxima fecha; una fecha explícita manda", () => {
+    let d = addRecord(base(), { petId: "p1", type: "desparasitacion", date: "2026-11-30", title: "Antiparasitario", repeat: 3 }, "2026-11-30");
+    expect(d.records[0]!.next).toBe("2027-02-28");
+    expect(d.records[0]!.repeat).toBe(3);
+    d = addRecord(d, { petId: "p1", type: "vacuna", date: "2026-11-01", title: "Rabia", repeat: 12, next: "2027-10-20" }, T);
+    expect(d.records[1]!.next).toBe("2027-10-20");
+    expect(() => addRecord(d, { petId: "p1", type: "vacuna", date: "2026-11-01", title: "x", repeat: 500 }, T)).toThrow();
+    expect(() => addRecord(d, { petId: "p1", type: "vacuna", date: "2026-11-01", title: "x", repeat: 1.5 }, T)).toThrow();
+  });
+  it("editar un registro conserva id y lugar; valida igual que al crear", () => {
+    let d = addRecord(base(), { petId: "p1", type: "vacuna", date: "2026-10-01", title: "Rabia", next: "2026-11-20" }, T);
+    d = addRecord(d, { petId: "p1", type: "peso", date: "2026-10-15", weightG: 3800 }, T);
+    d = updateRecord(d, "r2", { petId: "p1", type: "vacuna", date: "2026-10-02", title: "Rabia anual", detail: "Clínica Patitas", amount: 60000, next: "2027-10-02" }, T);
+    expect(d.records.map((r) => r.id)).toEqual(["r2", "r3"]);
+    expect([d.records[0]!.title, d.records[0]!.amount, d.records[0]!.next]).toEqual(["Rabia anual", 60000, "2027-10-02"]);
+    expect(reminders(d, "p1", T).map((x) => x.rec.next)).toEqual(["2027-10-02"]);
+    expect(() => updateRecord(d, "zz", { petId: "p1", type: "peso", date: T, weightG: 1000 }, T)).toThrow();
+    expect(() => updateRecord(d, "r2", { petId: "p1", type: "vacuna", date: T, title: "" }, T)).toThrow();
+    expect(() => updateRecord(d, "r3", { petId: "p1", type: "peso", date: T, weightG: 0 }, T)).toThrow();
+  });
+  it("editar la mascota conserva su foto salvo que se envíe otra", () => {
+    let d = addPet(emptyData(), { name: "Luna", species: "gato", photo: "data:image/jpeg;base64,AAA" }, T);
+    d = updatePet(d, "p1", { name: "Luna Luna", species: "gato", breed: "Angora", birth: "2022-01-01", sex: "hembra" }, T);
+    expect([d.pets[0]!.name, d.pets[0]!.breed, d.pets[0]!.photo]).toEqual(["Luna Luna", "Angora", "data:image/jpeg;base64,AAA"]);
+    d = updatePet(d, "p1", { name: "Luna", species: "gato", photo: "" }, T);
+    expect(d.pets[0]!.photo).toBe("");
+    expect(() => updatePet(d, "p1", { name: " ", species: "gato" }, T)).toThrow();
+    expect(() => updatePet(d, "p9", { name: "X", species: "gato" }, T)).toThrow();
+    expect(d.pets.length).toBe(1);
+  });
+  it("gastos por mes y por tipo", () => {
+    let d = base();
+    d = addRecord(d, { petId: "p1", type: "gasto", date: "2026-10-05", title: "Alimento", amount: 80000 }, T);
+    d = addRecord(d, { petId: "p1", type: "consulta", date: "2026-10-20", title: "Control", amount: 70000 }, T);
+    d = addRecord(d, { petId: "p1", type: "gasto", date: "2026-11-02", amount: 85000 }, T);
+    d = addRecord(d, { petId: "p1", type: "peso", date: "2026-11-02", weightG: 9000 }, T);
+    expect(spendByMonth(d, "p1")).toEqual([{ month: "2026-11", total: 85000 }, { month: "2026-10", total: 150000 }]);
+    expect(spendByType(d, "p1")).toEqual([{ type: "gasto", total: 165000 }, { type: "consulta", total: 70000 }]);
+    expect(spendByMonth(d, "p9")).toEqual([]);
   });
 });

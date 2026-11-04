@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T16:01:22.254Z",
+  "generatedAt": "2026-11-04T16:19:41.405Z",
   "tests": [
     {
       "name": "packages/core",
@@ -9,50 +9,50 @@
     },
     {
       "name": "packages/ui",
-      "tests": 12,
-      "pass": 12,
+      "tests": 15,
+      "pass": 15,
       "fail": 0
     },
     {
       "name": "apps/caja-clara",
-      "tests": 7,
-      "pass": 7,
+      "tests": 9,
+      "pass": 9,
       "fail": 0
     },
     {
       "name": "apps/cuanto-me-sobra",
-      "tests": 8,
-      "pass": 8,
+      "tests": 11,
+      "pass": 11,
       "fail": 0
     },
     {
       "name": "apps/expiryhub",
-      "tests": 7,
-      "pass": 7,
+      "tests": 11,
+      "pass": 11,
       "fail": 0
     },
     {
       "name": "apps/huella-al-dia",
-      "tests": 7,
-      "pass": 7,
+      "tests": 11,
+      "pass": 11,
       "fail": 0
     },
     {
       "name": "apps/priceright",
-      "tests": 7,
-      "pass": 7,
+      "tests": 11,
+      "pass": 11,
       "fail": 0
     },
     {
       "name": "apps/splitflow",
-      "tests": 12,
-      "pass": 12,
+      "tests": 15,
+      "pass": 15,
       "fail": 0
     },
     {
       "name": "apps/warranty-keeper",
-      "tests": 5,
-      "pass": 5,
+      "tests": 8,
+      "pass": 8,
       "fail": 0
     }
   ],
@@ -282,12 +282,12 @@
   "perApp": {
     "splitflow": {
       "unitTests": {
-        "tests": 12,
-        "pass": 12
+        "tests": 15,
+        "pass": 15
       },
       "e2eSteps": 13,
-      "sourceLines": 813,
-      "buildKb": 43.5,
+      "sourceLines": 927,
+      "buildKb": 51.8,
       "seo": {
         "title": 57,
         "description": 128,
@@ -302,12 +302,12 @@
     },
     "caja-clara": {
       "unitTests": {
-        "tests": 7,
-        "pass": 7
+        "tests": 9,
+        "pass": 9
       },
       "e2eSteps": 14,
-      "sourceLines": 360,
-      "buildKb": 44.2,
+      "sourceLines": 425,
+      "buildKb": 48.8,
       "seo": {
         "title": 49,
         "description": 123,
@@ -322,12 +322,12 @@
     },
     "priceright": {
       "unitTests": {
-        "tests": 7,
-        "pass": 7
+        "tests": 11,
+        "pass": 11
       },
       "e2eSteps": 8,
-      "sourceLines": 250,
-      "buildKb": 32.8,
+      "sourceLines": 370,
+      "buildKb": 41.7,
       "seo": {
         "title": 59,
         "description": 131,
@@ -342,12 +342,12 @@
     },
     "cuanto-me-sobra": {
       "unitTests": {
-        "tests": 8,
-        "pass": 8
+        "tests": 11,
+        "pass": 11
       },
       "e2eSteps": 4,
-      "sourceLines": 258,
-      "buildKb": 31.7,
+      "sourceLines": 342,
+      "buildKb": 39.9,
       "seo": {
         "title": 73,
         "description": 159,
@@ -362,12 +362,12 @@
     },
     "expiryhub": {
       "unitTests": {
-        "tests": 7,
-        "pass": 7
+        "tests": 11,
+        "pass": 11
       },
       "e2eSteps": 9,
-      "sourceLines": 370,
-      "buildKb": 49.2,
+      "sourceLines": 418,
+      "buildKb": 54.7,
       "seo": {
         "title": 63,
         "description": 145,
@@ -382,12 +382,12 @@
     },
     "warranty-keeper": {
       "unitTests": {
-        "tests": 5,
-        "pass": 5
+        "tests": 8,
+        "pass": 8
       },
       "e2eSteps": 6,
-      "sourceLines": 243,
-      "buildKb": 42.1,
+      "sourceLines": 292,
+      "buildKb": 48.8,
       "seo": {
         "title": 53,
         "description": 150,
@@ -402,12 +402,12 @@
     },
     "huella-al-dia": {
       "unitTests": {
-        "tests": 7,
-        "pass": 7
+        "tests": 11,
+        "pass": 11
       },
       "e2eSteps": 11,
-      "sourceLines": 440,
-      "buildKb": 60.4,
+      "sourceLines": 502,
+      "buildKb": 65.6,
       "seo": {
         "title": 52,
         "description": 146,

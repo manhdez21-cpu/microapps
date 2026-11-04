@@ -14,3 +14,15 @@ h2 { font-family: var(--font-figure); font-weight: 700; letter-spacing: -0.02em;
 :root { --accent: #1b6b45; --plus: #1b6b45; }
 @media (prefers-color-scheme: dark) { :root { --accent: #5fd09b; } }
 .result .label { color: var(--ink-soft); margin: 0; }
+
+.scen { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.scen th, .scen td { text-align: right; padding: 0.45rem 0.5rem; border-bottom: 1px solid var(--line); }
+.scen th:first-child, .scen td:first-child { text-align: left; }
+.scen tr.current { background: color-mix(in srgb, var(--accent) 14%, transparent); font-weight: 700; }
+.quote-list { list-style: none; margin: 1rem 0 0; padding: 0; border-top: 1px solid var(--line); }
+.quote-list li { display: grid; grid-template-columns: 1fr auto; gap: 0.4rem 0.75rem; padding: 0.7rem 0; border-bottom: 1px solid var(--line); }
+.quote-list .main { display: flex; flex-direction: column; min-width: 0; } .quote-list .sub { color: var(--ink-soft); font-size: 0.85rem; }
+.quote-list .amt { font-family: var(--font-figure); font-weight: 700; } .quote-list .actions, .quote-list .share { grid-column: 1 / -1; }
+.share pre { white-space: pre-wrap; background: var(--paper); border: 1px dashed var(--line); padding: 0.75rem; border-radius: 8px; font: 0.9rem/1.5 var(--font-body); }
+.button { display: inline-flex; align-items: center; min-height: 40px; padding: 0 0.9rem; border: 1px solid var(--line); border-radius: var(--radius); color: inherit; text-decoration: none; font-weight: 600; background: var(--card); }
+.small { min-height: 40px; }

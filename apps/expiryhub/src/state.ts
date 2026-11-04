@@ -1,4 +1,4 @@
-import { addDays, dueInfo, parseYmd, daysInMonth, toDayNumber, type DueState } from "../../../packages/core/src/index.ts";
+import { addDays, addMonths, dueInfo, parseYmd, daysInMonth, toDayNumber, type DueState } from "../../../packages/core/src/index.ts";
 
 export type Category = "soat" | "seguro" | "licencia" | "contrato" | "poliza" | "suscripcion" | "permiso" | "personal" | "otro";
 export const CATEGORY_LABEL: Record<Category, string> = { soat: "SOAT", seguro: "Seguro", licencia: "Licencia", contrato: "Contrato", poliza: "Póliza", suscripcion: "Suscripción", permiso: "Permiso", personal: "Documento personal", otro: "Otro" };
@@ -8,9 +8,10 @@ export const DEFAULT_WARN: Record<Category, number> = { soat: 30, seguro: 30, li
 
 export interface Profile { id: string; name: string }
 export interface Renewal { on: string; from: string; to: string }
-export interface Doc { id: string; profileId: string; category: Category; title: string; expiry: string; warnDays: number; note: string; file: string; renewals: Renewal[] }
-export interface Data { profiles: Profile[]; docs: Doc[]; nextId: number }
-export const emptyData = (): Data => ({ profiles: [{ id: "u1", name: "Yo" }], docs: [], nextId: 2 });
+export interface Doc { id: string; profileId: string; category: Category; title: string; expiry: string; warnDays: number; note: string; file: string; renewals: Renewal[]; provider: string; cost: number; repeat: number }
+export interface Data { profiles: Profile[]; docs: Doc[]; nextId: number; currency?: string }
+export const emptyData = (): Data => ({ profiles: [{ id: "u1", name: "Yo" }], docs: [], nextId: 2, currency: "COP" });
+export const setCurrency = (d: Data, currency: string): Data => ({ ...d, currency });
 const clean = (s: string, n: number) => s.trim().slice(0, n);
 
 export function addProfile(d: Data, name: string): Data {
@@ -26,8 +27,8 @@ export function removeProfile(d: Data, id: string): Data {
   return { ...d, profiles: d.profiles.filter((p) => p.id !== id) };
 }
 
-export interface DocInput { profileId: string; category: Category; title: string; expiry: string; warnDays?: number | undefined; note?: string }
-export function addDoc(d: Data, i: DocInput): Data {
+export interface DocInput { profileId: string; category: Category; title: string; expiry: string; warnDays?: number | undefined; note?: string; provider?: string; cost?: number | undefined; repeat?: number | undefined }
+function buildDoc(d: Data, i: DocInput, id: string, keep?: Doc): Doc {
   if (!d.profiles.some((p) => p.id === i.profileId)) throw new RangeError("Elige un perfil.");
   if (!CATEGORIES.includes(i.category)) throw new RangeError("Elige el tipo de documento.");
   const title = clean(i.title, 60);
@@ -35,8 +36,27 @@ export function addDoc(d: Data, i: DocInput): Data {
   if (!parseYmd(i.expiry)) throw new RangeError("Elige una fecha de vencimiento válida.");
   const warn = i.warnDays ?? DEFAULT_WARN[i.category];
   if (!Number.isInteger(warn) || warn < 0 || warn > 365) throw new RangeError("Los días de aviso van de 0 a 365.");
-  const doc: Doc = { id: `d${d.nextId}`, profileId: i.profileId, category: i.category, title, expiry: i.expiry, warnDays: warn, note: clean(i.note ?? "", 160), file: "", renewals: [] };
-  return { ...d, docs: [...d.docs, doc], nextId: d.nextId + 1 };
+  const cost = i.cost ?? 0, repeat = i.repeat ?? 0;
+  if (!Number.isSafeInteger(cost) || cost < 0) throw new RangeError("El costo debe ser un monto válido (o déjalo vacío).");
+  if (!Number.isInteger(repeat) || repeat < 0 || repeat > 120) throw new RangeError("«Se repite cada» va de 1 a 120 meses (o déjalo vacío).");
+  return { id, profileId: i.profileId, category: i.category, title, expiry: i.expiry, warnDays: warn, note: clean(i.note ?? "", 160), file: keep?.file ?? "", renewals: keep?.renewals ?? [], provider: clean(i.provider ?? "", 60), cost, repeat };
+}
+export function addDoc(d: Data, i: DocInput): Data {
+  return { ...d, docs: [...d.docs, buildDoc(d, i, `d${d.nextId}`)], nextId: d.nextId + 1 };
+}
+/** Corrige los datos de un documento sin tocar su adjunto ni su historial de renovaciones. */
+export function updateDoc(d: Data, id: string, i: DocInput): Data {
+  const old = d.docs.find((x) => x.id === id);
+  if (!old) throw new RangeError("No se encontró el documento.");
+  return { ...d, docs: d.docs.map((x) => (x.id === id ? buildDoc(d, i, id, old) : x)) };
+}
+/** Nueva fecha sugerida al renovar: cada «repeat» meses, o un año si no se indicó. */
+export const suggestedRenewal = (x: Pick<Doc, "expiry" | "repeat">): string => addMonths(x.expiry, x.repeat > 0 ? x.repeat : 12);
+/** Cuánto costarán las renovaciones vencidas o que caen en los próximos 12 meses (solo documentos con costo). */
+export function upcomingCost(d: Data, today: string, profileId = ""): { total: number; count: number } {
+  const limit = addMonths(today, 12);
+  const list = d.docs.filter((x) => (!profileId || x.profileId === profileId) && x.cost > 0 && x.expiry <= limit);
+  return { total: list.reduce((a, x) => a + x.cost, 0), count: list.length };
 }
 export const removeDoc = (d: Data, id: string): Data => ({ ...d, docs: d.docs.filter((x) => x.id !== id) });
 export const setFile = (d: Data, id: string, file: string): Data => ({ ...d, docs: d.docs.map((x) => (x.id === id ? { ...x, file } : x)) });
@@ -93,7 +113,7 @@ export function toIcs(d: Data, today: string): string {
 const q = (s: string | number) => `"${String(s).replace(/"/g, '""')}"`;
 export function toCsv(d: Data, today: string): string {
   const name = (id: string) => d.profiles.find((p) => p.id === id)?.name ?? "";
-  return ["perfil,tipo,documento,vence,dias_restantes,aviso_dias,nota", ...rowsFor(d, today).map((r) => [name(r.doc.profileId), CATEGORY_LABEL[r.doc.category], r.doc.title, r.doc.expiry, r.daysLeft, r.doc.warnDays, r.doc.note].map(q).join(","))].join("\n");
+  return ["perfil,tipo,documento,vence,dias_restantes,aviso_dias,nota,proveedor,costo,se_repite_meses", ...rowsFor(d, today).map((r) => [name(r.doc.profileId), CATEGORY_LABEL[r.doc.category], r.doc.title, r.doc.expiry, r.daysLeft, r.doc.warnDays, r.doc.note, r.doc.provider, r.doc.cost, r.doc.repeat].map(q).join(","))].join("\n");
 }
 
 export function parseData(raw: unknown): Data | null {
@@ -103,7 +123,7 @@ export function parseData(raw: unknown): Data | null {
   if (profiles.length === 0) return null;
   const ids = new Set(profiles.map((p) => p.id));
   const docs = r.docs.filter((x) => x && typeof x.id === "string" && ids.has(x.profileId) && CATEGORIES.includes(x.category) && typeof x.title === "string" && !!parseYmd(x.expiry) && Number.isInteger(x.warnDays) && typeof x.note === "string" && typeof x.file === "string")
-    .map((x) => ({ ...x, renewals: Array.isArray(x.renewals) ? x.renewals.filter((n) => n && parseYmd(n.on) && parseYmd(n.from) && parseYmd(n.to)) : [] }));
-  return { profiles, docs, nextId: r.nextId };
+    .map((x) => ({ ...x, provider: typeof x.provider === "string" ? x.provider : "", cost: Number.isSafeInteger(x.cost) && x.cost >= 0 ? x.cost : 0, repeat: Number.isInteger(x.repeat) && x.repeat >= 0 && x.repeat <= 120 ? x.repeat : 0, renewals: Array.isArray(x.renewals) ? x.renewals.filter((n) => n && parseYmd(n.on) && parseYmd(n.from) && parseYmd(n.to)) : [] }));
+  return { profiles, docs, nextId: r.nextId, currency: typeof r.currency === "string" && /^[A-Z]{3}$/.test(r.currency) ? r.currency : "COP" };
 }
 export { toDayNumber };

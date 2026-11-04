@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import { expect } from "../../../packages/core/test/expect.ts";
-import { addWarranty, emptyData, endDate, parseData, removeWarranty, rows, search, setFile, toCsv, type Data } from "../src/state.ts";
+import { addWarranty, coveredValue, emptyData, endDate, parseData, removeWarranty, returnDeadline, rows, search, setFile, toCsv, updateWarranty, type Data } from "../src/state.ts";
 
 const T = "2026-11-04";
 const sample = (): Data => {
@@ -44,5 +44,34 @@ describe("warranty keeper", () => {
     const bad = JSON.parse(JSON.stringify(sample())); bad.items.push({ id: "x", name: "a", brand: "", model: "", store: "", note: "", file: "", purchase: "2026-13-01", months: 1 });
     expect(parseData(bad)?.items.length).toBe(4);
     expect(parseData(null)).toBe(null);
+  });
+  it("garantía extendida alarga el fin; devolución y valor cubierto", () => {
+    expect(endDate({ purchase: "2026-01-31", months: 12, extra: 12 })).toBe("2028-01-31");
+    expect(returnDeadline({ purchase: "2026-10-25", returnDays: 15 })).toBe("2026-11-09");
+    expect(returnDeadline({ purchase: "2026-10-25", returnDays: 0 })).toBe(null);
+    let d = emptyData();
+    d = addWarranty(d, { name: "Nevera", purchase: "2025-11-20", months: 12, price: 2500000, extra: 12, returnDays: 10 });
+    d = addWarranty(d, { name: "TV", purchase: "2026-10-30", months: 12, price: 1800000, returnDays: 10 });
+    d = addWarranty(d, { name: "Licuadora", purchase: "2024-01-01", months: 6, price: 90000 });
+    const r = rows(d, T);
+    expect(r.find((x) => x.w.name === "Nevera")!.state).toBe("ok");
+    expect(r.find((x) => x.w.name === "TV")!.returnLeft).toBe(5);
+    expect(r.find((x) => x.w.name === "Nevera")!.returnLeft).toBe(null);
+    expect(coveredValue(r)).toEqual({ total: 4300000, count: 2 });
+  });
+  it("editar conserva la factura y valida los campos nuevos", () => {
+    let d = setFile(addWarranty(emptyData(), { name: "Nevera", purchase: "2025-11-20", months: 12 }), "w1", "war-w1");
+    d = updateWarranty(d, "w1", { name: "Nevera No Frost", brand: "LG", purchase: "2025-11-21", months: 24, serial: "SN-123", service: "Servicio LG 01 8000", price: 2300000 });
+    const w = d.items[0]!;
+    expect([w.name, w.months, w.serial, w.service, w.price, w.file]).toEqual(["Nevera No Frost", 24, "SN-123", "Servicio LG 01 8000", 2300000, "war-w1"]);
+    expect(() => updateWarranty(d, "zz", { name: "x", purchase: "2025-11-21", months: 1 })).toThrow();
+    expect(() => updateWarranty(d, "w1", { name: "x", purchase: "2025-11-21", months: 1, extra: 500 })).toThrow();
+    expect(() => updateWarranty(d, "w1", { name: "x", purchase: "2025-11-21", months: 1, returnDays: -1 })).toThrow();
+    expect(search(rows(d, T), "sn-123", "all").length).toBe(1);
+  });
+  it("datos antiguos se cargan con valores por defecto", () => {
+    const old = JSON.parse(JSON.stringify(sample())); for (const x of old.items) { delete x.serial; delete x.price; delete x.extra; delete x.returnDays; delete x.service; }
+    const p = parseData(old)!;
+    expect([p.items[0]!.serial, p.items[0]!.price, p.items[0]!.extra, p.items[0]!.returnDays]).toEqual(["", 0, 0, 0]);
   });
 });

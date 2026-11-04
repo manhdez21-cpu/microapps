@@ -121,3 +121,8 @@ button:hover { filter: brightness(0.97); }
 .install-dialog { max-width: min(92vw, 420px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--ink); padding: 1.25rem; }
 .install-dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
 .install-dialog ol { padding-left: 1.2rem; }
+
+/* Respaldo de datos y botones de archivo (común a las apps) */
+.backup { margin: 2rem 0 1rem; } .backup summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.attach { position: relative; cursor: pointer; } .attach input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.attach:focus-within { outline: 3px solid var(--accent); outline-offset: 2px; }

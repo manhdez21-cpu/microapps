@@ -1,6 +1,6 @@
-import { currencyDigits, formatMoney, h, loadJson, parseAmount, replaceChildren, saveJson } from "../../../packages/ui/src/index.ts";
+import { backupPanel, currencyDigits, formatMoney, h, loadJson, parseAmount, replaceChildren, saveJson } from "../../../packages/ui/src/index.ts";
 import type { MovementType } from "../../../packages/core/src/index.ts";
-import { addMovement, closeDay, emptyDraft, parseDraft, parseHistory, periodRange, removeMovement, report, toCsv, TYPE_LABEL, TYPES, type ClosedDay, type Draft, type Period } from "./state.ts";
+import { creditByClient, salesByDay, addMovement, closeDay, emptyDraft, parseDraft, parseHistory, periodRange, removeMovement, report, toCsv, TYPE_LABEL, TYPES, type ClosedDay, type Draft, type Period } from "./state.ts";
 
 const CURRENCIES = ["COP", "USD", "EUR", "MXN", "ARS", "PEN", "CLP", "BRL"];
 const DRAFT_KEY = "cajaclara.draft.v1", HIST_KEY = "cajaclara.history.v1";
@@ -18,8 +18,9 @@ function addRow(): void {
   const digits = currencyDigits(draft.currency);
   const amt = parseAmount(form.amount, digits);
   if (amt === null || amt <= 0) { message = { kind: "error", text: "Escribe un monto válido mayor que cero." }; return render(); }
+  const note = form.note;
   message = null; form.amount = ""; form.note = "";
-  set(addMovement(draft, form.type, amt, form.note || ""));
+  set(addMovement(draft, form.type, amt, note));
 }
 
 function expected() {
@@ -58,7 +59,7 @@ function render(): void {
           h("input", { id: "amount", type: "text", inputmode: "decimal", autocomplete: "off", value: form.amount, onInput: (e: Event) => { form.amount = (e.target as HTMLInputElement).value; }, onKeydown: (e: KeyboardEvent) => { if (e.key === "Enter") { e.preventDefault(); addRow(); } } })),
       ),
       h("div", { class: "field" }, h("label", { for: "note" }, "Nota (opcional)"),
-        h("input", { id: "note", type: "text", maxlength: "80", autocomplete: "off", value: form.note, onInput: (e: Event) => { form.note = (e.target as HTMLInputElement).value; } })),
+        h("input", { id: "note", type: "text", maxlength: "80", autocomplete: "off", value: form.note, onInput: (e: Event) => { form.note = (e.target as HTMLInputElement).value; } }), h("p", { class: "hint" }, "En los fiados y sus cobros, escribe aquí el nombre del cliente.")),
       h("button", { type: "button", class: "primary", onClick: addRow }, "Añadir movimiento"),
       draft.movements.length === 0
         ? h("p", { class: "hint" }, "Aún no hay movimientos. Las ventas fiadas no suman al efectivo; los cobros de fiado sí.")
@@ -80,7 +81,9 @@ function render(): void {
     ),
     t && h("p", { class: "hint", "data-testid": "totals" }, `Ventas del día: ${money(t.totalSales)} (efectivo ${money(t.cashSales)}, tarjeta ${money(t.cardSales)}, transferencia ${money(t.transferSales)}, fiado ${money(t.creditSales)}).`),
     reportSection(),
+    creditSection(),
     historySection(),
+    backupPanel({ app: "caja-clara", keys: [DRAFT_KEY, HIST_KEY] }),
   );
   void result;
   updateResult();
@@ -122,6 +125,7 @@ function reportSection(): HTMLElement {
   const r = report(history, draft.currency, from, to);
   const f = (m: number) => formatMoney(m, draft.currency);
   const row = (label: string, v: string, id?: string) => h("div", { class: "line" }, h("dt", {}, label), h("dd", id ? { "data-testid": id } : {}, v));
+  const pts = salesByDay(history, draft.currency, from, to);
   const days = history.filter((c) => c.currency === draft.currency && c.date >= from && c.date <= to).sort((a, b) => (a.date < b.date ? -1 : 1));
   return h("section", { class: "panel report", "aria-labelledby": "s5", "data-testid": "report" },
     h("h2", { id: "s5" }, "Reporte"),
@@ -130,8 +134,41 @@ function reportSection(): HTMLElement {
     r.days === 0 ? h("p", { class: "hint", "data-testid": "report-empty" }, "No hay cierres guardados en este periodo.") : h("dl", { class: "lines" },
       row("Cierres", String(r.days), "r-days"), row("Ventas totales", f(r.sales), "r-sales"), row("· en efectivo", f(r.cash)), row("· con tarjeta", f(r.card)), row("· por transferencia", f(r.transfer)), row("· fiadas", f(r.credit)),
       row("Cobros de fiado", f(r.creditPayments)), row("Gastos de caja", f(r.expenses)), row("Retiros", f(r.withdrawals)), row("Faltantes", f(r.short), "r-short"), row("Sobrantes", f(r.over), "r-over"), row("Días que cuadran", `${r.even} de ${r.days}`)),
+    pts.length >= 2 ? salesChart(pts, f) : null,
     days.length > 0 && h("details", { class: "conc" }, h("summary", {}, "Conciliación por día"), h("table", { class: "recon" }, h("thead", {}, h("tr", {}, ...["Fecha", "Esperado", "Contado", "Diferencia"].map((x) => h("th", { scope: "col" }, x)))),
       h("tbody", {}, ...days.map((c) => h("tr", {}, h("td", {}, c.date), h("td", {}, f(c.result.expectedCash)), h("td", {}, f(c.counted)), h("td", { class: c.result.difference < 0 ? "minus" : c.result.difference > 0 ? "plus" : "" }, c.result.difference === 0 ? "Cuadra" : f(c.result.difference))))))));
+}
+
+function salesChart(pts: { date: string; sales: number }[], f: (m: number) => string): HTMLElement {
+  const W = 320, H = 120, pad = 18, max = Math.max(...pts.map((p) => p.sales), 1);
+  const bw = Math.min(28, (W - pad) / pts.length - 6);
+  const bars = pts.map((p, i) => {
+    const x = pad + i * ((W - pad) / pts.length) + 3, bh = Math.round((p.sales / max) * (H - 34));
+    return `<rect x="${x}" y="${H - 18 - bh}" width="${bw}" height="${bh}" rx="2" fill="currentColor"><title>${p.date}: ${f(p.sales).replace(/[<>&]/g, "")}</title></rect><text x="${x + bw / 2}" y="${H - 5}" text-anchor="middle" font-size="9" fill="currentColor" opacity=".7">${p.date.slice(8)}</text>`;
+  }).join("");
+  const el = h("figure", { class: "chart", "data-testid": "sales-chart" }, h("figcaption", {}, `Ventas por día · máximo ${f(max)}`));
+  const wrap = h("div", {}); wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Ventas por día del periodo">${bars}</svg>`;
+  el.appendChild(wrap); return el;
+}
+
+function creditSection(): HTMLElement | null {
+  const debts = creditByClient(history, draft);
+  if (debts.length === 0) return null;
+  const f = (m: number) => formatMoney(m, draft.currency);
+  return h("section", { class: "panel", "aria-labelledby": "s6", "data-testid": "credit" },
+    h("h2", { id: "s6" }, "Fiados por cobrar"),
+    h("ul", { class: "moves" }, ...debts.map((d) => h("li", {}, h("span", { class: "main" }, d.client, h("span", { class: "sub" }, `Fiado ${f(d.sold)} · cobrado ${f(d.paid)}`)), h("span", { class: `amt ${d.pending > 0 ? "minus" : "plus"}` }, f(d.pending))))),
+    h("p", { class: "hint" }, "Suma los cierres guardados y la caja de hoy. El cobro se anota como «Cobro de fiado en efectivo» con el mismo nombre."));
+}
+
+function editClose(c: ClosedDay): void {
+  if (draft.movements.length > 0 || form.counted.trim() !== "") { message = { kind: "error", text: "Guarda o vacía la caja de hoy antes de editar un cierre." }; return render(); }
+  history = history.filter((x) => x.id !== c.id); saveJson(HIST_KEY, history);
+  const digits = currencyDigits(c.currency);
+  draft = { currency: c.currency, opening: c.opening, movements: c.movements.map((m) => ({ ...m })), nextId: Math.max(0, ...c.movements.map((m) => Number(m.id) || 0)) + 1 };
+  form.openingText = String(c.opening / 10 ** digits).replace(".", ","); form.counted = String(c.counted / 10 ** digits).replace(".", ","); form.date = c.date;
+  persist(); message = { kind: "ok", text: `Editando el cierre del ${c.date}: cambia lo que haga falta y guárdalo de nuevo.` };
+  render(); document.getElementById("s1")?.scrollIntoView({ block: "start" });
 }
 
 function historySection(): HTMLElement {
@@ -143,7 +180,8 @@ function historySection(): HTMLElement {
           const f = (m: number) => formatMoney(m, c.currency);
           const d = c.result.difference;
           return h("li", {}, h("span", { class: "main" }, c.date, h("span", { class: "sub" }, `Ventas ${f(c.result.totals.totalSales)}`)),
-            h("span", { class: `amt ${d < 0 ? "minus" : d > 0 ? "plus" : ""}` }, d === 0 ? "Cuadra" : (d < 0 ? "−" : "+") + f(Math.abs(d))));
+            h("span", { class: `amt ${d < 0 ? "minus" : d > 0 ? "plus" : ""}` }, d === 0 ? "Cuadra" : (d < 0 ? "−" : "+") + f(Math.abs(d))),
+            h("button", { type: "button", class: "ghost", "aria-label": `Editar el cierre del ${c.date}`, onClick: () => editClose(c) }, "Editar"));
         })),
     history.length > 0 && h("div", { class: "actions" },
       h("button", { type: "button", onClick: exportCsv }, "Descargar CSV"),

@@ -58,7 +58,7 @@ await step("porcentajes que no suman 100 muestran error claro", async () => {
   await page.getByLabel("Por porcentaje").check();
   await page.getByLabel("% de Ana").fill("50");
   await page.getByLabel("% de Beto").fill("40");
-  await page.getByLabel("Caro", { exact: false }).first().uncheck();
+  await page.getByRole("checkbox", { name: "Caro" }).uncheck();
   await page.getByTestId("split-status").getByText(/Suma 90\.00 %/).waitFor();
   await page.getByRole("button", { name: "Añadir gasto" }).click();
   await page.getByRole("alert").getByText(/deben sumar 100/).waitFor();

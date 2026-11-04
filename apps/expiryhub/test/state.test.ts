@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import { expect } from "../../../packages/core/test/expect.ts";
-import { addDoc, addProfile, emptyData, groups, monthGrid, parseData, removeDoc, removeProfile, renewDoc, rowsFor, setFile, toCsv, toIcs, type Data } from "../src/state.ts";
+import { addDoc, addProfile, emptyData, groups, monthGrid, parseData, removeDoc, removeProfile, renewDoc, rowsFor, setFile, suggestedRenewal, toCsv, toIcs, updateDoc, upcomingCost, type Data } from "../src/state.ts";
 
 const T = "2026-11-04";
 const sample = (): Data => {
@@ -73,5 +73,38 @@ describe("expiryhub documentos", () => {
     expect(ok.docs.length).toBe(4);
     expect(ok.docs[0]!.renewals).toEqual([]);
     expect(parseData({ profiles: [], docs: [], nextId: 1 })).toBe(null);
+  });
+  it("editar corrige datos y conserva adjunto e historial", () => {
+    let d = sample();
+    const id = d.docs[0]!.id;
+    d = setFile(d, id, "exp-1");
+    d = renewDoc(d, id, "2027-11-20", T);
+    d = updateDoc(d, id, { profileId: d.docs[0]!.profileId, category: "soat", title: "SOAT corregido", expiry: "2027-11-21", warnDays: 20, provider: "Seguros Bolívar", cost: 85000, repeat: 12 });
+    const x = d.docs.find((y) => y.id === id)!;
+    expect([x.title, x.expiry, x.warnDays, x.provider, x.cost, x.repeat, x.file, x.renewals.length]).toEqual(["SOAT corregido", "2027-11-21", 20, "Seguros Bolívar", 85000, 12, "exp-1", 1]);
+    expect(() => updateDoc(d, "nope", { profileId: x.profileId, category: "soat", title: "a", expiry: T })).toThrow();
+    expect(() => updateDoc(d, id, { profileId: x.profileId, category: "soat", title: "a", expiry: T, repeat: 500 })).toThrow();
+    expect(() => updateDoc(d, id, { profileId: x.profileId, category: "soat", title: "a", expiry: T, cost: -5 })).toThrow();
+  });
+  it("renovación sugerida respeta la repetición y el fin de mes", () => {
+    expect(suggestedRenewal({ expiry: "2026-11-20", repeat: 0 })).toBe("2027-11-20");
+    expect(suggestedRenewal({ expiry: "2026-11-30", repeat: 3 })).toBe("2027-02-28");
+    expect(suggestedRenewal({ expiry: "2026-01-31", repeat: 1 })).toBe("2026-02-28");
+  });
+  it("costo de renovaciones: vencidas y próximos 12 meses, por perfil", () => {
+    let d = addProfile(emptyData(), "Carro");
+    const me = d.profiles[0]!.id, car = d.profiles[1]!.id;
+    d = addDoc(d, { profileId: car, category: "soat", title: "SOAT", expiry: "2026-11-20", cost: 90000 });
+    d = addDoc(d, { profileId: car, category: "seguro", title: "Seguro", expiry: "2026-10-01", cost: 1200000 });
+    d = addDoc(d, { profileId: me, category: "licencia", title: "Licencia", expiry: "2028-01-01", cost: 300000 });
+    d = addDoc(d, { profileId: me, category: "otro", title: "Sin costo", expiry: "2026-12-01" });
+    expect(upcomingCost(d, T)).toEqual({ total: 1290000, count: 2 });
+    expect(upcomingCost(d, T, car)).toEqual({ total: 1290000, count: 2 });
+    expect(upcomingCost(d, T, me)).toEqual({ total: 0, count: 0 });
+  });
+  it("datos antiguos sin los campos nuevos se cargan con valores por defecto", () => {
+    const old = JSON.parse(JSON.stringify(sample())); for (const x of old.docs) { delete x.provider; delete x.cost; delete x.repeat; }
+    const p = parseData(old)!;
+    expect([p.docs[0]!.provider, p.docs[0]!.cost, p.docs[0]!.repeat]).toEqual(["", 0, 0]);
   });
 });

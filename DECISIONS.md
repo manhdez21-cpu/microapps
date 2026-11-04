@@ -85,3 +85,9 @@ Formato: fecha · decisión · motivo · alternativas · estado.
 ## D-018 · 2026-11-04 · Una identidad visual por app y fuentes propias
 - Cada app tiene su propia tipografía, paleta y motivo: Huella (carnet con patrón de huellas, Outfit), ExpiryHub (hoja de calendario que cambia de color por estado, IBM Plex Serif/Red Hat Mono), Warranty Keeper (ticket con talón perforado y sello, IBM Plex Mono), Caja Clara (caja registradora con panel LCD, Big Shoulders/DM Mono), SplitFlow (cuenta de restaurante, Young Serif), PriceRight (etiqueta de precio, Bricolage Grotesque), ¿Cuánto me sobra? (plano técnico, Tektur).
 - Fuentes alojadas en `packages/ui/src/fonts` (OFL, licencias en `OFL-licenses.txt`): sin pedir nada a Google en cada visita (privacidad y velocidad). Cada app redefine tokens de color claro/oscuro.
+
+## D-019 · 2026-11-04 · Herramientas completas: editar, respaldar, compartir
+- Todas las apps permiten editar registros guardados (gastos, cierres, documentos, garantías, mascotas y registros).
+- Respaldo/restauración en JSON local (`packages/ui/src/backup.ts`), validado por app y claves permitidas; incluye adjuntos (IndexedDB) en ExpiryHub y Warranty. Reemplaza los datos del dispositivo al restaurar. Sin nube ni cuentas.
+- SplitFlow: registrar pagos entre personas, categorías, totales por persona/categoría y resumen para WhatsApp. PriceRight: escenarios de margen y cotizaciones guardadas que no revelan costos. Caja Clara: gráfica de ventas, fiados por cliente. ExpiryHub/Warranty/Huella: costos, repetición, serie, devolución, gasto por mes.
+- Sigue NO implementado: OCR, notificaciones push, sincronización entre dispositivos.

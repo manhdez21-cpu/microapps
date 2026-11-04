@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import { expect } from "../../../packages/core/test/expect.ts";
-import { addMovement, closeDay, emptyDraft, parseDraft, parseHistory, periodRange, removeMovement, report, toCsv } from "../src/state.ts";
+import { creditByClient, salesByDay, addMovement, closeDay, emptyDraft, parseDraft, parseHistory, periodRange, removeMovement, report, toCsv } from "../src/state.ts";
 
 describe("caja clara", () => {
   const base = () => {
@@ -55,5 +55,24 @@ describe("caja clara", () => {
     const m = report(days, "COP", "2026-11-01", "2026-11-30");
     expect([m.days, m.difference, m.over]).toEqual([3, 0, 5000]);
     expect(report(days, "COP", "2027-01-01", "2027-01-31").days).toBe(0);
+  });
+  it("fiados por cliente: ventas fiadas menos cobros, sin mezclar monedas", () => {
+    let d = emptyDraft("COP");
+    d = addMovement(d, "credit_sale", 40000, "Don Pedro");
+    d = addMovement(d, "credit_sale", 20000, "don  pedro");
+    d = addMovement(d, "credit_payment_cash", 25000, "Don Pedro");
+    d = addMovement(d, "credit_sale", 10000, "Lucía");
+    d = addMovement(d, "credit_sale", 5000, "");
+    d = addMovement(d, "cash_sale", 99999, "ignorado");
+    const closed = closeDay({ ...emptyDraft("COP"), movements: [{ id: "1", type: "credit_sale", amount: 8000, note: "Lucía" }] }, 0, "2026-11-01", "x");
+    const usd = closeDay({ ...emptyDraft("USD"), movements: [{ id: "1", type: "credit_sale", amount: 777, note: "Lucía" }] }, 0, "2026-11-01", "u");
+    const r = creditByClient([closed, usd], d);
+    expect(r.map((x) => [x.client, x.pending])).toEqual([["Don Pedro", 35000], ["Lucía", 18000], ["Sin nombre", 5000]]);
+    const paidOff = addMovement(emptyDraft("COP"), "credit_sale", 100, "Ana");
+    expect(creditByClient([], addMovement(paidOff, "credit_payment_cash", 100, "ana")).length).toBe(0);
+  });
+  it("ventas por día dentro del rango, ordenadas", () => {
+    const days = [closeDay(base(), 135000, "2026-11-04", "b"), closeDay(base(), 135000, "2026-11-02", "a"), closeDay(base(), 135000, "2026-12-01", "c")];
+    expect(salesByDay(days, "COP", "2026-11-01", "2026-11-30")).toEqual([{ date: "2026-11-02", sales: 140000 }, { date: "2026-11-04", sales: 140000 }]);
   });
 });

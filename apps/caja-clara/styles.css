@@ -48,3 +48,5 @@ input[type="date"] { width: 100%; min-height: 44px; padding: 0.5rem 0.7rem; font
 .recon .plus { color: var(--plus); } .recon .minus { color: var(--minus); }
 .moves .main { font-family: var(--font-body); }
 .moves .amt { white-space: nowrap; }
+
+.chart { margin: 0.75rem 0 0; color: var(--accent); } .chart figcaption { color: var(--ink-soft); font: 0.8rem var(--font-figure); margin-bottom: 0.25rem; } .chart svg { width: 100%; height: auto; }

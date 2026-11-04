@@ -25,6 +25,9 @@ export interface ExpenseRec {
   date: string;
   mode: SplitMode;
   shares: Record<string, Minor>;
+  /** «payment» = pago entre dos personas para saldar deuda; no cuenta como gasto del grupo. */
+  kind?: "payment";
+  category?: string;
 }
 
 export interface Group {
@@ -78,7 +81,10 @@ export interface ExpenseInput {
   /** montos exactos por persona (modo exact) */
   exacts?: Readonly<Record<string, Minor>>;
   date?: string;
+  category?: string;
 }
+
+export const CATEGORIES = ["Comida", "Transporte", "Alojamiento", "Ocio", "Compras", "Otros"] as const;
 
 export function addExpense(g: Group, input: ExpenseInput, id = uid()): Group {
   const description = input.description.trim();
@@ -117,7 +123,30 @@ export function addExpense(g: Group, input: ExpenseInput, id = uid()): Group {
     date: input.date ?? new Date().toISOString().slice(0, 10),
     mode: input.mode,
     shares: nonZero,
+    ...(input.category && (CATEGORIES as readonly string[]).includes(input.category) ? { category: input.category } : {}),
   };
+  return { ...g, expenses: [rec, ...g.expenses] };
+}
+
+/** Reemplaza un gasto conservando su lugar y su fecha (a menos que se indique otra). */
+export function updateExpense(g: Group, expenseId: string, input: ExpenseInput): Group {
+  const idx = g.expenses.findIndex((e) => e.id === expenseId);
+  if (idx < 0) throw new RangeError("Ese gasto ya no existe.");
+  const old = g.expenses[idx]!;
+  const without = { ...g, expenses: g.expenses.filter((e) => e.id !== expenseId) };
+  const next = addExpense(without, { ...input, date: input.date ?? old.date }, expenseId);
+  const rec = next.expenses[0]!;
+  const list = next.expenses.slice(1);
+  list.splice(idx, 0, rec);
+  return { ...g, expenses: list };
+}
+
+/** Registra que `from` le pagó `amount` a `to`: baja la deuda sin contar como gasto del grupo. */
+export function recordPayment(g: Group, from: string, to: string, amount: Minor, date = new Date().toISOString().slice(0, 10), id = uid()): Group {
+  const known = new Set(g.people.map((p) => p.id));
+  if (!known.has(from) || !known.has(to) || from === to) throw new RangeError("Elige dos personas distintas.");
+  if (!Number.isSafeInteger(amount) || amount <= 0) throw new RangeError("El pago debe ser mayor que 0.");
+  const rec: ExpenseRec = { id, description: "Pago", paidBy: from, amount, date, mode: "exact", shares: { [to]: amount }, kind: "payment" };
   return { ...g, expenses: [rec, ...g.expenses] };
 }
 
@@ -140,7 +169,36 @@ export function summarize(g: Group): Summary {
   }));
   const balances = computeBalances(expenses);
   for (const p of g.people) if (balances[p.id] === undefined) balances[p.id] = 0;
-  return { balances, transfers: settle(balances), total: g.expenses.reduce((a, e) => a + e.amount, 0) };
+  return { balances, transfers: settle(balances), total: g.expenses.filter((e) => e.kind !== "payment").reduce((a, e) => a + e.amount, 0) };
+}
+
+export interface PersonTotals { id: string; paid: Minor; consumed: Minor }
+/** Cuánto pagó y cuánto consumió cada persona (los pagos entre personas no cuentan). */
+export function byPerson(g: Group): PersonTotals[] {
+  const t = new Map<string, PersonTotals>(g.people.map((p) => [p.id, { id: p.id, paid: 0, consumed: 0 }]));
+  for (const e of g.expenses) {
+    if (e.kind === "payment") continue;
+    const a = t.get(e.paidBy); if (a) a.paid += e.amount;
+    for (const [id, v] of Object.entries(e.shares)) { const c = t.get(id); if (c) c.consumed += v; }
+  }
+  return [...t.values()];
+}
+export function byCategory(g: Group): { category: string; total: Minor }[] {
+  const m = new Map<string, Minor>();
+  for (const e of g.expenses) if (e.kind !== "payment") m.set(e.category ?? "Sin categoría", (m.get(e.category ?? "Sin categoría") ?? 0) + e.amount);
+  return [...m].map(([category, total]) => ({ category, total })).sort((a, b) => b.total - a.total);
+}
+/** Texto listo para pegar en WhatsApp: total, quién paga a quién y lo que puso cada uno. */
+export function summaryText(g: Group, money: (m: Minor) => string): string {
+  const s = summarize(g);
+  const name = (id: string) => g.people.find((p) => p.id === id)?.name ?? "?";
+  const lines = [`*${g.name}*`, `Total gastado: ${money(s.total)}`];
+  lines.push(s.transfers.length === 0 ? "Todos están a mano." : "Para quedar a mano:");
+  for (const t of s.transfers) lines.push(`• ${name(t.from)} paga a ${name(t.to)}: ${money(t.amount)}`);
+  const per = byPerson(g).filter((p) => p.paid > 0 || p.consumed > 0);
+  if (per.length > 0) { lines.push("", "Puso / le tocó:"); for (const p of per) lines.push(`• ${name(p.id)}: ${money(p.paid)} / ${money(p.consumed)}`); }
+  lines.push("", "Hecho con SplitFlow");
+  return lines.join("\n");
 }
 
 /** CSV con una fila por gasto (comillas escapadas; monto en unidades menores y en decimal). */
@@ -148,12 +206,12 @@ export function toCsv(g: Group, digits: number): string {
   const name = (id: string) => g.people.find((p) => p.id === id)?.name ?? id;
   const q = (s: string) => `"${s.replace(/"/g, '""')}"`;
   const dec = (m: Minor) => (m / 10 ** digits).toFixed(digits);
-  const rows = [["fecha", "descripcion", "pago", "monto", "reparto"].map(q).join(",")];
+  const rows = [["fecha", "descripcion", "categoria", "pago", "monto", "reparto"].map(q).join(",")];
   for (const e of [...g.expenses].reverse()) {
     const reparto = Object.entries(e.shares)
       .map(([p, v]) => `${name(p)}: ${dec(v)}`)
       .join("; ");
-    rows.push([q(e.date), q(e.description), q(name(e.paidBy)), dec(e.amount), q(reparto)].join(","));
+    rows.push([q(e.date), q(e.kind === "payment" ? "Pago entre personas" : e.description), q(e.category ?? ""), q(name(e.paidBy)), dec(e.amount), q(reparto)].join(","));
   }
   return rows.join("\n");
 }

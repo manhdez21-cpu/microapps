@@ -1,6 +1,7 @@
 import {
   currencyDigits,
   formatMoney,
+  backupPanel,
   h,
   loadJson,
   parseAmount,
@@ -11,6 +12,12 @@ import {
 import {
   addExpense,
   addPerson,
+  byCategory,
+  byPerson,
+  CATEGORIES,
+  recordPayment,
+  summaryText,
+  updateExpense,
   emptyState,
   newGroup,
   parseState,
@@ -39,11 +46,14 @@ interface Draft {
   participants: Set<string>;
   percents: Record<string, string>;
   exacts: Record<string, string>;
+  category: string;
+  editingId: string;
 }
+let shareOpen = false;
 let draft: Draft = blankDraft();
 
 function blankDraft(): Draft {
-  return { description: "", amount: "", paidBy: "", mode: "equal", participants: new Set(), percents: {}, exacts: {} };
+  return { description: "", amount: "", paidBy: "", mode: "equal", participants: new Set(), percents: {}, exacts: {}, category: "", editingId: "" };
 }
 
 const root = document.getElementById("app");
@@ -84,6 +94,7 @@ function render(): void {
     message ? h("p", { class: `note ${message.kind}`, role: message.kind === "error" ? "alert" : "status" }, message.text) : null,
     !g || creatingGroup ? newGroupForm(state.groups.length > 0) : null,
     g && !creatingGroup ? groupView(g) : null,
+    !g ? backupPanel({ app: "splitflow", keys: [STORAGE_KEY] }) : null,
     h("footer", { class: "foot" }, "Tus datos se guardan solo en este dispositivo."),
   );
 }
@@ -184,6 +195,7 @@ function groupView(g: Group): HTMLElement {
                     h("span", { class: "who" }, `${name(t.from)} paga a ${name(t.to)}`),
                     h("span", { class: "leader", "aria-hidden": "true" }),
                     h("span", { class: "amt" }, money(t.amount)),
+                    h("button", { type: "button", class: "small", "aria-label": `Registrar el pago de ${name(t.from)} a ${name(t.to)} por ${money(t.amount)}`, onClick: () => attempt(() => { setGroup(recordPayment(g, t.from, t.to, t.amount)); message = { kind: "ok", text: `Pago registrado: ${name(t.from)} → ${name(t.to)}.` }; }) }, "Registrar pago"),
                   ),
                 ),
               ),
@@ -194,8 +206,10 @@ function groupView(g: Group): HTMLElement {
     g.people.length >= 2 ? expenseForm(g, digits) : null,
     expenseList(g, money, name),
     balances(g, s.balances, money),
+    totalsSection(g, money, name),
     peopleSection(g),
     groupActions(g, digits),
+    backupPanel({ app: "splitflow", keys: [STORAGE_KEY] }),
   );
 }
 
@@ -213,6 +227,7 @@ function expenseForm(g: Group, digits: number): HTMLElement {
     ...g.people.map((p) => h("option", { value: p.id, selected: p.id === draft.paidBy }, p.name)),
   );
 
+  const category = h("select", { id: "exp-cat", onChange: (e: Event) => { draft.category = (e.target as HTMLSelectElement).value; } }, h("option", { value: "" }, "Sin categoría"), ...CATEGORIES.map((c) => h("option", { value: c, selected: c === draft.category }, c)));
   const detail = h("div", { class: "detail", "aria-live": "polite" });
   const refreshDetail = (): void => replaceChildren(detail, ...detailNodes(g, digits));
   refreshDetail();
@@ -300,23 +315,25 @@ function expenseForm(g: Group, digits: number): HTMLElement {
                 if (Number.isNaN(exacts[id])) throw new RangeError("Revisa los montos por persona.");
               }
             }
-            const next = addExpense(g, { description: draft.description, amount: amountMinor, paidBy: draft.paidBy, mode: draft.mode, participants, percents, exacts });
+            const input = { description: draft.description, amount: amountMinor, paidBy: draft.paidBy, mode: draft.mode, participants, percents, exacts, category: draft.category };
+            const editing = draft.editingId !== "";
+            const next = editing ? updateExpense(g, draft.editingId, input) : addExpense(g, input);
             setGroup(next);
             const keepMode = draft.mode;
             draft = blankDraft();
             draft.mode = keepMode;
-            message = { kind: "ok", text: "Gasto añadido." };
+            message = { kind: "ok", text: editing ? "Gasto actualizado." : "Gasto añadido." };
           });
           document.getElementById("exp-desc")?.focus();
         },
       },
-      h("h2", { id: "new-title" }, "Nuevo gasto"),
+      h("h2", { id: "new-title" }, draft.editingId ? "Editar gasto" : "Nuevo gasto"),
       h("div", { class: "row" }, field("Descripción", desc), field(`Monto (${g.currency})`, amount)),
-      field("Pagó", paidBy),
+      h("div", { class: "row" }, field("Pagó", paidBy), field("Categoría", category)),
       who,
       how,
       detail,
-      h("div", { class: "actions" }, h("button", { type: "submit", class: "primary" }, "Añadir gasto")),
+      h("div", { class: "actions" }, h("button", { type: "submit", class: "primary" }, draft.editingId ? "Guardar cambios" : "Añadir gasto"), draft.editingId ? h("button", { type: "button", class: "ghost", onClick: () => { draft = blankDraft(); render(); } }, "Cancelar edición") : null),
     ),
   );
 }
@@ -366,6 +383,18 @@ function detailNodes(g: Group, digits: number): Node[] {
   return [...rows, status];
 }
 
+function startEdit(g: Group, id: string): void {
+  const e = g.expenses.find((x) => x.id === id);
+  if (!e) return;
+  const digits = currencyDigits(g.currency);
+  const ids = Object.keys(e.shares);
+  const equalish = e.mode === "equal";
+  draft = { description: e.description, amount: String(e.amount / 10 ** digits).replace(".", ","), paidBy: e.paidBy, mode: equalish ? "equal" : "exact", participants: new Set(ids), percents: {}, exacts: equalish ? {} : Object.fromEntries(ids.map((i) => [i, String((e.shares[i] ?? 0) / 10 ** digits).replace(".", ",")])), category: e.category ?? "", editingId: id };
+  message = null;
+  render();
+  document.getElementById("new-title")?.scrollIntoView({ block: "start" });
+}
+
 function expenseList(g: Group, money: (m: number) => string, name: (id: string) => string): HTMLElement {
   return h(
     "section",
@@ -381,8 +410,9 @@ function expenseList(g: Group, money: (m: number) => string, name: (id: string) 
             return h(
               "li",
               {},
-              h("div", { class: "main" }, h("strong", {}, e.description), h("span", { class: "sub" }, `Pagó ${name(e.paidBy)}, ${e.date}`)),
+              h("div", { class: "main" }, h("strong", {}, e.kind === "payment" ? `Pago a ${name(Object.keys(e.shares)[0] ?? "")}` : e.description), h("span", { class: "sub" }, `${e.kind === "payment" ? "Pagó" : "Pagó"} ${name(e.paidBy)}, ${e.date}${e.category ? ` · ${e.category}` : ""}`)),
               h("span", { class: "amt" }, money(e.amount)),
+              e.kind === "payment" ? null : h("button", { type: "button", class: "ghost", "aria-label": `Editar ${e.description}`, onClick: () => startEdit(g, e.id) }, "Editar"),
               h(
                 "button",
                 {
@@ -406,6 +436,21 @@ function expenseList(g: Group, money: (m: number) => string, name: (id: string) 
           }),
         ),
   );
+}
+
+function totalsSection(g: Group, money: (m: number) => string, name: (id: string) => string): HTMLElement | null {
+  if (g.expenses.filter((e) => e.kind !== "payment").length === 0) return null;
+  const per = byPerson(g), cats = byCategory(g);
+  const text = summaryText(g, money);
+  return h("section", { "aria-labelledby": "tot-title", "data-testid": "totals" },
+    h("h2", { id: "tot-title" }, "Resumen"),
+    h("table", { class: "recon", "aria-label": "Lo que puso y lo que le tocó a cada persona" }, h("thead", {}, h("tr", {}, ...["Persona", "Puso", "Le tocó"].map((x) => h("th", { scope: "col" }, x)))),
+      h("tbody", {}, ...per.map((p) => h("tr", {}, h("td", {}, name(p.id)), h("td", {}, money(p.paid)), h("td", {}, money(p.consumed)))))),
+    cats.length > 1 || (cats[0] && cats[0].category !== "Sin categoría") ? h("ul", { class: "rows", "data-testid": "by-category" }, ...cats.map((c) => h("li", {}, h("div", { class: "main" }, c.category), h("span", { class: "amt" }, money(c.total))))) : null,
+    h("div", { class: "actions" }, h("button", { type: "button", onClick: () => { shareOpen = !shareOpen; render(); } }, shareOpen ? "Ocultar resumen" : "Compartir resumen")),
+    shareOpen ? h("div", { class: "share", "data-testid": "share" }, h("pre", {}, text), h("div", { class: "actions" },
+      h("button", { type: "button", class: "primary", onClick: async (e: Event) => { const b = e.target as HTMLButtonElement; try { await navigator.clipboard.writeText(text); b.textContent = "Copiado"; } catch { b.textContent = "Selecciona y copia el texto"; } } }, "Copiar"),
+      h("a", { class: "button", href: `https://wa.me/?text=${encodeURIComponent(text)}`, target: "_blank", rel: "noopener" }, "Enviar por WhatsApp"))) : null);
 }
 
 function balances(g: Group, b: Record<string, number>, money: (m: number) => string): HTMLElement {

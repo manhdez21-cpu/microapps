@@ -48,3 +48,5 @@ input[type="search"], input[type="date"] { width: 100%; min-height: 44px; paddin
 .attach input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .attach:focus-within { outline: 3px solid var(--focus, var(--accent)); outline-offset: 2px; }
 .t-actions .small { font-family: var(--font-figure); min-height: 40px; }
+
+.t-lines .ret dd { color: var(--soon); font-weight: 700; }

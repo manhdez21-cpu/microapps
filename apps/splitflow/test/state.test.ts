@@ -3,6 +3,11 @@ import assert from "node:assert/strict";
 import {
   addExpense,
   addPerson,
+  byCategory,
+  byPerson,
+  recordPayment,
+  summaryText,
+  updateExpense,
   emptyState,
   equalPercents,
   newGroup,
@@ -111,5 +116,42 @@ describe("persistencia y exportación", () => {
   it("equalPercents suma 10000", () => {
     const p = equalPercents(["a", "b", "c"]);
     assert.equal(Object.values(p).reduce((x, y) => x + y, 0), 10000);
+  });
+  it("registrar un pago salda la deuda y no cuenta como gasto", () => {
+    let g = addExpense(base(), { description: "Cena", amount: 90000, paidBy: "a", mode: "equal", participants: ["a", "b", "c"] }, "e1");
+    assert.equal(summarize(g).transfers.length, 2);
+    g = recordPayment(g, "b", "a", 30000, "2026-11-05", "p1");
+    const s2 = summarize(g);
+    assert.deepEqual(s2.transfers.map((t) => [t.from, t.to, t.amount]), [["c", "a", 30000]]);
+    assert.equal(s2.total, 90000);
+    g = recordPayment(g, "c", "a", 30000, "2026-11-05", "p2");
+    assert.equal(summarize(g).transfers.length, 0);
+    assert.throws(() => recordPayment(g, "a", "a", 1));
+    assert.throws(() => recordPayment(g, "a", "b", 0));
+    assert.throws(() => recordPayment(g, "a", "zz", 5));
+  });
+  it("editar un gasto conserva lugar, fecha e id y recalcula saldos", () => {
+    let g = base();
+    g = addExpense(g, { description: "Cena", amount: 90000, paidBy: "a", mode: "equal", participants: ["a", "b", "c"], date: "2026-11-01" }, "e1");
+    g = addExpense(g, { description: "Taxi", amount: 6000, paidBy: "b", mode: "equal", participants: ["a", "b"], date: "2026-11-02" }, "e2");
+    g = updateExpense(g, "e1", { description: "Cena grande", amount: 120000, paidBy: "c", mode: "equal", participants: ["a", "b", "c"], category: "Comida" });
+    assert.deepEqual(g.expenses.map((e) => e.id), ["e2", "e1"]);
+    assert.equal(g.expenses[1]!.date, "2026-11-01");
+    assert.equal(g.expenses[1]!.category, "Comida");
+    assert.equal(summarize(g).balances["c"], 80000);
+    assert.throws(() => updateExpense(g, "nope", { description: "x", amount: 1, paidBy: "a", mode: "equal", participants: ["a"] }));
+    assert.throws(() => updateExpense(g, "e1", { description: "", amount: 1, paidBy: "a", mode: "equal", participants: ["a"] }));
+  });
+  it("totales por persona y por categoría ignoran los pagos; el resumen se puede compartir", () => {
+    let g = addExpense(base(), { description: "Cena", amount: 90000, paidBy: "a", mode: "equal", participants: ["a", "b", "c"], category: "Comida" }, "e1");
+    g = addExpense(g, { description: "Taxi", amount: 9000, paidBy: "b", mode: "equal", participants: ["a", "b", "c"], category: "Transporte" }, "e2");
+    g = recordPayment(g, "b", "a", 10000, "2026-11-05", "p1");
+    const per = byPerson(g);
+    assert.deepEqual(per.map((p) => [p.id, p.paid, p.consumed]), [["a", 90000, 33000], ["b", 9000, 33000], ["c", 0, 33000]]);
+    assert.deepEqual(byCategory(g), [{ category: "Comida", total: 90000 }, { category: "Transporte", total: 9000 }]);
+    const t = summaryText(g, (m) => `$${m}`);
+    assert.match(t, /Total gastado: \$99000/);
+    assert.match(t, /paga a/);
+    assert.match(t, /\*Viaje\*/);
   });
 });
