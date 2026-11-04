@@ -9,7 +9,7 @@ Las columnas "Límites" y "Costo previsto" marcadas *(por verificar)* provienen 
 | GitHub | Repo | Gratis | 0 | 0 | *(por verificar)* | Alta | GitLab |
 | Node/pnpm/TypeScript | Build | Open source | 0 | 0 | — | Alta | — |
 | Hosting web | Despliegue | Gratis (a elegir) | 0 | 0 | *(por verificar; uso comercial)* | Alta | Vercel, Cloudflare Pages |
-| Supabase | Auth/BD/Storage | Gratis | 0 | 0 | *(por verificar)* | Media (sync Premium) | Firebase |
+| Supabase | Auth/BD/Storage | Gratis | 0 | 0 | *(por verificar)* | Descartada (sin cuentas ni sync) | Firebase |
 | Dominio | Marca/SEO/AdSense | De pago | 0 | ~anual *(por verificar)* | — | Alta para AdSense | Subdominio gratuito (limita AdSense) |
 | Google Play Console | Publicar Android | Pago único | 0 | *(por verificar)* | 12 testers × 14 días | Fase 7 | Solo PWA |
 | Apple Developer | Publicar iOS | Pago anual | 0 | *(por verificar)* | — | Fase 7 | Solo PWA |

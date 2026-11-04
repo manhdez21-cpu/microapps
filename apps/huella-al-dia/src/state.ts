@@ -10,7 +10,7 @@ const NEEDS_TITLE: RecType[] = ["vacuna", "desparasitacion", "consulta", "medica
 export interface Pet { id: string; name: string; species: Species; breed: string; birth: string; sex: "" | "macho" | "hembra"; photo: string; notes: string }
 export interface Rec { id: string; petId: string; type: RecType; date: string; title: string; detail: string; weightG?: number; amount?: number; next?: string; repeat?: number }
 export interface Data { pets: Pet[]; records: Rec[]; nextId: number; currency: string }
-export const MAX_PETS = 5; // El plan Premium ampliará este límite cuando exista (ver DECISIONS).
+export const MAX_PETS = 5;
 export const emptyData = (currency = "COP"): Data => ({ pets: [], records: [], nextId: 1, currency });
 
 const clean = (s: string, n: number) => s.trim().slice(0, n);

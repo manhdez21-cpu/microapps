@@ -2,7 +2,7 @@
 
 Orden tentativo (D-006). Estados: Implementado / Probado / Verificado / Pendiente de credenciales / Pendiente de aprobación / No implementado.
 
-| Prioridad | App | Núcleo `core` | UI | Datos | Anuncios | Premium |
+| Prioridad | App | Núcleo `core` | UI | Datos | Anuncios | Premium (descartado) |
 |---|---|---|---|---|---|---|
 | 1 | SplitFlow | Probado | No implementado | No implementado | Pend. credenciales | Pend. credenciales |
 | 2 | Caja Clara | Probado (cierre) | No implementado | No implementado | Pend. credenciales | Pend. credenciales |

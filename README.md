@@ -1,6 +1,6 @@
 # Microapps Factory
 
-Fábrica de microaplicaciones (web/PWA primero, móvil después) financiada con anuncios + Premium. Propietario: Manuel.
+Fábrica de microaplicaciones (web/PWA primero, móvil después) 100 % gratuita, financiada solo con publicidad. Propietario: Manuel.
 
 **Retomar trabajo:** leer `CLAUDE.md` → `MEMORY.md` → `PROGRESS.md`. El prompt completo está en `PROMPT_MAESTRO.md`.
 
@@ -12,7 +12,7 @@ Fábrica de microaplicaciones (web/PWA primero, móvil después) financiada con 
 | PWA instalable en las 7 | Implementado y probado (registro del service worker; offline sin probar) |
 | Anuncios con consentimiento | Implementado, inactivo hasta tener ids de AdSense |
 | Instalación en iPhone (Safari) y Android (Chrome) con botón y página `instalar.html` | Implementada y probada con navegadores simulados; sin probar en dispositivo real |
-| Premium, BD/auth, dominio, tiendas | Pendiente de credenciales (ver `GUIA_MANUEL.md`) |
+| AdSense, GA4, Search Console, dominio, tiendas | Pendiente de credenciales (ver `GUIA_MANUEL.md`) |
 
 ## Comandos
 ```bash

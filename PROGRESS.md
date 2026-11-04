@@ -20,3 +20,10 @@
 - Verificación: 138/138 pruebas unitarias + 9 suites E2E (nueva `extras.e2e.mjs`) en verde con `node tools/check-all.mjs`.
 - Errores reales hallados por las pruebas y corregidos: el nombre del cliente de un fiado se perdía en Caja Clara; SplitFlow no ofrecía restaurar con la app vacía.
 - Pendiente de Manuel: ver `GUIA_MANUEL.md`.
+
+## 2026-11-04 · Gratis, solo publicidad y crecimiento orgánico (D-020)
+- Auditoría: AdSense existía pero inactivo (1 anuncio al final, enlace Premium); sin SEO de despliegue, sin analítica, panel sin cifras; AdMob no viable (app nativa, npm bloqueado).
+- Hecho y probado: Premium eliminado; anuncios diferidos, 2 ubicaciones máx., 1 en app instalada; consentimiento único para anuncios y GA4 con «Preferencias de anuncios»; GA4 con eventos sin datos del usuario; `tools/gen-seo.mjs` (sitemap, robots, ads.txt, canonical, OG, site-config desde variables); 4 guías; enlaces entre apps y compartir; `tools/fetch-metrics.mjs` y panel con cifras reales cuando hay credenciales.
+- Verificado con simulación (sin Google real): carga de AdSense/GA4, API de datos GA4. NO verificado: aprobación de AdSense, indexación, tráfico, ingresos (no existen).
+- `node tools/check-all.mjs` en verde (unitarias, 10 pruebas de herramientas, 9 suites E2E).
+- Pendiente de Manuel: ver `GUIA_MANUEL.md` §1–6 (GitHub/Pages, variables públicas, GA4, Search Console, AdSense, correo de contacto).

@@ -23,11 +23,14 @@ interface PerApp {
   pwa: { manifest: boolean; serviceWorker: boolean };
   adsReady: boolean;
 }
+interface Row { views: number; users: number; newUsers: number; returningUsers: number; adRevenue: number }
+interface Metrics { source: string; fetchedAt: string; range: string; overall: Row; apps: Record<string, Row> }
 interface Status {
   generatedAt: string;
   perApp: Record<string, PerApp>;
   tests: { name: string; tests: number; pass: number; fail: number }[];
   registry: Registry;
+  metrics?: Metrics | null;
 }
 
 const TABS = [
@@ -44,7 +47,27 @@ const root = document.getElementById("app")!;
 async function load(): Promise<Status> {
   const res = await fetch("./data/status.json", { cache: "no-cache" });
   if (!res.ok) throw new Error(`No se pudo cargar status.json (${res.status}).`);
-  return (await res.json()) as Status;
+  const st = (await res.json()) as Status;
+  try { const m = await fetch("./data/metrics.json", { cache: "no-cache" }); const j = m.ok ? ((await m.json()) as Partial<Metrics>) : null; st.metrics = j && j.overall && j.apps ? (j as Metrics) : null; } catch { st.metrics = null; }
+  return st;
+}
+
+const num = (n: number): string => n.toLocaleString("es");
+const when = (m: Metrics): string => `${m.source}, ${m.range}, traído ${m.fetchedAt.slice(0, 16).replace("T", " ")} UTC.`;
+/** Cifras de GA4 si existen; si no, «Sin datos» pendiente. Nunca se inventa nada. */
+function metricTiles(m: Metrics | null | undefined, r: Row | undefined): HTMLElement[] {
+  if (!m || !r) return [
+    tile("Visitas", "Sin datos", "Pendiente", "Falta conectar Google Analytics (ver GUIA_MANUEL.md)."),
+    tile("Usuarios activos", "Sin datos", "Pendiente", "Falta conectar Google Analytics."),
+    tile("Usuarios que regresan", "Sin datos", "Pendiente", "Falta conectar Google Analytics."),
+    tile("Ingresos por anuncios", "Sin datos", "Pendiente", "Requiere AdSense aprobado y vinculado a GA4."),
+  ];
+  return [
+    tile("Visitas (páginas vistas)", num(r.views), "Real", when(m)),
+    tile("Usuarios activos", num(r.users), "Real", `${num(r.newUsers)} nuevos. ${when(m)}`),
+    tile("Usuarios que regresan", num(r.returningUsers), "Real", `Activos menos nuevos (aproximado). ${when(m)}`),
+    tile("Ingresos por anuncios", r.adRevenue === 0 ? "0" : r.adRevenue.toFixed(2), "Real", `Moneda de la propiedad de GA4; llega solo si AdSense está vinculado. ${when(m)}`),
+  ];
 }
 
 const chip = (state: State): HTMLElement => h("span", { class: `chip ${state.replace(/\s+/g, "-")}` }, state);
@@ -79,16 +102,14 @@ function resumen(s: Status): HTMLElement {
       tile("Pruebas automáticas", `${pass} de ${total}`, "Real", `Ejecutadas al generar este panel (${s.generatedAt.slice(0, 16).replace("T", " ")} UTC).`),
       tile("Gasto actual", `USD ${r.costs.currentUsd}`, "Real", `${r.costs.note} Fuente: ${r.costs.source}.`),
       tile("Integraciones conectadas", `${connected} de ${r.integrations.length}`, "Real", "Ver Operaciones para lo que falta."),
-      tile("Usuarios activos", "Sin datos", "Pendiente", "Requiere analítica de producto."),
-      tile("Ingresos publicitarios", "Sin datos", "Pendiente", "Requiere AdSense/AdMob aprobados."),
-      tile("Ingresos Premium", "Sin datos", "Pendiente", "Requiere Stripe o tiendas."),
+      ...metricTiles(s.metrics, s.metrics?.overall),
       tile("Beneficio neto", "Sin datos", "Pendiente", "Depende de ingresos reales."),
     ),
     h("p", { class: "legend" }, "Real: se mide o se puede verificar en el repositorio. Pendiente: la integración no existe todavía, así que no se muestra ninguna cifra."),
   );
 }
 
-const APP_PENDING = ["Visitas", "Usuarios activos", "Instalaciones", "Retención a 7 días", "Ingresos por anuncios", "Ingresos Premium"];
+const APP_PENDING = ["Instalaciones"];
 
 function appCard(s: Status, a: AppRow): HTMLElement {
   const m = s.perApp[a.id];
@@ -109,7 +130,8 @@ function appCard(s: Status, a: AppRow): HTMLElement {
       tile("Peso de la app", m.buildKb === null ? "—" : `${m.buildKb} KB`, "Real", "Sin el núcleo compartido."),
       tile("SEO en la página", seoOk ? "Completo" : "Revisar", "Real", `Descripción de ${m.seo.description} caracteres (máx. 160), ${m.seo.jsonLd} bloque(s) JSON-LD, FAQ: ${ok(m.seo.faq)}.`),
       tile("Instalable y sin conexión", m.pwa.manifest && m.pwa.serviceWorker ? "Sí" : "No", "Real", "Manifest y service worker presentes."),
-      ...APP_PENDING.map((k) => tile(k, "Sin datos", "Pendiente", "Sin analítica ni cuentas conectadas.")),
+      ...metricTiles(s.metrics, s.metrics?.apps[a.id]),
+      ...APP_PENDING.map((k) => tile(k, "Sin datos", "Pendiente", "Sin fuente conectada (las tiendas no están publicadas).")),
     ),
   );
 }

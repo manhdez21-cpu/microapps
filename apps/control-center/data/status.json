@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T16:19:41.405Z",
+  "generatedAt": "2026-11-04T18:35:11.891Z",
   "tests": [
     {
       "name": "packages/core",
@@ -9,8 +9,8 @@
     },
     {
       "name": "packages/ui",
-      "tests": 15,
-      "pass": 15,
+      "tests": 21,
+      "pass": 21,
       "fail": 0
     },
     {
@@ -58,7 +58,7 @@
   ],
   "registry": {
     "updated": "2026-11-04",
-    "phase": "Fase 5: las 7 apps tienen versión web local probada, cada una con identidad visual propia; el Control Center y la portada están listos. Falta desplegar y conectar cuentas",
+    "phase": "Fase 6: las 7 apps son gratuitas y se financian solo con publicidad; SEO, medición y panel listos. Falta desplegar y conectar cuentas (AdSense, GA4, Search Console)",
     "notes": "Este archivo lo mantiene el equipo del proyecto. Nada aquí es una métrica de usuarios o ingresos: esas cifras siguen pendientes de integración.",
     "apps": [
       {
@@ -71,8 +71,9 @@
           "Interfaz web": "probado",
           "Datos en la nube": "no implementado",
           "Anuncios": "pendiente de credenciales",
-          "Premium": "pendiente de credenciales",
-          "Publicación": "no implementado"
+          "Publicación": "no implementado",
+          "Analítica (GA4)": "pendiente de credenciales",
+          "SEO y sitemap": "implementado"
         },
         "path": "../splitflow/index.html"
       },
@@ -86,8 +87,9 @@
           "Interfaz web": "probado",
           "Datos en la nube": "no implementado",
           "Anuncios": "pendiente de credenciales",
-          "Premium": "pendiente de credenciales",
-          "Publicación": "no implementado"
+          "Publicación": "no implementado",
+          "Analítica (GA4)": "pendiente de credenciales",
+          "SEO y sitemap": "implementado"
         },
         "path": "../caja-clara/index.html"
       },
@@ -101,8 +103,9 @@
           "Interfaz web": "probado",
           "Datos en la nube": "no implementado",
           "Anuncios": "pendiente de credenciales",
-          "Premium": "no implementado",
-          "Publicación": "no implementado"
+          "Publicación": "no implementado",
+          "Analítica (GA4)": "pendiente de credenciales",
+          "SEO y sitemap": "implementado"
         },
         "path": "../priceright/index.html"
       },
@@ -116,8 +119,9 @@
           "Interfaz web": "probado",
           "Datos en la nube": "no implementado",
           "Anuncios": "pendiente de credenciales",
-          "Premium": "no implementado",
-          "Publicación": "no implementado"
+          "Publicación": "no implementado",
+          "Analítica (GA4)": "pendiente de credenciales",
+          "SEO y sitemap": "implementado"
         },
         "path": "../cuanto-me-sobra/index.html"
       },
@@ -131,9 +135,10 @@
           "Interfaz web": "probado",
           "Datos en la nube": "no implementado",
           "Anuncios": "pendiente de credenciales",
-          "Premium": "no implementado",
           "Publicación": "no implementado",
-          "OCR de facturas/documentos": "no implementado"
+          "OCR de facturas/documentos": "no implementado",
+          "Analítica (GA4)": "pendiente de credenciales",
+          "SEO y sitemap": "implementado"
         },
         "path": "../expiryhub/index.html"
       },
@@ -147,9 +152,10 @@
           "Interfaz web": "probado",
           "Datos en la nube": "no implementado",
           "Anuncios": "pendiente de credenciales",
-          "Premium": "no implementado",
           "Publicación": "no implementado",
-          "OCR de facturas/documentos": "no implementado"
+          "OCR de facturas/documentos": "no implementado",
+          "Analítica (GA4)": "pendiente de credenciales",
+          "SEO y sitemap": "implementado"
         },
         "path": "../warranty-keeper/index.html"
       },
@@ -163,52 +169,43 @@
           "Interfaz web": "probado",
           "Datos en la nube": "no implementado",
           "Anuncios": "pendiente de credenciales",
-          "Premium": "no implementado",
-          "Publicación": "no implementado"
+          "Publicación": "no implementado",
+          "Analítica (GA4)": "pendiente de credenciales",
+          "SEO y sitemap": "implementado"
         },
         "path": "../huella-al-dia/index.html"
       }
     ],
     "integrations": [
       {
-        "name": "Google AdSense (web)",
+        "name": "Google AdSense (web y PWA)",
         "state": "pendiente de credenciales",
-        "needs": "Cuenta AdSense aprobada, dominio propio y ids en site-config.js. El código (consentimiento + carga) está probado con configuración simulada; sin ids no carga nada"
+        "needs": "Cuenta AdSense aprobada y sitio verificado. Se configura con las variables públicas ADSENSE_CLIENT y ADSENSE_SLOT en el despliegue. El código (consentimiento, 2 ubicaciones, carga diferida) está probado con configuración simulada"
       },
       {
-        "name": "Google AdMob (móvil)",
+        "name": "Google AdMob (Android nativo)",
         "state": "no implementado",
-        "needs": "Cuenta AdMob y app publicada"
+        "needs": "No es viable con la arquitectura actual: AdMob exige una app nativa (Capacitor/Kotlin) y npm está bloqueado aquí. En Android la PWA/TWA se monetiza con AdSense web cuando esté aprobado"
       },
       {
-        "name": "Stripe (pagos web)",
+        "name": "Google Analytics 4 (medición)",
         "state": "pendiente de credenciales",
-        "needs": "Cuenta Stripe verificada a nombre del propietario"
+        "needs": "ID de medición G-… en la variable GA4_ID. El código (carga solo con consentimiento, eventos app_open/first_use/share) está probado con GA4 simulado"
       },
       {
-        "name": "RevenueCat / facturación nativa",
-        "state": "no implementado",
-        "needs": "Cuentas de tiendas"
-      },
-      {
-        "name": "Supabase (auth y datos)",
-        "state": "pendiente de credenciales",
-        "needs": "Proyecto Supabase"
-      },
-      {
-        "name": "Analítica de producto",
-        "state": "no implementado",
-        "needs": "Proveedor por elegir y consentimiento"
+        "name": "API de datos de GA4 → este panel",
+        "state": "implementado",
+        "needs": "Cuenta de servicio con rol Lector, GA4_PROPERTY_ID y GOOGLE_APPLICATION_CREDENTIALS. Probado con respuestas simuladas, no contra Google real"
       },
       {
         "name": "Search Console (SEO)",
         "state": "pendiente de credenciales",
-        "needs": "Dominio verificado"
+        "needs": "Verificar la propiedad (cuenta de Manuel) y enviar sitemap.xml"
       },
       {
         "name": "Hosting y despliegue",
         "state": "pendiente de credenciales",
-        "needs": "Cuenta de hosting y repositorio remoto"
+        "needs": "Repositorio en GitHub con Pages activado (workflow listo)"
       }
     ],
     "costs": {
@@ -218,21 +215,14 @@
     },
     "pendingMetrics": {
       "Marketing": [
-        "Tráfico",
         "Países",
         "Palabras clave",
-        "Conversiones",
-        "Instalaciones",
         "Posicionamiento orgánico"
       ],
       "Negocio": [
-        "Usuarios activos",
         "Nuevos usuarios",
         "Retención D1, D7 y D30",
-        "Ingresos publicitarios",
-        "Ingresos Premium",
-        "eCPM",
-        "Suscriptores y cancelaciones"
+        "eCPM"
       ]
     },
     "roadmap": [
@@ -245,7 +235,7 @@
         "state": "probado"
       },
       {
-        "item": "Carga de anuncios con consentimiento (config vacía = inactiva)",
+        "item": "Anuncios con consentimiento, 2 ubicaciones no invasivas y carga diferida",
         "state": "probado"
       },
       {
@@ -261,16 +251,20 @@
         "state": "pendiente de credenciales"
       },
       {
-        "item": "Premium con Stripe",
-        "state": "pendiente de credenciales"
-      },
-      {
         "item": "Publicación en tiendas (TWA/Capacitor)",
         "state": "pendiente de credenciales"
       },
       {
-        "item": "Datos en la nube (Supabase)",
-        "state": "pendiente de credenciales"
+        "item": "SEO de despliegue: sitemap, robots, ads.txt, canonical, 4 guías",
+        "state": "probado"
+      },
+      {
+        "item": "GA4 con consentimiento y panel con cifras reales cuando haya credenciales",
+        "state": "probado"
+      },
+      {
+        "item": "Enlaces entre apps y botón de compartir",
+        "state": "probado"
       }
     ],
     "blockers": [
@@ -286,8 +280,8 @@
         "pass": 15
       },
       "e2eSteps": 13,
-      "sourceLines": 927,
-      "buildKb": 51.8,
+      "sourceLines": 928,
+      "buildKb": 51.9,
       "seo": {
         "title": 57,
         "description": 128,
@@ -306,8 +300,8 @@
         "pass": 9
       },
       "e2eSteps": 14,
-      "sourceLines": 425,
-      "buildKb": 48.8,
+      "sourceLines": 426,
+      "buildKb": 48.9,
       "seo": {
         "title": 49,
         "description": 123,
@@ -326,8 +320,8 @@
         "pass": 11
       },
       "e2eSteps": 8,
-      "sourceLines": 370,
-      "buildKb": 41.7,
+      "sourceLines": 371,
+      "buildKb": 41.8,
       "seo": {
         "title": 59,
         "description": 131,
@@ -346,7 +340,7 @@
         "pass": 11
       },
       "e2eSteps": 4,
-      "sourceLines": 342,
+      "sourceLines": 343,
       "buildKb": 39.9,
       "seo": {
         "title": 73,
@@ -366,8 +360,8 @@
         "pass": 11
       },
       "e2eSteps": 9,
-      "sourceLines": 418,
-      "buildKb": 54.7,
+      "sourceLines": 419,
+      "buildKb": 54.8,
       "seo": {
         "title": 63,
         "description": 145,
@@ -386,8 +380,8 @@
         "pass": 8
       },
       "e2eSteps": 6,
-      "sourceLines": 292,
-      "buildKb": 48.8,
+      "sourceLines": 293,
+      "buildKb": 48.9,
       "seo": {
         "title": 53,
         "description": 150,
@@ -406,7 +400,7 @@
         "pass": 11
       },
       "e2eSteps": 11,
-      "sourceLines": 502,
+      "sourceLines": 503,
       "buildKb": 65.6,
       "seo": {
         "title": 52,

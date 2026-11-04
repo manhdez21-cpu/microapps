@@ -7,7 +7,7 @@ Estado: **políticas definidas; controles técnicos aún no implementados** salv
 2. Nunca pedir contraseñas/claves en el chat; Manuel las configura en el panel del proveedor.
 3. Supabase (cuando exista): RLS en todas las tablas con datos de usuario; clave `service_role` solo en servidor.
 4. Validación de entradas en cliente y servidor (el núcleo ya rechaza valores no enteros, negativos y NaN).
-5. Webhooks de pago: verificar firma; nunca confiar en el cliente para el estado Premium.
+5. Sin pagos ni cuentas: no hay webhooks. Claves de Google (cuenta de servicio GA4) solo como variable de entorno/archivo local, nunca en el repo.
 6. Archivos subidos (facturas, fotos): tipos y tamaño limitados, almacenamiento privado, URLs firmadas.
 7. Datos de prueba sintéticos; nunca datos reales de usuarios.
 8. Eliminación de cuenta y datos, exportación de datos del usuario.

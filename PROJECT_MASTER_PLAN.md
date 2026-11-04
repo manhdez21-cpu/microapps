@@ -9,12 +9,12 @@ Fuente de verdad del alcance: `PROMPT_MAESTRO.md`. Este archivo resume el plan y
 | 3. Infraestructura | Monorepo, Git, pruebas | Parcial: monorepo + núcleo probado; sin CI ni BD |
 | 4. Dashboard | Control Center | No iniciado |
 | 5. Microapps | 7 apps | No iniciado (solo núcleo de cálculo) |
-| 6. Monetización | Ads + Premium | No iniciado; requiere cuentas |
+| 6. Monetización | Solo publicidad (apps gratis) | No iniciado; requiere cuentas |
 | 7. Distribución | SEO, PWA, tiendas | No iniciado |
 | 8. Optimización | Datos reales | No iniciado |
 
 ## Riesgos principales
-1. **Ingresos publicitarios modestos en LatAm** (eCPM menor, hecho cualitativo). Mitigar con Premium y SEO en inglés/otros mercados.
+1. **Ingresos publicitarios modestos en LatAm** (eCPM menor, hecho cualitativo). Mitigar con SEO y más páginas útiles.
 2. **Saturación** (SplitFlow, calculadoras). Mitigar con nicho/idioma/ausencia de límites.
 3. **Android**: 12 testers × 14 días en cuenta personal nueva. Mitigar: web/PWA primero.
 4. **Aprobación de AdSense/AdMob**: no garantizada; no se marca monetizada hasta verificar.

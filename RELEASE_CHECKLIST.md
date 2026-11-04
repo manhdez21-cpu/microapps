@@ -10,7 +10,7 @@ Plantilla por app. Ninguna app ha pasado esta lista todavía.
 - [ ] Rendimiento (Lighthouse) revisado
 - [ ] Sin secretos en repo; variables de entorno configuradas
 - [ ] Política de privacidad y términos publicados
-- [ ] Consentimiento de anuncios funcionando; Premium sin anuncios
+- [ ] Consentimiento de anuncios y estadísticas funcionando; 2 anuncios máx. por página
 - [ ] Eliminación de cuenta/datos funcionando
 - [ ] SEO: metadatos, sitemap, datos estructurados, hreflang si aplica
 - [ ] Analítica y registro de errores activos

@@ -91,3 +91,10 @@ Formato: fecha · decisión · motivo · alternativas · estado.
 - Respaldo/restauración en JSON local (`packages/ui/src/backup.ts`), validado por app y claves permitidas; incluye adjuntos (IndexedDB) en ExpiryHub y Warranty. Reemplaza los datos del dispositivo al restaurar. Sin nube ni cuentas.
 - SplitFlow: registrar pagos entre personas, categorías, totales por persona/categoría y resumen para WhatsApp. PriceRight: escenarios de margen y cotizaciones guardadas que no revelan costos. Caja Clara: gráfica de ventas, fiados por cliente. ExpiryHub/Warranty/Huella: costos, repetición, serie, devolución, gasto por mes.
 - Sigue NO implementado: OCR, notificaciones push, sincronización entre dispositivos.
+
+## D-020 · 2026-11-04 · Gratis, solo publicidad y crecimiento orgánico
+- Decisión del propietario: todas las apps 100 % gratuitas; sin Premium, suscripciones, compras ni funciones de pago. Se retiró `premiumUrl` y el enlace «Quitar anuncios con Premium»; Stripe, Supabase y RevenueCat salen del plan.
+- Anuncios: AdSense web/PWA con consentimiento, máximo 2 por página (1 en app instalada), diferidos hasta que la persona use la app, sin formatos invasivos. Un solo aviso cubre anuncios y estadísticas; «Preferencias de anuncios» al pie.
+- AdMob: no implementado. Requiere app nativa (Capacitor/Kotlin) y npm está bloqueado; AdSense no se permite en apps nativas/WebView. iOS = PWA con anuncios web; Android = PWA/TWA con AdSense web, a confirmar con AdSense.
+- Medición: GA4 solo con consentimiento y sin enviar texto del usuario; eventos `app_open`, `first_use`, `install_click`, `share_click`, `cross_link`. Cifras al panel con `tools/fetch-metrics.mjs` (cuenta de servicio, variables de entorno). Sin credenciales el panel dice «Sin datos».
+- SEO de despliegue en `tools/gen-seo.mjs`, configuración desde variables públicas del repositorio (no secretos).

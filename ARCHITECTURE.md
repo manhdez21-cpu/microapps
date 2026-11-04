@@ -21,11 +21,11 @@ Pila real: sin frameworks (D-009). Lo siguiente es la pila objetivo, hoy no inst
 | Lenguaje | TypeScript estricto | Un solo lenguaje web+móvil; tipos protegen cálculos | JS |
 | Web/PWA | Next.js | SEO (SSR/SSG), páginas de aterrizaje y app en un solo framework | Vite SPA (peor SEO) |
 | Móvil | Expo / React Native, **solo tras validar tracción** | Reutiliza `core` y lógica | Flutter (no reutiliza TS) |
-| Datos | Local-first (IndexedDB/SQLite); Supabase para sync Premium | Costo cero y privacidad; sync solo cuando paga | Firebase |
+| Datos | Local-first (IndexedDB/SQLite); sin sync (decidido: sin cuentas) | Costo cero y privacidad | Firebase |
 | Auth | Supabase Auth (cuando haya cuenta) | RLS integrado | Auth propia |
 | Hosting | Gratuito/bajo costo (a verificar límites vigentes) | Presupuesto mínimo | — |
 | Pagos web | Stripe | Estándar | — |
-| Pagos móvil | RevenueCat o facturación nativa | Centraliza estado Premium | — |
+| Pagos | Ninguno (apps gratis) | Decisión D-020 | — |
 | Anuncios | AdSense (web), AdMob (móvil) | Pedido por el propietario | — |
 
 Nada de lo "propuesto" está contratado ni creado: requiere cuentas de Manuel.
@@ -51,10 +51,10 @@ Nada de lo "propuesto" está contratado ni creado: requiere cuentas de Manuel.
 | `materials.ts` | ¿Cuánto me sobra? | área/perímetro, `tilesNeeded` (juntas, desperdicio, cajas), `paintNeeded`, conversiones |
 
 ## Datos y privacidad (diseño)
-- Datos del usuario en el dispositivo por defecto. Sync solo opt-in y Premium.
+- Datos del usuario en el dispositivo por defecto. Sin sync ni cuentas.
 - Tablas con `user_id` y **RLS** activada; sin claves de servicio en el cliente.
 - Eliminación de cuenta y datos como función de primera clase.
-- Anuncios: consentimiento (CMP) antes de cargar scripts publicitarios; Premium no carga anuncios.
+- Anuncios: consentimiento (CMP) antes de cargar scripts publicitarios; estadísticas (GA4) solo con consentimiento.
 
 ## Dashboard (Control Center) — diseño
 - Fuentes de datos con estado por integración: `conectado | pendiente de credenciales | no implementado`.

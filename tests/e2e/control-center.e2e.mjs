@@ -41,6 +41,19 @@ await step("cada app tiene su ficha con cifras reales y pendientes etiquetadas",
   }
   assert.match(await page.getByTestId("app-caja-clara").innerText(), /pendiente de credenciales/);
 });
+await step("con metrics.json real-simulado muestra cifras etiquetadas Real y sin Premium", async () => {
+  const m = { source: "Google Analytics 4 (API de datos)", fetchedAt: "2026-11-04T12:00:00Z", range: "últimos 28 días", overall: { views: 1234, users: 321, newUsers: 300, returningUsers: 21, adRevenue: 4.5 }, apps: { "caja-clara": { views: 99, users: 40, newUsers: 30, returningUsers: 10, adRevenue: 1.25 } } };
+  await page.route("**/data/metrics.json", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(m) }));
+  await page.goto(`${base}#resumen`); await page.reload();
+  await page.getByRole("heading", { name: "Resumen" }).waitFor();
+  const t = await page.locator("main").innerText();
+  assert.match(t, /Visitas \(páginas vistas\)\s*Real\s*1[.,\s]?234/);
+  assert.match(t, /Usuarios que regresan\s*Real\s*21/);
+  assert.doesNotMatch(t, /Premium/i);
+  await page.getByRole("link", { name: "Aplicaciones" }).click();
+  assert.match(await page.getByTestId("app-caja-clara").innerText(), /Visitas \(páginas vistas\)\s*Real\s*99/);
+  await page.unroute("**/data/metrics.json");
+});
 await step("operaciones lista pruebas por paquete sin fallos", async () => {
   await page.getByRole("link", { name: "Operaciones" }).click();
   await page.getByTestId("test-rows").waitFor();

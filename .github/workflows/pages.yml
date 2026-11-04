@@ -8,6 +8,14 @@ concurrency: { group: pages, cancel-in-progress: true }
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Ids públicos (no secretos) desde Settings → Variables del repositorio. Vacíos = función inactiva.
+    env:
+      SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+      ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
+      ADSENSE_SLOT: ${{ vars.ADSENSE_SLOT }}
+      ADSENSE_SLOT_INLINE: ${{ vars.ADSENSE_SLOT_INLINE }}
+      GA4_ID: ${{ vars.GA4_ID }}
+      PLAY_URL: ${{ vars.PLAY_URL }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

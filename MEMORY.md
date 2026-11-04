@@ -12,7 +12,7 @@
 - Nombre: MICROAPPS FACTORY (provisional). Prompt completo: `PROMPT_MAESTRO.md`.
 - Portafolio inicial (7): Warranty Keeper, Caja Clara, Huella al Día, ¿Cuánto me sobra?, SplitFlow, PriceRight, ExpiryHub.
 - Dashboard central: Microapps Control Center.
-- Monetización: anuncios (AdSense web / AdMob móvil) + Premium (hipótesis a validar: USD 2.99/mes, 19.99/año).
+- Monetización DEFINITIVA (2026-11-04): apps 100 % gratis, solo publicidad (AdSense web/PWA; AdMob no implementado). Sin Premium. Crecimiento orgánico: SEO, guías, enlaces entre apps, compartir. Ver D-020.
 - Stack a evaluar (no decidido): Next.js/PWA, Expo/React Native, TypeScript, Supabase, GitHub, hosting gratuito.
 
 ## Estado (2026-11-04, fin de construcción)
