@@ -46,3 +46,5 @@ input[type="date"] { width: 100%; min-height: 44px; padding: 0.5rem 0.7rem; font
 .recon th, .recon td { text-align: right; padding: 0.3rem 0.5rem; border-bottom: 1px dotted var(--line); white-space: nowrap; }
 .recon th:first-child, .recon td:first-child { text-align: left; }
 .recon .plus { color: var(--plus); } .recon .minus { color: var(--minus); }
+.moves .main { font-family: var(--font-body); }
+.moves .amt { white-space: nowrap; }
