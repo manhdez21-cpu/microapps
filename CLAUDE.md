@@ -16,6 +16,11 @@ Lee esto al inicio de CADA sesión, en este orden:
 - Costos mínimos: registrar todo en `COST_TRACKER.md`; no contratar nada sin autorización.
 - Al cerrar cada sesión: actualizar `PROGRESS.md`, `DECISIONS.md` y `MEMORY.md`.
 
+## Comandos y restricciones
+- `node tools/build.mjs`, `node tools/gen-status.mjs`, `node tests/e2e/<suite>.e2e.mjs` (ver ENVIRONMENT_SETUP.md).
+- npm bloqueado (403): no instalar ni rodear. Apps en TypeScript sin dependencias (D-009).
+- Dinero en enteros; fórmulas visibles; el dashboard nunca muestra datos inventados.
+
 ## Skills del proyecto (`.claude/skills/`)
 
 Origen: https://github.com/anthropics/skills (commit ca45fc4, 2026-10-28). Ver `SKILLS.md`.

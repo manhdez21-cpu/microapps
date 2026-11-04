@@ -3,21 +3,16 @@
 Estado: **diseño + núcleo implementado**. Todo lo no listado como "Implementado" es propuesta.
 
 ## Estructura del repositorio
-
 ```
 Microapps/
-├─ packages/
-│  ├─ core/            [IMPLEMENTADO+PROBADO] lógica pura: dinero, reparto, caja, precios, materiales
-│  ├─ ui/              [propuesto] componentes y tokens de diseño compartidos
-│  └─ config/          [propuesto] tsconfig/eslint compartidos
-├─ apps/
-│  ├─ control-center/  [propuesto, Fase 4] dashboard privado (Next.js)
-│  ├─ splitflow/       [propuesto] PWA Next.js
-│  ├─ caja-clara/      [propuesto]
-│  └─ …                resto de microapps
-├─ .claude/skills/     skills del proyecto
-└─ docs: *.md          ver README
+├─ packages/core   [IMPLEMENTADO+PROBADO] dinero, reparto, caja, precios, materiales
+├─ packages/ui     [IMPLEMENTADO+PROBADO] h(), montos, almacenamiento local, CSS base
+├─ apps/splitflow, priceright, cuanto-me-sobra, control-center  [PROBADO E2E]
+├─ tools/          build.mjs (tsc → dist/), gen-status.mjs
+├─ tests/e2e/      Playwright (nube)
+└─ .claude/skills/
 ```
+Pila real: sin frameworks (D-009). Lo siguiente es la pila objetivo, hoy no instalable.
 
 ## Stack propuesto (ver DECISIONS.md)
 

@@ -8,16 +8,18 @@ Fábrica de microaplicaciones (web/PWA primero, móvil después) financiada con 
 | Área | Estado |
 |---|---|
 | Investigación de mercado (1.ª pasada) | Hecha, con limitaciones → `MARKET_RESEARCH.md` |
-| Arquitectura | Diseñada → `ARCHITECTURE.md`, `DECISIONS.md` |
-| Núcleo de cálculo `@microapps/core` | **Implementado y probado** (42 pruebas) |
-| Dashboard, apps, anuncios, pagos | No implementado |
+| Núcleo `@microapps/core` + `@microapps/ui` | Implementado y probado |
+| SplitFlow, PriceRight, ¿Cuánto me sobra?, Control Center | Implementados y probados (unitario + E2E), sin desplegar |
+| Caja Clara (UI), ExpiryHub, Warranty Keeper, Huella al Día | No implementado |
+| BD/auth, anuncios, Premium, dominio, CI | No implementado / pendiente de credenciales |
 
 ## Comandos
 ```bash
-cd packages/core
-node --test test/*.test.ts     # pruebas (Node ≥ 22, sin dependencias)
-tsc -p tsconfig.json           # typecheck (requiere TypeScript)
+node tools/build.mjs        # tsc → dist/
+node tools/gen-status.mjs   # pruebas + datos del Control Center
+node tests/e2e/splitflow.e2e.mjs
 ```
+Sirve `dist/` con un servidor estático (`python3 -m http.server -d dist`).
 
 ## Documentos
 `PROJECT_MASTER_PLAN` · `ARCHITECTURE` · `BUSINESS_MODEL` · `MARKET_RESEARCH` · `PRODUCT_ROADMAP` · `MONETIZATION_PLAN` · `SECURITY` · `DEPLOYMENT` · `ENVIRONMENT_SETUP` · `PROGRESS` · `DECISIONS` · `TEST_PLAN` · `COST_TRACKER` · `RELEASE_CHECKLIST` · `SKILLS`

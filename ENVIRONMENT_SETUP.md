@@ -17,11 +17,19 @@ Verificado el 2026-11-04.
 | Python | 3.13.18 |
 | TypeScript global (`tsc`) | 7.0.2 |
 
+## Máquina virtual del equipo (carpeta conectada)
+Linux con Node 22.23, git 2.34, `tsc`; sin pnpm. Carpeta: `C:\Users\MALAU\OneDrive\Desktop\MicroApps` (montada en `$HOME/mnt/MicroApps`). Borrar archivos requiere permiso explícito (git deja `.lock`).
+
 ## Bloqueo conocido
-`registry.npmjs.org` responde **403 de política** desde esta sesión (DNS directo tampoco resuelve): **no se pueden instalar paquetes npm aquí**. Consecuencias:
-- El núcleo no usa dependencias; pruebas con `node:test`.
-- Next.js/Expo/Supabase SDK no se pueden instalar en esta sesión.
-- Solución: ejecutar el desarrollo con dependencias en el equipo de Manuel (carpeta conectada) o en una sesión con acceso a npm. GitHub sí es accesible (se clonó `anthropics/skills`).
+`registry.npmjs.org` responde **403 de política** en la nube y en el VM del equipo: no se pueden instalar paquetes npm. No reintentar ni rodear. Consecuencias: sin frameworks (D-009), sin vitest/axe/Lighthouse. Playwright y Chromium sí existen en la nube.
+
+## Comandos
+```bash
+node tools/build.mjs
+node tools/gen-status.mjs
+tsc -p tsconfig.web.json --noEmit
+node tests/e2e/splitflow.e2e.mjs   # y control-center / calculators
+```
 
 ## Ejecutar pruebas
 ```bash

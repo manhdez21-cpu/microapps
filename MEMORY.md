@@ -15,10 +15,11 @@
 - Monetización: anuncios (AdSense web / AdMob móvil) + Premium (hipótesis a validar: USD 2.99/mes, 19.99/año).
 - Stack a evaluar (no decidido): Next.js/PWA, Expo/React Native, TypeScript, Supabase, GitHub, hosting gratuito.
 
-## Estado (2026-11-04, fin de sesión 1)
-- Fases 1–2 hechas en primera pasada; Fase 3 parcial. Núcleo `@microapps/core` implementado y probado (42/42). Ver `PROGRESS.md`.
-- Cuentas/credenciales: ninguna. Ningún servicio de pago contratado. Gasto actual: USD 0.
-- Bloqueo: npm bloqueado (403) en la sesión en la nube. Equipo de Manuel: Windows `laptop-mlcjbk6g`, sin carpeta conectada.
+## Estado (2026-11-04, tarde)
+- Carpeta del equipo conectada y sincronizada: `C:\Users\MALAU\OneDrive\Desktop\MicroApps` (VM del equipo: Node 22, git 2.34, sin pnpm; npm 403).
+- Hechas y probadas (E2E): SplitFlow, Control Center, PriceRight, ¿Cuánto me sobra?. 76 pruebas unitarias.
+- Siguiente: Caja Clara UI, skills propias, accesibilidad, cuentas (agrupadas) cuando haya que publicar.
+- Cuentas/credenciales: ninguna. Gasto actual: USD 0.
 
 ## Decisiones
 - 2026-11-04: Skills externas del repo oficial anthropics/skills en `.claude/skills/` (ver `SKILLS.md`).

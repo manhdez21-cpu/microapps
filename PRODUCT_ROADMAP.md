@@ -12,7 +12,7 @@ Orden tentativo (D-006). Estados: Implementado / Probado / Verificado / Pendient
 | 5 | Huella al Día | No implementado | No implementado | No implementado | — | — |
 
 ## Hitos
-1. **M1** App web SplitFlow funcional (local-first) con pruebas E2E. Requiere conseguir npm (ver ENVIRONMENT_SETUP.md).
+1. **M1 SplitFlow web con E2E: hecho (sin despliegue). M2 Control Center mínimo: hecho.
 2. **M2** Control Center mínimo con tarjetas "pendiente".
 3. **M3** Caja Clara con historial y exportación.
 4. **M4** Páginas SEO de calculadoras + medición.

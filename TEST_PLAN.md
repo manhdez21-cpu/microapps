@@ -1,15 +1,9 @@
 # TEST_PLAN
 
 ## Estado actual (2026-11-04)
-`@microapps/core`: **42 pruebas, 42 pasan** (`node --test`), typecheck estricto limpio. Estado: **Probado** (unitario). No hay pruebas de integración, E2E ni de interfaz porque aún no existen.
-
-| Módulo | Qué se verifica |
-|---|---|
-| money | half-up, bps, `allocate` suma exacta (2000 casos con semilla fija), negativos, pesos cero, entradas inválidas |
-| splitflow | equitativo/%/exacto, saldos suman 0, liquidación exacta y ≤ n−1 pagos (500 escenarios aleatorios), gastos inconsistentes |
-| priceright | 20 % margen = 25 % recargo, 50 % recargo = 33,33 % margen, comisión e impuesto, rechazo margen+comisión ≥ 100 % |
-| materials | piezas, desperdicio, cajas, juntas, pintura, conversiones, ruido de float |
-| cashclose | esperado vs contado, fiado no entra a caja, cobro de fiado sí, duplicados y montos inválidos |
+**76 pruebas unitarias, 76 pasan** (`node --test`) en 5 paquetes: core (42), ui (7), splitflow (12), priceright (7), cuanto-me-sobra (8). `tsc` estricto limpio (core y web).
+**E2E (Playwright + Chromium, nube)**: SplitFlow 13 pasos, Control Center 7, calculadoras 12. Cubren flujos principales, persistencia, errores, CSV, desborde horizontal en móvil (390 px), modo oscuro y consola sin errores.
+Estado: **Probado**. Nada está "Verificado" en producción (no hay despliegue).
 
 ## Limitaciones honestas
 - Las pruebas son mías; falta revisión independiente (la auditará Claude Code).
