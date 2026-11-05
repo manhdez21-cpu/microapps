@@ -29,6 +29,7 @@
 - Pendiente de Manuel: ver `GUIA_MANUEL.md` §1–6 (GitHub/Pages, variables públicas, GA4, Search Console, AdSense, correo de contacto).
 
 ## 2026-11-04 (tarde) · Publicación
-- Repositorio https://github.com/manhdez21-cpu/microapps; sitio en https://manhdez21-cpu.github.io/microapps/ (Pages con GitHub Actions; deploy en verde).
+- Repositorio https://github.com/manhdez21-cpu/microapps; sitio en https://chispatools.com/ (Pages con GitHub Actions; deploy en verde).
 - GA4 configurado (G-PE91ZVWREB, en el workflow). Search Console verificado (etiqueta en la portada) y sitemap enviado.
 - Pendiente de Manuel: correo de contacto en privacidad, dominio propio, AdSense (luego ADSENSE_CLIENT/ADSENSE_SLOT), confirmar datos en Tiempo real de GA4.
+- Dominio chispatools.com comprado en Cloudflare (renovación USD 11,17/año, vence 2027-11-04), DNS hacia GitHub Pages, HTTPS activo. SITE_URL del despliegue = https://chispatools.com. Enlaces cortos /<app>/.
