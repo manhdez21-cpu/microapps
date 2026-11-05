@@ -23,8 +23,14 @@ interface PerApp {
   pwa: { manifest: boolean; serviceWorker: boolean };
   adsReady: boolean;
 }
-interface Row { views: number; users: number; newUsers: number; returningUsers: number; adRevenue: number }
-interface Metrics { source: string; fetchedAt: string; range: string; overall: Row; apps: Record<string, Row> }
+interface Row { views: number; users: number; newUsers: number; returningUsers: number; adRevenue: number; sessions?: number; adImpressions?: number; adClicks?: number; events?: Record<string, number> }
+interface Sea { clicks: number; impressions: number; ctr: number; position: number }
+interface Metrics {
+  source: string; fetchedAt: string; range: string; overall: Row; apps: Record<string, Row>;
+  daily?: { date: string; users: number; views: number; adRevenue: number }[];
+  search?: { site: string; overall: Sea; apps: Record<string, Sea>; queries: { query: string; clicks: number; impressions: number; position: number }[] } | null;
+  searchError?: string | null;
+}
 interface Status {
   generatedAt: string;
   perApp: Record<string, PerApp>;
@@ -36,6 +42,7 @@ interface Status {
 const TABS = [
   { id: "resumen", label: "Resumen" },
   { id: "apps", label: "Aplicaciones" },
+  { id: "negocio", label: "Negocio" },
   { id: "marketing", label: "Marketing" },
   { id: "operaciones", label: "Operaciones" },
   { id: "inteligencia", label: "Inteligencia" },
@@ -146,6 +153,45 @@ function apps(s: Status): HTMLElement {
   );
 }
 
+const money = (n: number): string => n.toFixed(2);
+
+/** Negocio: todo por aplicación y total, solo con datos reales de GA4 / Search Console. */
+function negocio(s: Status): HTMLElement {
+  const m = s.metrics;
+  const head = h("h2", { id: "t-neg" }, "Negocio");
+  if (!m) return h("section", { "aria-labelledby": "t-neg", "data-testid": "negocio" }, head,
+    h("p", { class: "empty" }, "Sin datos: falta conectar Google Analytics (ver GUIA_MANUEL.md, «Panel de negocio»)."),
+    h("p", { class: "hint" }, "Al conectarlo verás por aplicación: usuarios, visitas, ingresos de anuncios, clics de instalar y compartir, y búsquedas en Google. No se muestran cifras de ejemplo."));
+  const t = m.overall, sea = m.search, daily = m.daily ?? [];
+  const rpm = (r: Row): string => (r.adImpressions ? money((r.adRevenue / r.adImpressions) * 1000) : "—");
+  const ev = (r: Row, k: string): string => num(r.events?.[k] ?? 0);
+  const max = Math.max(1, ...daily.map((d) => d.users));
+  const tr = (label: string, r: Row | undefined, clicks: string): HTMLElement =>
+    h("tr", {}, h("th", { scope: "row" }, label),
+      ...(r ? [num(r.users), num(r.newUsers), num(r.returningUsers), num(r.views), money(r.adRevenue), rpm(r), clicks, ev(r, "install_click"), ev(r, "share_click"), ev(r, "feedback_click")] : Array(10).fill("—")).map((x: string) => h("td", {}, x)));
+  return h("section", { "aria-labelledby": "t-neg", "data-testid": "negocio" }, head,
+    h("p", { class: "lead" }, `Fuente: ${m.source}. ${m.range}. Actualizado ${m.fetchedAt.slice(0, 16).replace("T", " ")} UTC (se refresca a diario).`),
+    h("div", { class: "tiles" },
+      tile("Ingresos por anuncios", money(t.adRevenue), "Real", "Moneda de la propiedad de GA4; llega si AdSense está vinculado."),
+      tile("Usuarios activos", num(t.users), "Real", `${num(t.newUsers)} nuevos, ${num(t.returningUsers)} que regresan.`),
+      tile("Visitas", num(t.views), "Real", `${num(t.sessions ?? 0)} sesiones.`),
+      tile("RPM (por 1000 impresiones)", rpm(t), "Real", `${num(t.adImpressions ?? 0)} impresiones, ${num(t.adClicks ?? 0)} clics en anuncios.`),
+      sea ? tile("Clics desde Google", num(sea.overall.clicks), "Real", `${num(sea.overall.impressions)} impresiones, CTR ${sea.overall.ctr}%, posición media ${sea.overall.position}.`)
+        : tile("Clics desde Google", "Sin datos", "Pendiente", m.searchError ? `Search Console no disponible: ${m.searchError}` : "Search Console no conectado."),
+      tile("Instalaciones en tiendas", "Sin datos", "Pendiente", "Google Play aún no publicada; solo se mide el clic en «Instalar»."),
+    ),
+    h("h3", {}, "Por aplicación"),
+    h("div", { class: "scroll" }, h("table", { "data-testid": "neg-table" },
+      h("thead", {}, h("tr", {}, ...["Aplicación", "Usuarios", "Nuevos", "Regresan", "Visitas", "Ingresos", "RPM", "Clics Google", "Instalar", "Compartir", "Sugerencias"].map((x) => h("th", { scope: "col" }, x)))),
+      h("tbody", {}, ...s.registry.apps.map((a) => tr(a.name, m.apps[a.id], sea?.apps[a.id] ? num(sea.apps[a.id]?.clicks ?? 0) : "—")), tr("Total", t, sea ? num(sea.overall.clicks) : "—")),
+    )),
+    h("h3", {}, "Usuarios por día"),
+    daily.length ? h("ul", { class: "bars", "data-testid": "neg-daily" }, ...daily.map((d) => h("li", {}, h("span", { class: "d" }, d.date.slice(5)), h("span", { class: "bar-fill", style: `width:${Math.round((d.users / max) * 100)}%` }), h("span", { class: "v" }, `${num(d.users)} · ${money(d.adRevenue)}`)))) : h("p", { class: "hint" }, "Sin días con datos todavía."),
+    h("h3", {}, "Búsquedas que traen gente (Google)"),
+    sea && sea.queries.length ? h("ul", { class: "rows" }, ...sea.queries.map((q) => h("li", {}, h("span", {}, q.query), h("span", {}, `${num(q.clicks)} clics · ${num(q.impressions)} impr. · pos. ${q.position}`)))) : h("p", { class: "hint" }, sea ? "Aún no hay búsquedas registradas." : "Pendiente de Search Console."),
+  );
+}
+
 function pendingPanel(title: string, id: string, items: string[], needs: string): HTMLElement {
   return h(
     "section",
@@ -196,6 +242,7 @@ function view(s: Status, tab: TabId): HTMLElement {
   switch (tab) {
     case "resumen": return resumen(s);
     case "apps": return apps(s);
+    case "negocio": return negocio(s);
     case "marketing": return pendingPanel("Marketing", "t-mkt", s.registry.pendingMetrics["Marketing"] ?? [], "Las métricas de adquisición aparecerán al conectar analítica y Search Console.");
     case "operaciones": return operaciones(s);
     case "inteligencia": return inteligencia();

@@ -29,10 +29,13 @@ export function headTags(html, url, siteName = "Microapps") {
 export const injectHead = (html, tags) => (tags.length ? html.replace("</head>", "  " + tags.join("\n  ") + "\n</head>") : html);
 
 export function siteConfigJs(env, prev) {
-  const c = { adsenseClient: "", adSlot: "", adSlotInline: "", ga4Id: "", googleClientId: "", siteUrl: "", playUrl: "" };
-  const map = { adsenseClient: "ADSENSE_CLIENT", adSlot: "ADSENSE_SLOT", adSlotInline: "ADSENSE_SLOT_INLINE", ga4Id: "GA4_ID", googleClientId: "GOOGLE_CLIENT_ID", siteUrl: "SITE_URL", playUrl: "PLAY_URL" };
+  const c = { adsenseClient: "", adSlot: "", adSlotInline: "", ga4Id: "", googleClientId: "", contactWhatsapp: "", contactEmail: "", siteUrl: "", playUrl: "" };
+  const map = { adsenseClient: "ADSENSE_CLIENT", adSlot: "ADSENSE_SLOT", adSlotInline: "ADSENSE_SLOT_INLINE", ga4Id: "GA4_ID", googleClientId: "GOOGLE_CLIENT_ID", contactWhatsapp: "CONTACT_WHATSAPP", contactEmail: "CONTACT_EMAIL", siteUrl: "SITE_URL", playUrl: "PLAY_URL" };
   for (const [k, e] of Object.entries(map)) c[k] = (env[e] ?? "").trim();
   c.siteUrl = normUrl(c.siteUrl);
+  c.contactWhatsapp = c.contactWhatsapp.replace(/\D/g, "");
+  if (!/^\d{8,15}$/.test(c.contactWhatsapp)) c.contactWhatsapp = "";
+  if (!/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(c.contactEmail)) c.contactEmail = "";
   return `// Generado en el despliegue desde variables públicas (no son secretos).\nwindow.MICROAPPS_CONFIG = window.MICROAPPS_CONFIG || ${JSON.stringify(c)};\n`;
 }
 

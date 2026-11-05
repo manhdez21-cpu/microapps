@@ -20,7 +20,7 @@ describe("monetize", () => {
 import { adPlacements, needsConsent } from "../src/monetize.ts";
 import { appFromPath, ga4Enabled, nextVisits, parseVisits } from "../src/analytics.ts";
 import { backupState, cloudEnabled, cloudFileName, driveFind, driveLoad, driveSave, fingerprint, sinceText } from "../src/cloud.ts";
-import { othersThan, shareText, whatsappUrl, APPS, relatedFor, RELATED } from "../src/growth.ts";
+import { feedbackUrl, othersThan, shareText, whatsappUrl, APPS, relatedFor, RELATED } from "../src/growth.ts";
 describe("anuncios sin invadir", () => {
   it("máximo dos anuncios; uno solo en la app instalada", () => {
     assert.deepEqual(adPlacements(false), ["tool", "end"]);
@@ -128,5 +128,14 @@ describe("aviso de respaldo", () => {
     assert.equal(sinceText("2026-10-26T12:00:00Z", now), "hace 10 días");
     assert.equal(sinceText("2026-08-01T12:00:00Z", now), "hace 3 meses");
     assert.equal(sinceText("no-fecha", now), "hace un tiempo");
+  });
+});
+
+describe("sugerencias", () => {
+  it("prefiere WhatsApp, cae a correo y no inventa enlaces", () => {
+    assert.match(feedbackUrl({ contactWhatsapp: "573001112233", contactEmail: "a@b.co" }, "Caja Clara")!, /^https:\/\/wa\.me\/573001112233\?text=.*Caja%20Clara/);
+    assert.match(feedbackUrl({ contactEmail: "a@b.co" }, "X")!, /^mailto:a@b\.co\?subject=/);
+    assert.equal(feedbackUrl({ contactWhatsapp: "abc" }, "X"), null);
+    assert.equal(feedbackUrl(undefined, "X"), null);
   });
 });

@@ -57,3 +57,13 @@ tbody th a { color: var(--accent); }
 .app-card h3 a { color: var(--accent); }
 .chips { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-bottom: 0.75rem; }
 .chipset { display: flex; flex-direction: column; gap: 0.15rem; }
+
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 0.5rem 0.6rem; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
+th[scope="row"], thead th:first-child { text-align: left; }
+tbody tr:last-child { font-weight: 700; }
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+.bars li { display: grid; grid-template-columns: 3.2rem 1fr auto; gap: 0.5rem; align-items: center; font-size: 0.8rem; }
+.bar-fill { height: 0.7rem; background: var(--accent); border-radius: 3px; min-width: 2px; }
+.bars .d, .bars .v { color: var(--ink-soft); }

@@ -105,3 +105,6 @@ Formato: fecha · decisión · motivo · alternativas · estado.
 - Se activa con la variable pública `GOOGLE_CLIENT_ID` (ID de cliente OAuth web, origen autorizado https://chispatools.com + Google Drive API habilitada). Sin ella, el botón no aparece.
 - Estado: Implementado y probado con Drive simulado; Pendiente de credenciales reales (ID de cliente) y no verificado contra Google.
 - No cubre sincronización en vivo ni notificaciones con la app cerrada (requeriría servidor).
+
+## D-022 Panel de negocio privado
+Pestaña «Negocio» en el Control Center (por app + total: usuarios, visitas, ingresos AdSense vía GA4, RPM, eventos propios, serie diaria, Search Console). Datos de `tools/fetch-metrics.mjs` (cuenta de servicio, solo lectura). Workflow diario `panel.yml` publica en Cloudflare Pages tras Cloudflare Access (panel.chispatools.com); sin secretos no hace nada y nunca va a GitHub Pages. Sin datos reales muestra «Pendiente»; no verificado contra Google real (solo simulado).

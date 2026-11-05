@@ -11,6 +11,13 @@ export const APPS: AppLink[] = [
 ];
 export const othersThan = (slug: string): AppLink[] => APPS.filter((a) => a.slug !== slug);
 export const shareText = (title: string, url: string): string => `Mira esta herramienta gratis: ${title} ${url}`;
+/** Enlace para sugerencias o errores: WhatsApp si hay número configurado; si no, correo. Sin datos de la persona. */
+export function feedbackUrl(cfg: { contactWhatsapp?: string; contactEmail?: string } | undefined, appName: string): string | null {
+  const msg = `Hola, quiero sugerir una mejora o reportar un error en ${appName}: `;
+  if (cfg?.contactWhatsapp && /^\d{8,15}$/.test(cfg.contactWhatsapp)) return `https://wa.me/${cfg.contactWhatsapp}?text=${encodeURIComponent(msg)}`;
+  if (cfg?.contactEmail) return `mailto:${cfg.contactEmail}?subject=${encodeURIComponent(`Sugerencia: ${appName}`)}&body=${encodeURIComponent(msg)}`;
+  return null;
+}
 export const whatsappUrl = (text: string): string => `https://wa.me/?text=${encodeURIComponent(text)}`;
 
 /** Una sola sugerencia por app, con una frase contextual. */
@@ -52,7 +59,20 @@ function init(): void {
     else window.open(whatsappUrl(text), "_blank", "noopener");
   };
   row.appendChild(btn);
+  const fb = feedbackUrl((window as any).MICROAPPS_CONFIG, document.title.split(":")[0]!.trim());
+  if (fb) {
+    const a = document.createElement("a"); a.href = fb; a.target = "_blank"; a.rel = "noopener"; a.className = "button";
+    a.textContent = "Sugerir una mejora o reportar un error"; a.setAttribute("data-track", "feedback_click"); a.setAttribute("data-testid", "feedback");
+    row.appendChild(a);
+  }
   sec.appendChild(row);
+  const foot = document.querySelector(".site-foot");
+  if (foot && !foot.querySelector("[data-testid=legal-links]")) {
+    const sp = document.createElement("span"); sp.setAttribute("data-testid", "legal-links"); sp.append(" · ");
+    const pv = document.createElement("a"); pv.href = new URL("../../privacidad.html", document.baseURI).href; pv.textContent = "Privacidad";
+    const tm = document.createElement("a"); tm.href = new URL("../../terminos.html", document.baseURI).href; tm.textContent = "Términos de uso";
+    sp.append(pv, " · ", tm); foot.append(sp);
+  }
   (main.querySelector(".prose") ?? main).after(sec);
 }
 if (typeof document !== "undefined") init();

@@ -116,6 +116,19 @@ await step("cada app sugiere una sola app relacionada (solo en la web) y permite
   await page.getByTestId("share-app").click();
   assert.match(await page.evaluate(() => window.__opened), /^https:\/\/wa\.me\/\?text=.*huella-al-dia/);
 });
+await step("sugerencias por WhatsApp (si hay número), y enlaces a privacidad y términos", async () => {
+  const c = await browser.newContext(); await c.addInitScript(() => { window.MICROAPPS_CONFIG = { adsenseClient: "", adSlot: "", adSlotInline: "", ga4Id: "", googleClientId: "", contactWhatsapp: "573001112233", contactEmail: "", siteUrl: "", playUrl: "" }; });
+  const page = await c.newPage(); await page.goto(`${base}/apps/priceright/index.html`);
+  const href = await page.getByTestId("feedback").getAttribute("href");
+  assert.match(href, /^https:\/\/wa\.me\/573001112233\?text=.*PriceRight/);
+  const links = await page.$$eval("[data-testid=legal-links] a", (a) => a.map((x) => x.getAttribute("href")));
+  assert.equal(links.length, 2);
+  assert.equal((await page.request.get(`${base}/terminos.html`)).status(), 200);
+  assert.equal((await page.request.get(`${base}/privacidad.html`)).status(), 200);
+  const p2 = await (await browser.newContext()).newPage(); await p2.goto(`${base}/apps/priceright/index.html`);
+  assert.equal(await p2.getByTestId("feedback").count(), 0, "sin contacto configurado no hay botón");
+  await c.close();
+});
 await step("las 7 apps son instalables: manifest, iconos y service worker", async () => {
   const { page } = await newPage();
   for (const app of ["splitflow", "caja-clara", "priceright", "cuanto-me-sobra", "expiryhub", "warranty-keeper", "huella-al-dia"]) {

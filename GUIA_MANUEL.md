@@ -38,6 +38,21 @@ Nota: `robots.txt`, `ads.txt` y `sitemap.xml` solo cuentan si están en la **ra�
 3. Para ver las cifras **en tu panel**: en Google Cloud crea una cuenta de servicio (gratis), dale rol Lector en la propiedad de GA4 y guarda su JSON en tu PC. Luego `GA4_PROPERTY_ID=… GOOGLE_APPLICATION_CREDENTIALS=ruta.json node tools/fetch-metrics.mjs` escribe `metrics.json` y el panel muestra visitas, usuarios, los que regresan e ingresos. El JSON no se sube a ningún lado ni me lo pases por el chat.
 4. En AdSense, vincula la cuenta a GA4 (Administrador → Vínculos) para que los ingresos aparezcan en el panel.
 
+## 4b. Panel de negocio privado (ingresos, usuarios, por app; se actualiza a diario)
+
+Lo hace todo el workflow `panel.yml`; tú solo creas cuentas y pegas 4 secretos. Se puede hacer desde el celular.
+
+1. **AdSense → GA4**: en AdSense, Cuenta → Vinculación → Google Analytics → vincula la propiedad G-PE91ZVWREB. Así los ingresos aparecen en el panel.
+2. **Cuenta de servicio** (console.cloud.google.com): proyecto nuevo → APIs: activa «Google Analytics Data API» y «Search Console API» → IAM → Cuentas de servicio → Crear → Claves → Agregar clave → JSON (se descarga). **No lo pegues en el chat.**
+3. Copia el correo de esa cuenta (termina en `iam.gserviceaccount.com`) y agrégala: en GA4 (Administrar → Acceso a la propiedad) con rol **Lector**; en Search Console (Configuración → Usuarios) con permiso **Restringido**.
+4. En GA4 Administrar → Detalles de la propiedad copia el **ID de propiedad** (solo números).
+5. **Cloudflare** (gratis): Workers y Pages → Crear → Pages → Subida directa → proyecto `chispa-panel`. Perfil → Tokens de API → crear con permiso «Cloudflare Pages: Edit». Copia también el Account ID.
+6. En GitHub (repo → Settings → Secrets → Actions) crea: `GA4_PROPERTY_ID`, `GA_SERVICE_ACCOUNT_JSON` (contenido completo del JSON), `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
+7. Dominio privado: en Pages → chispa-panel → Dominios personalizados → `panel.chispatools.com`. Luego Zero Trust → Access → Aplicaciones → agrega ese dominio con regla «Emails: tu Gmail». Sin este paso el panel sería público: **no lo omitas**.
+8. Actions → panel → Run workflow. Desde entonces se actualiza solo cada día (~4:17 a. m. Colombia). Entra a panel.chispatools.com desde celular o PC con tu Gmail.
+
+Lo que NO muestra aún: instalaciones de Google Play (la app no está publicada) y datos de AdSense con más detalle que el que pasa por GA4.
+
 ## 5. Anuncios web con Google AdSense
 1. https://adsense.google.com con tu cuenta de Google; añade tu dominio.
 2. Antes de pedir revisión, escribe el **correo de contacto** en `site/privacidad.html` (hoy dice «pendiente»).

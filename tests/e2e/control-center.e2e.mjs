@@ -54,6 +54,20 @@ await step("con metrics.json real-simulado muestra cifras etiquetadas Real y sin
   assert.match(await page.getByTestId("app-caja-clara").innerText(), /Visitas \(páginas vistas\)\s*Real\s*99/);
   await page.unroute("**/data/metrics.json");
 });
+await step("Negocio: sin datos dice pendiente; con datos muestra tabla por app, total y búsquedas", async () => {
+  await page.goto(`${base}#negocio`); await page.reload();
+  assert.match(await page.getByTestId("negocio").innerText(), /Sin datos: falta conectar Google Analytics/);
+  const row = { views: 99, users: 40, newUsers: 30, returningUsers: 10, adRevenue: 1.25, sessions: 50, adImpressions: 1000, adClicks: 5, events: { share_click: 3, feedback_click: 2, install_click: 4 } };
+  const m = { source: "Google Analytics 4 (API de datos)", fetchedAt: "2026-11-04T12:00:00Z", range: "últimos 28 días", overall: { ...row, adRevenue: 4.5 }, apps: { "caja-clara": row },
+    daily: [{ date: "2026-11-03", users: 5, views: 9, adRevenue: 0.5 }], search: { site: "x", overall: { clicks: 7, impressions: 90, ctr: 7.78, position: 6.1 }, apps: { "caja-clara": { clicks: 7, impressions: 90, ctr: 7.78, position: 6.1 } }, queries: [{ query: "dividir gastos", clicks: 7, impressions: 90, position: 6.1 }] } };
+  await page.route("**/data/metrics.json", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(m) }));
+  await page.reload();
+  await page.getByTestId("neg-table").waitFor();
+  const t = await page.getByTestId("negocio").innerText();
+  assert.match(t, /Caja Clara\s+40\s+30\s+10\s+99\s+1\.25\s+1\.25/);
+  assert.match(t, /Total/); assert.match(t, /dividir gastos/); assert.match(t, /11-03/);
+  await page.unroute("**/data/metrics.json");
+});
 await step("operaciones lista pruebas por paquete sin fallos", async () => {
   await page.getByRole("link", { name: "Operaciones" }).click();
   await page.getByTestId("test-rows").waitFor();

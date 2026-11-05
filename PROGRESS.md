@@ -33,3 +33,5 @@
 - GA4 configurado (G-PE91ZVWREB, en el workflow). Search Console verificado (etiqueta en la portada) y sitemap enviado.
 - Pendiente de Manuel: correo de contacto en privacidad, dominio propio, AdSense (luego ADSENSE_CLIENT/ADSENSE_SLOT), confirmar datos en Tiempo real de GA4.
 - Dominio chispatools.com comprado en Cloudflare (renovación USD 11,17/año, vence 2027-11-04), DNS hacia GitHub Pages, HTTPS activo. SITE_URL del despliegue = https://chispatools.com. Enlaces cortos /<app>/.
+
+- Panel de negocio (D-022): pestaña Negocio, fetch-metrics ampliado, panel.yml, guía 4b. Pendiente de Manuel: cuenta de servicio, secretos, Cloudflare Pages + Access, vincular AdSense a GA4. Sugerencias/WhatsApp y Términos publicados en código.
