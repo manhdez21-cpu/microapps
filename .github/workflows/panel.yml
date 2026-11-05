@@ -28,7 +28,10 @@ jobs:
           node tools/gen-status.mjs
           node tools/fetch-metrics.mjs
           rm -rf panel-dist && mkdir panel-dist
-          cp -r dist/apps/control-center/. panel-dist/
+          mkdir -p panel-dist/apps panel-dist/packages
+          cp -r dist/apps/control-center panel-dist/apps/
+          cp -r dist/packages/ui panel-dist/packages/
+          printf '/ /apps/control-center/ 302\n' > panel-dist/_redirects
       - name: Publicar en Cloudflare Pages
         if: steps.gate.outputs.ok == 'true'
         run: npx --yes wrangler@3 pages deploy panel-dist --project-name=chispa-panel --branch=main
