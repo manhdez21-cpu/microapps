@@ -30,6 +30,7 @@ jobs:
           rm -rf panel-dist && mkdir panel-dist
           mkdir -p panel-dist/apps panel-dist/packages
           cp -r dist/apps/control-center panel-dist/apps/
+          cp apps/control-center/data/metrics.json panel-dist/apps/control-center/data/metrics.json
           cp -r dist/packages/ui panel-dist/packages/
           printf '/ /apps/control-center/ 302\n' > panel-dist/_redirects
       - name: Publicar en Cloudflare Pages

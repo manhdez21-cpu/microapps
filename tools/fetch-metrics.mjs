@@ -13,6 +13,8 @@ let sa;
 try { sa = JSON.parse(inline ?? readFileSync(path, "utf8")); } catch { console.error("La cuenta de servicio no es un JSON válido."); process.exit(1); }
 if (!sa.client_email || !sa.private_key) { console.error("Al JSON de la cuenta de servicio le faltan client_email o private_key."); process.exit(1); }
 const out = new URL("../apps/control-center/data/metrics.json", import.meta.url);
-const data = await fetchMetrics(sa, id, fetch, new Date(), process.env.SEARCH_CONSOLE_SITE || "sc-domain:chispatools.com");
+const sites = process.env.SEARCH_CONSOLE_SITE ? [process.env.SEARCH_CONSOLE_SITE] : ["sc-domain:chispatools.com", "https://chispatools.com/", "https://www.chispatools.com/"];
+let data;
+for (const site of sites) { data = await fetchMetrics(sa, id, fetch, new Date(), site); if (data.search) break; }
 writeFileSync(out, JSON.stringify(data, null, 2) + "\n");
 console.log(`metrics.json: ${data.overall.views} vistas y ${data.overall.users} usuarios (${data.range}). Search Console: ${data.search ? "ok" : `no disponible (${data.searchError})`}.`);
