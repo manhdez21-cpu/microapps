@@ -5,6 +5,11 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const BASE = process.env.SITE_URL || "https://chispatools.com";
+// El teléfono es dato personal: se pasa por variable de entorno y las salidas van a promo-out/ (ignorado por git).
+const PHONE = process.env.PROMO_PHONE;
+if (!PHONE) throw new Error("Define PROMO_PHONE (ej. PROMO_PHONE='+57 316 549 1367')");
+const OUT = "promo-out";
+const WA = `<svg viewBox="0 0 24 24" width="76" height="76" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="#25D366"/><path d="M12 3.6a8.4 8.4 0 0 0-7.2 12.7L3.7 20.3l4.1-1.1A8.4 8.4 0 1 0 12 3.6z" fill="none" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/><path transform="translate(6.3 6.1) scale(.5)" fill="#fff" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>`;
 const APPS = [
   { id: "splitflow", name: "SplitFlow", sub: "Dividir Cuentas", color: "#3a3fc4", tag: "Divide gastos y ve quién paga a quién", who: "Viajes, casa compartida, salidas con amigos" },
   { id: "caja-clara", name: "Caja Clara", sub: "Cierre de caja", color: "#8a4a0f", tag: "Cierra la caja del día sin sufrir", who: "Tiendas, puestos y negocios pequeños" },
@@ -38,9 +43,10 @@ const estadoHtml = (a) => `<html><body style="margin:0;width:1080px;height:1920p
 <div style="padding:46px 80px 0;font-size:50px;line-height:1.2;font-weight:700">${esc(a.tag)}</div>
 <div style="padding:34px 80px 0;display:flex;flex-direction:column;gap:18px">${FEATS[a.id].map((f) => `<div style="display:flex;align-items:center;gap:22px;background:rgba(255,255,255,.14);border-radius:26px;padding:22px 28px"><div style="width:48px;height:48px;border-radius:50%;background:#fff;color:${a.color};font-size:32px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none">✓</div><div style="font-size:36px">${esc(f)}</div></div>`).join("")}</div>
 <div style="position:absolute;left:290px;top:880px;width:500px;height:730px;border-radius:56px;background:#111;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.45)"><div style="width:100%;height:100%;border-radius:46px;overflow:hidden;background:#fff"><img src="${img(`docs/play/${a.id}/captura-4.png`)}" style="width:100%;display:block"></div></div>
-<div style="position:absolute;left:0;right:0;bottom:0;height:260px;background:rgba(0,0,0,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center">
-<div style="font-size:34px;opacity:.9">100 % gratis · sin registro · funciona en tu celular</div>
-<div style="font-size:46px;font-weight:700;background:#fff;color:${a.color};padding:14px 40px;border-radius:60px">Escríbeme y te envío la guía en PDF</div></div></body></html>`;
+<div style="position:absolute;left:0;right:0;bottom:0;height:300px;background:rgba(0,0,0,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center">
+<div style="font-size:30px;opacity:.9">Pruébala gratis, sin registro:</div>
+<div style="font-size:50px;font-weight:700;background:#fff;color:${a.color};padding:12px 44px;border-radius:60px">${esc(link(a))}</div>
+<div style="display:flex;align-items:center;gap:20px;font-size:33px"><span style="display:flex">${WA}</span><span>Escríbeme para la guía en PDF · <b>${esc(PHONE)}</b></span></div></div></body></html>`;
 
 const pdfHtml = (a) => `<html><body style="margin:0;${font};color:#1c1c1c;background:#fff;width:1200px">
 <div style="background:${a.color};color:#fff;padding:70px 70px 54px"><div style="font-size:24px;opacity:.8;letter-spacing:2px">GRATIS · SIN REGISTRO · TUS DATOS EN TU CELULAR</div>
@@ -50,21 +56,22 @@ const pdfHtml = (a) => `<html><body style="margin:0;${font};color:#1c1c1c;backgr
 <div style="padding:30px 70px 0"><div style="font-size:34px;font-weight:700;color:${a.color}">Qué hace</div>
 <ul style="font-size:29px;line-height:1.5;padding-left:36px;margin:14px 0 0">${bullets(a.id).map((b) => `<li>${esc(b)}</li>`).join("")}</ul>
 <div style="font-size:27px;margin-top:26px;color:#555">Ideal para: ${esc(a.who)}.</div></div>
-<div style="margin:44px 70px 60px;padding:34px;border-radius:26px;background:${a.color};color:#fff;text-align:center"><div style="font-size:28px;opacity:.9">Ábrela ahora en tu celular, sin instalar nada</div>
-<div style="font-size:54px;font-weight:700;margin-top:8px">${esc(link(a))}</div></div></body></html>`;
+<div style="margin:44px 70px 30px;padding:34px;border-radius:26px;background:${a.color};color:#fff;text-align:center"><div style="font-size:28px;opacity:.9">Ábrela ahora en tu celular, sin instalar nada</div>
+<div style="font-size:54px;font-weight:700;margin-top:8px">${esc(link(a))}</div></div>
+<div style="margin:0 70px 60px;display:flex;align-items:center;gap:22px;font-size:30px;color:#1c1c1c"><span style="display:flex">${WA}</span><span>¿Dudas o quieres más guías? Escríbeme por WhatsApp: <b>${esc(PHONE)}</b></span></div></body></html>`;
 
-mkdirSync("docs/promo", { recursive: true });
+mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch();
 for (const a of APPS) {
   if (!existsSync(`docs/play/${a.id}/captura-4.png`)) throw new Error(`faltan capturas de ${a.id}: ejecuta tools/gen-store-kit.mjs`);
   const ctx = await browser.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   const page = await ctx.newPage();
-  await page.setContent(estadoHtml(a)); await page.screenshot({ path: `docs/promo/${a.id}-estado.png` });
+  await page.setContent(estadoHtml(a)); await page.screenshot({ path: `${OUT}/${a.id}-estado.png` });
   await page.setViewportSize({ width: 1200, height: 1800 });
   await page.setContent(pdfHtml(a));
   const h = await page.evaluate(() => document.documentElement.scrollHeight);
-  await page.pdf({ path: `docs/promo/${a.id}.pdf`, width: "1200px", height: `${h}px`, printBackground: true, pageRanges: "1" });
+  await page.pdf({ path: `${OUT}/${a.id}.pdf`, width: "1200px", height: `${h}px`, printBackground: true, pageRanges: "1" });
   await ctx.close();
 }
 await browser.close();
-console.log("promo ok →", APPS.length, "imágenes y PDFs en docs/promo/");
+console.log("promo ok →", APPS.length, "imágenes y PDFs en promo-out/");
