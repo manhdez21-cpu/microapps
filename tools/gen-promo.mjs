@@ -14,23 +14,33 @@ const APPS = [
   { id: "warranty-keeper", name: "Warranty Keeper", sub: "Garantías", color: "#1d3f9c", tag: "Garantías con factura y fecha de fin", who: "Quien compra electrodomésticos y tecnología" },
   { id: "huella-al-dia", name: "Huella al Día", sub: "Mascotas", color: "#0f766e", tag: "El carnet de tu mascota en el celular", who: "Dueños de perros y gatos" },
 ];
+const FEATS = {
+  "splitflow": ["Reparte gastos en partes iguales o por %", "Te dice quién le paga a quién", "Comparte el resumen por WhatsApp"],
+  "caja-clara": ["Cierre de caja: faltante o sobrante", "Control de fiados por cliente", "Reportes por día, semana y mes"],
+  "priceright": ["Suma costos y elige tu ganancia", "Margen vs. recargo, con fórmula", "Cotizaciones para tu cliente"],
+  "cuanto-me-sobra": ["Cerámica, adhesivo y boquilla", "Pintura: litros y latas", "Costo total y lista de materiales"],
+  "expiryhub": ["Avisos de SOAT, seguros y licencias", "Calendario y recordatorios", "Adjunta foto del documento"],
+  "warranty-keeper": ["Fecha de fin de cada garantía", "Factura en foto o PDF", "Avisa antes de que venza"],
+  "huella-al-dia": ["Ficha por mascota", "Vacunas y desparasitación", "Recordatorios de refuerzos"],
+};
 const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const img = (p) => `data:image/png;base64,${readFileSync(p).toString("base64")}`;
 const bullets = (id) => readFileSync(`docs/play/${id}/ficha.md`, "utf8").split("\n").filter((l) => l.startsWith("•")).map((l) => l.slice(1).trim());
 const font = "font-family: 'DejaVu Sans', Arial, sans-serif;";
 const link = (a) => `${BASE.replace(/^https?:\/\//, "")}/${a.id}`;
 
-const estadoHtml = (a) => `<html><body style="margin:0;width:1080px;height:1920px;background:${a.color};${font};color:#fff;position:relative;overflow:hidden">
-<div style="position:absolute;right:-180px;top:-120px;width:620px;height:620px;border-radius:50%;background:#fff;opacity:.07"></div>
-<div style="padding:90px 80px 0"><div style="font-size:30px;opacity:.8;letter-spacing:2px">GRATIS · SIN REGISTRO</div>
-<div style="font-size:${a.name.length > 14 ? 82 : 104}px;font-weight:700;margin-top:22px;line-height:1.05">${esc(a.name)}</div>
-<div style="font-size:40px;opacity:.9;margin-top:10px">${esc(a.sub)}</div>
-<div style="font-size:46px;margin-top:44px;line-height:1.25;max-width:900px">${esc(a.tag)}</div></div>
-<div style="position:absolute;left:210px;top:560px;width:660px;height:1100px;border-radius:64px;background:#111;padding:14px;box-shadow:0 30px 80px rgba(0,0,0,.35)">
-<div style="width:100%;height:100%;border-radius:52px;overflow:hidden;background:#fff"><img src="${img(`docs/play/${a.id}/captura-4.png`)}" style="width:100%;display:block"></div></div>
-<div style="position:absolute;left:0;right:0;bottom:0;height:200px;background:rgba(0,0,0,.22);display:flex;flex-direction:column;align-items:center;justify-content:center">
-<div style="font-size:30px;opacity:.85">Pruébala en tu celular, sin instalar nada</div>
-<div style="font-size:48px;font-weight:700;margin-top:10px">${esc(link(a))}</div></div></body></html>`;
+const estadoHtml = (a) => `<html><body style="margin:0;width:1080px;height:1920px;background:linear-gradient(160deg,${a.color} 0%,#0d1b2a 140%);${font};color:#fff;position:relative;overflow:hidden">
+<div style="position:absolute;right:-200px;top:-160px;width:700px;height:700px;border-radius:50%;background:#fff;opacity:.07"></div>
+<div style="position:absolute;left:-220px;bottom:300px;width:560px;height:560px;border-radius:50%;background:#fff;opacity:.05"></div>
+<div style="padding:80px 80px 0;display:flex;align-items:center;gap:36px">
+<img src="${img(`docs/play/${a.id}/icono-512.png`)}" style="width:190px;height:190px;border-radius:44px;box-shadow:0 18px 50px rgba(0,0,0,.35)">
+<div><div style="font-size:${a.name.length > 14 ? 68 : 88}px;font-weight:700;line-height:1.05">${esc(a.name)}</div><div style="font-size:38px;opacity:.9;margin-top:8px">${esc(a.sub)}</div></div></div>
+<div style="padding:46px 80px 0;font-size:50px;line-height:1.2;font-weight:700">${esc(a.tag)}</div>
+<div style="padding:34px 80px 0;display:flex;flex-direction:column;gap:18px">${FEATS[a.id].map((f) => `<div style="display:flex;align-items:center;gap:22px;background:rgba(255,255,255,.14);border-radius:26px;padding:22px 28px"><div style="width:48px;height:48px;border-radius:50%;background:#fff;color:${a.color};font-size:32px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none">✓</div><div style="font-size:36px">${esc(f)}</div></div>`).join("")}</div>
+<div style="position:absolute;left:290px;top:880px;width:500px;height:730px;border-radius:56px;background:#111;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.45)"><div style="width:100%;height:100%;border-radius:46px;overflow:hidden;background:#fff"><img src="${img(`docs/play/${a.id}/captura-4.png`)}" style="width:100%;display:block"></div></div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:260px;background:rgba(0,0,0,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center">
+<div style="font-size:34px;opacity:.9">100 % gratis · sin registro · funciona en tu celular</div>
+<div style="font-size:46px;font-weight:700;background:#fff;color:${a.color};padding:14px 40px;border-radius:60px">Escríbeme y te envío la guía en PDF</div></div></body></html>`;
 
 const pdfHtml = (a) => `<html><body style="margin:0;${font};color:#1c1c1c;background:#fff;width:1200px">
 <div style="background:${a.color};color:#fff;padding:70px 70px 54px"><div style="font-size:24px;opacity:.8;letter-spacing:2px">GRATIS · SIN REGISTRO · TUS DATOS EN TU CELULAR</div>

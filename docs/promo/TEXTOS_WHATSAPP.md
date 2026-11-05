@@ -1,24 +1,33 @@
-# Textos para estados y grupos de WhatsApp
+# Cómo publicar en estados de WhatsApp
 
-Usa la imagen `<app>-estado.png` como estado (vertical, 1080×1920) y pega el texto. El PDF `<app>.pdf` es para enviar por chat o grupos.
-Consejo: una app por estado, no todas el mismo día. En grupos, comparte solo cuando venga al caso y no lo repitas.
+**Idea:** la imagen del estado muestra qué hace la app y dice "Escríbeme y te envío la guía en PDF". Quien se interese te escribe, y tú le envías el PDF de esa app (y el enlace).
 
-**SplitFlow** — ¿Viaje o casa compartida y nadie sabe quién pagó qué? 🧾 Anota los gastos y la app te dice quién le paga a quién. Gratis, sin registro: chispatools.com/splitflow
+## Pasos
+1. Estado → imagen `<app>-estado.png` (vertical).
+2. Pega el texto de abajo como pie de la imagen.
+3. Cuando alguien responda, envíale `<app>.pdf` y su enlace.
+4. Una app por día, no todas juntas.
 
-**Caja Clara** — Si tienes negocio: cierra la caja del día y mira en segundos si te falta o te sobra plata. 💵 Controla también los fiados por cliente. Gratis: chispatools.com/caja-clara
+## Textos para el estado (pie de la imagen)
 
-**PriceRight** — ¿Cuánto cobrar por tu trabajo sin regalarlo? 💪 Suma tus costos, elige tu ganancia y mira el precio justo, con la fórmula a la vista. Gratis: chispatools.com/priceright
+**SplitFlow** — ¿Viaje, casa compartida o salida con amigos? 🧾 Te muestro cómo dividir los gastos y saber quién le paga a quién. Es gratis. Escríbeme y te envío la guía en PDF 📲
 
-**¿Cuánto me sobra?** — Vas a remodelar: calcula cuánta cerámica, adhesivo, boquilla o pintura comprar, con desperdicio y costo total. 🧱 Gratis: chispatools.com/cuanto-me-sobra
+**Caja Clara** — ¿Tienes un negocio? 💵 Cierra la caja del día y mira si te falta o te sobra, y controla los fiados por cliente. Gratis. Escríbeme y te envío la guía en PDF 📲
 
-**ExpiryHub** — No dejes vencer el SOAT, el seguro o la licencia. ⏰ Te avisa con la anticipación que elijas. Gratis, tus datos quedan en tu celular: chispatools.com/expiryhub
+**PriceRight** — ¿Sabes cuánto cobrar por tu trabajo sin regalarlo? 💪 Calcula tu precio justo con tu ganancia real. Gratis. Escríbeme y te envío la guía en PDF 📲
 
-**Warranty Keeper** — Guarda las garantías con la foto de la factura y mira cuándo terminan, para reclamar a tiempo. 🧾 Gratis: chispatools.com/warranty-keeper
+**¿Cuánto me sobra?** — ¿Vas a remodelar? 🧱 Calcula cuánta cerámica, adhesivo, boquilla o pintura comprar, con costo total. Gratis. Escríbeme y te envío la guía en PDF 📲
 
-**Huella al Día** — El carnet de vacunas de tu mascota en el celular, con recordatorios de refuerzos. 🐶🐱 Gratis: chispatools.com/huella-al-dia
+**ExpiryHub** — ¿Se te pasa el SOAT, el seguro o la licencia? ⏰ Te avisa antes de que venzan. Gratis. Escríbeme y te envío la guía en PDF 📲
+
+**Warranty Keeper** — ¿Dónde quedó la factura de esa garantía? 🧾 Guárdala con foto y mira cuándo termina. Gratis. Escríbeme y te envío la guía en PDF 📲
+
+**Huella al Día** — El carnet de vacunas de tu mascota en el celular, con recordatorios. 🐶🐱 Gratis. Escríbeme y te envío la guía en PDF 📲
+
+## Mensaje cuando te escriban (respuesta rápida)
+"¡Hola! Te envío la guía en PDF de <app>. Puedes probarla gratis aquí, sin registro: chispatools.com/<app> 🙌"
+
+Enlaces: chispatools.com/splitflow · /caja-clara · /priceright · /cuanto-me-sobra · /expiryhub · /warranty-keeper · /huella-al-dia
 
 ## Para grupos (una línea, sin presión)
 "Les comparto una herramienta gratis que me pareció útil para esto: <enlace de la app>"
-
-## Guías (traen visitas desde Google y sirven para compartir)
-Todas están en chispatools.com (sección Guías).
