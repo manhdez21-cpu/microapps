@@ -19,7 +19,7 @@ describe("monetize", () => {
 
 import { adPlacements, needsConsent } from "../src/monetize.ts";
 import { appFromPath, ga4Enabled, nextVisits, parseVisits } from "../src/analytics.ts";
-import { cloudEnabled, cloudFileName, driveFind, driveLoad, driveSave } from "../src/cloud.ts";
+import { backupState, cloudEnabled, cloudFileName, driveFind, driveLoad, driveSave, fingerprint, sinceText } from "../src/cloud.ts";
 import { othersThan, shareText, whatsappUrl, APPS, relatedFor, RELATED } from "../src/growth.ts";
 describe("anuncios sin invadir", () => {
   it("máximo dos anuncios; uno solo en la app instalada", () => {
@@ -107,5 +107,26 @@ describe("respaldo en Google Drive", () => {
   });
   it("un token rechazado da un mensaje claro", async () => {
     await assert.rejects(driveSave("malo", "x", "{}", fakeDrive().f), /no autorizó/);
+  });
+});
+describe("aviso de respaldo", () => {
+  it("la huella cambia solo si cambian los datos", () => {
+    assert.equal(fingerprint(["a", null]), fingerprint(["a", null]));
+    assert.notEqual(fingerprint(["a", null]), fingerprint(["a", "b"]));
+    assert.notEqual(fingerprint(["ab", ""]), fingerprint(["a", "b"]));
+  });
+  it("estado: sin respaldo, al día o con cambios", () => {
+    const f = fingerprint(["x"]);
+    assert.equal(backupState(null, f), "none");
+    assert.equal(backupState({ h: f }, f), "synced");
+    assert.equal(backupState({ h: f }, fingerprint(["y"])), "dirty");
+  });
+  it("texto de tiempo en español", () => {
+    const now = new Date("2026-11-05T12:00:00Z");
+    assert.equal(sinceText("2026-11-05T01:00:00Z", now), "hoy");
+    assert.equal(sinceText("2026-11-04T01:00:00Z", now), "ayer");
+    assert.equal(sinceText("2026-10-26T12:00:00Z", now), "hace 10 días");
+    assert.equal(sinceText("2026-08-01T12:00:00Z", now), "hace 3 meses");
+    assert.equal(sinceText("no-fecha", now), "hace un tiempo");
   });
 });

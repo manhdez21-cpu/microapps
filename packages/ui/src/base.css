@@ -142,3 +142,8 @@ button:hover { filter: brightness(0.97); }
 .cloud-alt { flex: 1 1 10rem; min-height: 48px; }
 .cloud-status { margin: 0; min-height: 1.2em; }
 @media (min-width: 900px) { .cloud-card { grid-template-columns: minmax(0, 1fr) minmax(0, 24rem); align-items: center; column-gap: 1.5rem; } .cloud-actions { flex-direction: column; } .cloud-main, .cloud-alt { flex: 0 0 auto; width: 100%; } .cloud-status { grid-column: 1 / -1; } }
+.cloud-sync { margin: 0.2rem 0 0; font-weight: 600; font-size: 0.9rem; }
+.cloud-card[data-state="dirty"] .cloud-sync, .cloud-card[data-state="none"] .cloud-sync { color: var(--minus); }
+.cloud-card[data-state="synced"] .cloud-sync { color: var(--plus); }
+.cloud-auto { display: flex; gap: 0.5rem; align-items: flex-start; font-weight: 400; font-size: 0.85rem; flex: 1 1 100%; margin: 0.2rem 0 0; }
+.cloud-auto input { width: 1.25rem; height: 1.25rem; margin-top: 0.1rem; flex: none; }

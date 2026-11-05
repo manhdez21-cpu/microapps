@@ -1,6 +1,6 @@
 import { getFile, putFile } from "./blobs.ts";
 import { h } from "./dom.ts";
-import { cloudEnabled, driveLoad, driveSave, requestToken } from "./cloud.ts";
+import { backupState, cloudEnabled, driveLoad, driveSave, fingerprint, requestToken, sessionToken, sinceText } from "./cloud.ts";
 
 /** Respaldo en un archivo .json: copia de los datos de la app (y de sus adjuntos) para cambiar de teléfono o recuperar datos borrados. */
 export interface Backup { app: string; version: 1; exportedAt: string; data: Record<string, string>; blobs: Record<string, string> }
@@ -62,7 +62,7 @@ export function backupPanel(o: BackupOptions): HTMLElement {
           const text = await createBackup(o);
           const url = URL.createObjectURL(new Blob([text], { type: "application/json" }));
           const a = h("a", { href: url, download: o.fileName ?? `respaldo-${o.app}.json` }); document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
-          say("Respaldo descargado.");
+          markBackup(o); say("Respaldo descargado."); refreshCard();
         } catch (e) { say((e as Error).message); }
       } }, "Descargar respaldo"),
       h("label", { class: "button attach" }, "Restaurar respaldo", h("input", { type: "file", accept: "application/json,.json", "data-testid": "backup-file", onChange: async (e: Event) => {
@@ -74,38 +74,78 @@ export function backupPanel(o: BackupOptions): HTMLElement {
     status);
 }
 
-/** Tarjeta visible (arriba de la app) para guardar/restaurar en el Google Drive de la persona. Solo existe si hay ID de cliente configurado. */
+/** Último respaldo (archivo o Drive) y huella de los datos en ese momento, para avisar de cambios sin respaldar. */
+const lastKey = (app: string) => `microapps.backup.v1.${app}`;
+const autoKey = (app: string) => `microapps.autosave.v1.${app}`;
+const safeGet = (k: string): string | null => { try { return localStorage.getItem(k); } catch { return null; } };
+const safeSet = (k: string, v: string) => { try { localStorage.setItem(k, v); } catch { /* sin almacenamiento */ } };
+const currentFp = (o: BackupOptions) => fingerprint(o.keys.map((k) => safeGet(k)));
+const readLast = (app: string): { t: string; h: string } | null => { try { const v = JSON.parse(safeGet(lastKey(app)) ?? "null"); return v && typeof v.t === "string" && typeof v.h === "string" ? v : null; } catch { return null; } };
+function markBackup(o: BackupOptions): void { safeSet(lastKey(o.app), JSON.stringify({ t: new Date().toISOString(), h: currentFp(o) })); }
+
 let current: BackupOptions | null = null;
+let refreshCard: () => void = () => undefined;
 function mountCloudCard(o: BackupOptions): void {
   current = o; // se actualiza en cada dibujo: los adjuntos dependen de los datos actuales
   const clientId = (globalThis as any).MICROAPPS_CONFIG?.googleClientId;
-  if (!cloudEnabled(clientId) || typeof document === "undefined" || document.querySelector('[data-testid="cloud"]')) return;
+  if (!cloudEnabled(clientId) || typeof document === "undefined") return;
+  if (document.querySelector('[data-testid="cloud"]')) { refreshCard(); return; }
   const host = document.querySelector("#app") ?? document.querySelector("main");
   if (!host) return;
+  let saving = false;
   const status = h("p", { class: "hint cloud-status", role: "status", "aria-live": "polite", "data-testid": "cloud-status" });
+  const sync = h("p", { class: "cloud-sync", "data-testid": "cloud-sync" });
   const say = (t: string) => { status.textContent = t; };
-  const busy = (btns: HTMLButtonElement[], on: boolean) => btns.forEach((b) => { b.disabled = on; });
   const save = h("button", { type: "button", class: "primary cloud-main", "data-testid": "cloud-save" }, "☁ Guardar en mi Google Drive") as HTMLButtonElement;
   const restore = h("button", { type: "button", class: "cloud-alt", "data-testid": "cloud-restore" }, "Restaurar desde mi Drive") as HTMLButtonElement;
+  const auto = h("input", { type: "checkbox", "data-testid": "cloud-auto" }) as HTMLInputElement;
   const all = [save, restore];
+  const busy = (on: boolean) => { saving = on; all.forEach((b) => { b.disabled = on; }); };
+  const upload = async (t: string) => { const o2 = current!; await driveSave(t, o2.app, await createBackup(o2)); markBackup(o2); };
+
+  function refresh(): void {
+    const o2 = current!; const last = readLast(o2.app); const st = backupState(last, currentFp(o2));
+    const hasData = o2.keys.some((k) => safeGet(k) !== null);
+    const autoOn = safeGet(autoKey(o2.app)) === "1"; auto.checked = autoOn;
+    card.dataset.state = st;
+    if (!hasData && st === "none") sync.textContent = "Todavía no hay datos para respaldar.";
+    else if (st === "none") sync.textContent = "⚠ Aún no has respaldado tus datos.";
+    else if (st === "synced") sync.textContent = `✓ Todo respaldado (${sinceText(last!.t)}).`;
+    else sync.textContent = `⚠ Tienes cambios sin respaldar (último respaldo: ${sinceText(last!.t)}).`;
+    if (autoOn && st === "dirty" && !saving) {
+      const t = sessionToken();
+      if (t) { busy(true); upload(t).then(() => say("✓ Cambios guardados en tu Drive."), (e) => say((e as Error).message)).finally(() => { busy(false); refresh(); }); }
+      else say("Respaldo automático en pausa: toca «Guardar en mi Google Drive» para reconectar.");
+    }
+  }
+  refreshCard = refresh;
+
   save.onclick = async () => {
-    busy(all, true);
-    try { say("Conectando con Google…"); const t = await requestToken(clientId); await driveSave(t, current!.app, await createBackup(current!)); say("✓ Respaldo guardado en tu Google Drive."); }
-    catch (e) { say((e as Error).message); } finally { busy(all, false); }
+    busy(true);
+    try { say("Conectando con Google…"); const t = await requestToken(clientId); await upload(t); say("✓ Respaldo guardado en tu Google Drive."); }
+    catch (e) { say((e as Error).message); } finally { busy(false); refresh(); }
   };
   restore.onclick = async () => {
-    busy(all, true);
+    busy(true);
     try {
       say("Conectando con Google…"); const t = await requestToken(clientId); const r = await driveLoad(t, current!.app);
       if (!r) { say("No hay un respaldo de esta app en tu Google Drive."); return; }
-      await applyBackup(r.text, current!); say("✓ Restaurado desde tu Drive. Recargando…"); setTimeout(() => location.reload(), 400);
-    } catch (e) { say((e as Error).message); } finally { busy(all, false); }
+      await applyBackup(r.text, current!); markBackup(current!); say("✓ Restaurado desde tu Drive. Recargando…"); setTimeout(() => location.reload(), 400);
+    } catch (e) { say((e as Error).message); } finally { busy(false); refresh(); }
+  };
+  auto.onchange = () => {
+    safeSet(autoKey(current!.app), auto.checked ? "1" : "0");
+    if (auto.checked && !sessionToken()) save.click(); else refresh();
   };
   const card = h("section", { class: "cloud-card", "data-testid": "cloud", "aria-label": "Respaldo en Google Drive" },
     h("div", { class: "cloud-text" },
       h("strong", {}, "No pierdas tus datos"),
-      h("span", {}, "Guárdalos en tu propio Google Drive y recupéralos si cambias de celular o borras el navegador. Opcional; nosotros nunca vemos tus datos.")),
-    h("div", { class: "cloud-actions" }, save, restore),
+      h("span", {}, "Tus datos viven en este dispositivo. Guárdalos en tu propio Google Drive para recuperarlos si cambias de celular o borras el navegador. Opcional; nosotros nunca vemos tus datos."),
+      sync),
+    h("div", { class: "cloud-actions" }, save, restore,
+      h("label", { class: "cloud-auto" }, auto, h("span", {}, "Guardar mis cambios automáticamente (mientras Google siga conectado)"))),
     status);
   host.before(card);
+  refresh();
+  setInterval(refresh, 4000);
 }

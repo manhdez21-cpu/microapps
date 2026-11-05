@@ -52,15 +52,37 @@ function loadGis(): Promise<void> {
   });
   return gis;
 }
-/** Pide permiso a Google (ventana de cuenta). El token no se guarda. */
+/** Token de esta sesión: solo en memoria (nunca se guarda en el navegador). Vence en ~1 hora. */
+let session: { token: string; exp: number } | null = null;
+export const sessionToken = (now = Date.now()): string | null => (session && session.exp - 60_000 > now ? session.token : null);
+/** Pide permiso a Google (ventana de cuenta). */
 export async function requestToken(clientId: string): Promise<string> {
   await loadGis();
   return new Promise<string>((res, rej) => {
     const client = google.accounts.oauth2.initTokenClient({
       client_id: clientId, scope: DRIVE_SCOPE,
-      callback: (r: { access_token?: string; error?: string }) => (r.access_token ? res(r.access_token) : rej(new Error("No se pudo iniciar sesión con Google."))),
+      callback: (r: { access_token?: string; expires_in?: number | string }) => {
+        if (!r.access_token) return rej(new Error("No se pudo iniciar sesión con Google."));
+        session = { token: r.access_token, exp: Date.now() + (Number(r.expires_in) || 3600) * 1000 }; res(r.access_token);
+      },
       error_callback: () => rej(new Error("Se canceló el inicio de sesión de Google.")),
     });
     client.requestAccessToken({ prompt: "" });
   });
 }
+
+/** Huella corta de los datos: sirve para saber si hay cambios sin respaldar (no es seguridad). */
+export function fingerprint(values: readonly (string | null)[]): string {
+  let h = 5381; const text = values.map((v) => v ?? "").join("\u0001");
+  for (let i = 0; i < text.length; i++) h = ((h << 5) + h + text.charCodeAt(i)) | 0;
+  return `${text.length}:${(h >>> 0).toString(36)}`;
+}
+/** «hoy», «ayer», «hace 5 días»… */
+export function sinceText(iso: string, now = new Date()): string {
+  const t = Date.parse(iso); if (!Number.isFinite(t)) return "hace un tiempo";
+  const days = Math.floor((now.getTime() - t) / 86_400_000);
+  if (days <= 0) return "hoy"; if (days === 1) return "ayer"; if (days < 30) return `hace ${days} días`;
+  const m = Math.floor(days / 30); return m === 1 ? "hace 1 mes" : `hace ${m} meses`;
+}
+export type BackupState = "none" | "synced" | "dirty";
+export const backupState = (last: { h: string } | null, current: string): BackupState => (!last ? "none" : last.h === current ? "synced" : "dirty");

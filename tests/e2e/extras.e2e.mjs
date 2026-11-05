@@ -105,9 +105,25 @@ console.log("Respaldo en Google Drive (simulado)");
     await p.waitForTimeout(900);
     assert.equal(await p.getByLabel("Fondo inicial (efectivo con el que abres)").inputValue(), "77000");
   });
+  await step("avisa de cambios sin respaldar y guarda solo con el respaldo automático", async () => {
+    const sync = () => p.getByTestId("cloud-sync").innerText();
+    await p.waitForFunction(() => /Todo respaldado/.test(document.querySelector('[data-testid="cloud-sync"]')?.textContent ?? ""), null, { timeout: 5000 });
+    await p.getByLabel("Fondo inicial (efectivo con el que abres)").fill("88000");
+    await p.waitForFunction(() => /cambios sin respaldar/.test(document.querySelector('[data-testid="cloud-sync"]')?.textContent ?? ""), null, { timeout: 8000 });
+    assert.equal(drive.get("f1").body.includes("88000"), false, "sin automático no sube solo");
+    await p.getByTestId("cloud-auto").check();
+    await p.waitForFunction(() => /Todo respaldado/.test(document.querySelector('[data-testid="cloud-sync"]')?.textContent ?? ""), null, { timeout: 10000 });
+    assert.equal(drive.get("f1").body.includes("88000"), true, "subió el cambio");
+    await p.getByLabel("Fondo inicial (efectivo con el que abres)").fill("91000");
+    await p.waitForTimeout(9000);
+    assert.equal(drive.get("f1").body.includes("91000"), true, "con automático sube los cambios nuevos");
+  });
   await step("sin ID de cliente no aparece el botón de Drive", async () => {
-    const p2 = await ctx.newPage(); await p2.goto(`${B}caja-clara/index.html`);
+    const c3 = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    await c3.addInitScript(() => { window.MICROAPPS_CONFIG = { adsenseClient: "", adSlot: "", adSlotInline: "", ga4Id: "", googleClientId: "", siteUrl: "", playUrl: "" }; });
+    const p2 = await c3.newPage(); await p2.goto(`${B}caja-clara/index.html`);
     assert.equal(await p2.getByTestId("cloud").count(), 0);
+    await c3.close();
   });
   assert.deepEqual(errs, []);
   await c2.close();
