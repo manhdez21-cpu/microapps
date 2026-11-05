@@ -12,6 +12,12 @@ const base = normUrl(process.env.SITE_URL);
 const slugs = files.filter((f) => /^apps\/[a-z0-9-]+\/index\.html$/.test(f)).map((f) => f.split("/")[1]).filter((n) => n !== "control-center");
 for (const slug of slugs) { mkdirSync(join(dist, slug), { recursive: true }); writeFileSync(join(dist, slug, "index.html"), redirectStub(slug)); }
 const notes = [];
+// Verificación de AdSense por meta (no rastrea, y no depende del consentimiento): se añade a todas las páginas públicas si hay ID.
+const adClient = /^ca-pub-\d{10,20}$/.test(process.env.ADSENSE_CLIENT ?? "") ? process.env.ADSENSE_CLIENT : null;
+if (adClient) for (const f of files.filter((f) => f.endsWith(".html") && !f.startsWith("apps/control-center/"))) {
+  const file = join(dist, f); const html = readFileSync(file, "utf8");
+  if (!html.includes("google-adsense-account")) writeFileSync(file, html.replace("</head>", `  <meta name="google-adsense-account" content="${adClient}">\n</head>`));
+}
 
 if (Object.keys(process.env).some((k) => /^(SITE_URL|ADSENSE_|GA4_ID|PLAY_URL)/.test(k))) writeFileSync(join(dist, "site-config.js"), siteConfigJs(process.env));
 if (base && isUrl(base)) {
