@@ -28,6 +28,10 @@ const FEATS = {
   "warranty-keeper": ["Fecha de fin de cada garantía", "Factura en foto o PDF", "Avisa antes de que venza"],
   "huella-al-dia": ["Ficha por mascota", "Vacunas y desparasitación", "Recordatorios de refuerzos"],
 };
+// Captura más vistosa de cada app para el estado: [número de captura, desplazamiento en px]
+const SHOT = { "splitflow": [2, 0], "caja-clara": [4, 170], "priceright": [4, 0], "cuanto-me-sobra": [4, 0], "expiryhub": [3, 0], "warranty-keeper": [3, 0], "huella-al-dia": [3, 0] };
+const CLOUD = "Respaldo opcional en tu Google Drive";
+const extra = (id) => (id === "cuanto-me-sobra" ? "Compártelo por WhatsApp" : CLOUD);
 const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const img = (p) => `data:image/png;base64,${readFileSync(p).toString("base64")}`;
 const bullets = (id) => readFileSync(`docs/play/${id}/ficha.md`, "utf8").split("\n").filter((l) => l.startsWith("•")).map((l) => l.slice(1).trim());
@@ -41,8 +45,8 @@ const estadoHtml = (a) => `<html><body style="margin:0;width:1080px;height:1920p
 <img src="${img(`docs/play/${a.id}/icono-512.png`)}" style="width:190px;height:190px;border-radius:44px;box-shadow:0 18px 50px rgba(0,0,0,.35)">
 <div><div style="font-size:${a.name.length > 14 ? 68 : 88}px;font-weight:700;line-height:1.05">${esc(a.name)}</div><div style="font-size:38px;opacity:.9;margin-top:8px">${esc(a.sub)}</div></div></div>
 <div style="padding:46px 80px 0;font-size:50px;line-height:1.2;font-weight:700">${esc(a.tag)}</div>
-<div style="padding:34px 80px 0;display:flex;flex-direction:column;gap:18px">${FEATS[a.id].map((f) => `<div style="display:flex;align-items:center;gap:22px;background:rgba(255,255,255,.14);border-radius:26px;padding:22px 28px"><div style="width:48px;height:48px;border-radius:50%;background:#fff;color:${a.color};font-size:32px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none">✓</div><div style="font-size:36px">${esc(f)}</div></div>`).join("")}</div>
-<div style="position:absolute;left:290px;top:880px;width:500px;height:730px;border-radius:56px;background:#111;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.45)"><div style="width:100%;height:100%;border-radius:46px;overflow:hidden;background:#fff"><img src="${img(`docs/play/${a.id}/captura-4.png`)}" style="width:100%;display:block"></div></div>
+<div style="padding:34px 80px 0;display:flex;flex-direction:column;gap:14px">${[...FEATS[a.id], extra(a.id)].map((f) => `<div style="display:flex;align-items:center;gap:22px;background:rgba(255,255,255,.14);border-radius:26px;padding:16px 28px"><div style="width:44px;height:44px;border-radius:50%;background:#fff;color:${a.color};font-size:30px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none">✓</div><div style="font-size:34px">${esc(f)}</div></div>`).join("")}</div>
+<div style="position:absolute;left:270px;top:810px;width:540px;height:770px;border-radius:56px;background:#111;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.45)"><div style="width:100%;height:100%;border-radius:46px;overflow:hidden;background:#fff"><img src="${img(`docs/play/${a.id}/captura-${SHOT[a.id][0]}.png`)}" style="width:100%;display:block;margin-top:-${SHOT[a.id][1]}px"></div></div>
 <div style="position:absolute;left:0;right:0;bottom:0;height:300px;background:rgba(0,0,0,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center">
 <div style="font-size:30px;opacity:.9">Pruébala gratis, sin registro:</div>
 <div style="font-size:50px;font-weight:700;background:#fff;color:${a.color};padding:12px 44px;border-radius:60px">${esc(link(a))}</div>
@@ -52,9 +56,9 @@ const pdfHtml = (a) => `<html><body style="margin:0;${font};color:#1c1c1c;backgr
 <div style="background:${a.color};color:#fff;padding:70px 70px 54px"><div style="font-size:24px;opacity:.8;letter-spacing:2px">GRATIS · SIN REGISTRO · TUS DATOS EN TU CELULAR</div>
 <div style="font-size:84px;font-weight:700;margin-top:16px;line-height:1.05">${esc(a.name)} <span style="font-weight:400;font-size:44px;opacity:.9">· ${esc(a.sub)}</span></div>
 <div style="font-size:40px;margin-top:18px">${esc(a.tag)}</div></div>
-<div style="display:flex;gap:30px;padding:56px 70px 20px">${[2, 3, 4].map((n) => `<div style="flex:1;border-radius:34px;background:#111;padding:8px"><div style="border-radius:28px;overflow:hidden;aspect-ratio:1080/1700"><img src="${img(`docs/play/${a.id}/captura-${n}.png`)}" style="width:100%;display:block"></div></div>`).join("")}</div>
+<div style="display:flex;gap:30px;padding:56px 70px 20px">${[1, 3, 4].map((n) => `<div style="flex:1;border-radius:34px;background:#111;padding:8px"><div style="border-radius:28px;overflow:hidden;aspect-ratio:1080/1700"><img src="${img(`docs/play/${a.id}/captura-${n}.png`)}" style="width:100%;display:block"></div></div>`).join("")}</div>
 <div style="padding:30px 70px 0"><div style="font-size:34px;font-weight:700;color:${a.color}">Qué hace</div>
-<ul style="font-size:29px;line-height:1.5;padding-left:36px;margin:14px 0 0">${bullets(a.id).map((b) => `<li>${esc(b)}</li>`).join("")}</ul>
+<ul style="font-size:29px;line-height:1.5;padding-left:36px;margin:14px 0 0">${[...bullets(a.id), ...(a.id === "cuanto-me-sobra" ? [] : [CLOUD + "."])].map((b) => `<li>${esc(b)}</li>`).join("")}</ul>
 <div style="font-size:27px;margin-top:26px;color:#555">Ideal para: ${esc(a.who)}.</div></div>
 <div style="margin:44px 70px 30px;padding:34px;border-radius:26px;background:${a.color};color:#fff;text-align:center"><div style="font-size:28px;opacity:.9">Ábrela ahora en tu celular, sin instalar nada</div>
 <div style="font-size:54px;font-weight:700;margin-top:8px">${esc(link(a))}</div></div>
