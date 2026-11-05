@@ -5,3 +5,4 @@ export * from "./date.ts";
 export * from "./blobs.ts";
 export * from "./backup.ts";
 export * from "./analytics.ts";
+export * from "./cloud.ts";

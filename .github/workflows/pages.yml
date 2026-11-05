@@ -15,6 +15,7 @@ jobs:
       ADSENSE_SLOT: ${{ vars.ADSENSE_SLOT }}
       ADSENSE_SLOT_INLINE: ${{ vars.ADSENSE_SLOT_INLINE }}
       GA4_ID: ${{ vars.GA4_ID || 'G-PE91ZVWREB' }}
+      GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
       PLAY_URL: ${{ vars.PLAY_URL }}
     steps:
       - uses: actions/checkout@v4

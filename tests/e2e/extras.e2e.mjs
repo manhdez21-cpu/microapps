@@ -73,6 +73,47 @@ console.log("SplitFlow");
   });
 }
 
+console.log("Respaldo en Google Drive (simulado)");
+{
+  const ID = "123456789012-abcdefghij0123456789.apps.googleusercontent.com";
+  const c2 = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await c2.addInitScript((id) => { window.MICROAPPS_CONFIG = { adsenseClient: "", adSlot: "", adSlotInline: "", ga4Id: "", googleClientId: id, siteUrl: "", playUrl: "" }; }, ID);
+  let gsiLoaded = 0; const drive = new Map();
+  await c2.route("https://accounts.google.com/gsi/client", (r) => { gsiLoaded++; r.fulfill({ contentType: "text/javascript", body: "window.google={accounts:{oauth2:{initTokenClient:(o)=>({requestAccessToken:()=>o.callback({access_token:'tok'})})}}};" }); });
+  await c2.route("https://www.googleapis.com/**", async (r) => {
+    const req = r.request(); const url = req.url();
+    if (req.headers().authorization !== "Bearer tok") return r.fulfill({ status: 401, body: "" });
+    if (url.includes("/upload/")) { const body = req.postData() ?? ""; const m = /\r\n\r\n(\{.*?\})\r\n--[\s\S]*?\r\n\r\n([\s\S]*?)\r\n--\w+--$/.exec(body); drive.set("f1", { name: JSON.parse(m[1]).name, body: m[2] }); return r.fulfill({ body: "{}" }); }
+    if (url.includes("alt=media")) return r.fulfill({ body: drive.get("f1").body });
+    return r.fulfill({ body: JSON.stringify({ files: drive.size ? [{ id: "f1", modifiedTime: "2026-11-05T00:00:00Z" }] : [] }) });
+  });
+  const p = await c2.newPage(); const errs = []; p.on("pageerror", (e) => errs.push(e.message));
+  await p.goto(`${B}caja-clara/index.html`);
+  await step("no carga el script de Google hasta tocar el botón", async () => { assert.equal(gsiLoaded, 0); });
+  await step("guarda en Drive, borra los datos locales y restaura desde Drive", async () => {
+    await p.getByLabel("Fondo inicial (efectivo con el que abres)").fill("77000");
+    await p.getByTestId("backup").locator("summary").click();
+    await p.getByTestId("cloud-save").click();
+    await p.waitForFunction(() => /guardado en tu Google Drive/.test(document.querySelector('[data-testid="backup-status"]')?.textContent ?? ""), null, { timeout: 5000 });
+    assert.equal(gsiLoaded, 1);
+    assert.match(drive.get("f1").name, /respaldo-caja-clara\.json/);
+    await p.evaluate(() => localStorage.clear());
+    await p.reload(); await p.getByTestId("backup").locator("summary").click();
+    await p.getByTestId("cloud-restore").click();
+    await p.waitForLoadState("load");
+    await p.waitForFunction(() => document.querySelector("input")?.value !== undefined, null, { timeout: 5000 });
+    await p.waitForTimeout(900);
+    assert.equal(await p.getByLabel("Fondo inicial (efectivo con el que abres)").inputValue(), "77000");
+  });
+  await step("sin ID de cliente no aparece el botón de Drive", async () => {
+    const p2 = await ctx.newPage(); await p2.goto(`${B}caja-clara/index.html`);
+    await p2.getByTestId("backup").locator("summary").click();
+    assert.equal(await p2.getByTestId("cloud").count(), 0);
+  });
+  assert.deepEqual(errs, []);
+  await c2.close();
+}
+
 console.log("Caja Clara");
 {
   const p = await newPage(); await p.goto(`${B}caja-clara/index.html`);

@@ -1,5 +1,6 @@
 import { getFile, putFile } from "./blobs.ts";
 import { h } from "./dom.ts";
+import { cloudEnabled, driveLoad, driveSave, requestToken } from "./cloud.ts";
 
 /** Respaldo en un archivo .json: copia de los datos de la app (y de sus adjuntos) para cambiar de teléfono o recuperar datos borrados. */
 export interface Backup { app: string; version: 1; exportedAt: string; data: Record<string, string>; blobs: Record<string, string> }
@@ -51,6 +52,21 @@ export async function applyBackup(text: string, o: BackupOptions): Promise<numbe
 export function backupPanel(o: BackupOptions): HTMLElement {
   const status = h("p", { class: "hint", role: "status", "data-testid": "backup-status" });
   const say = (t: string) => { status.textContent = t; };
+  const clientId = (globalThis as any).MICROAPPS_CONFIG?.googleClientId;
+  const cloud = cloudEnabled(clientId) ? h("div", { class: "cloud", "data-testid": "cloud" },
+    h("p", { class: "hint" }, "Opcional: guarda tu respaldo en tu propio Google Drive, en una carpeta privada de esta app. Se abre Google para que elijas tu cuenta. Nosotros no vemos ni guardamos tus datos."),
+    h("div", { class: "actions" },
+      h("button", { type: "button", "data-testid": "cloud-save", onClick: async () => {
+        try { say("Conectando con Google…"); const t = await requestToken(clientId); await driveSave(t, o.app, await createBackup(o)); say("Respaldo guardado en tu Google Drive."); }
+        catch (e) { say((e as Error).message); }
+      } }, "Guardar en mi Google Drive"),
+      h("button", { type: "button", "data-testid": "cloud-restore", onClick: async () => {
+        try {
+          say("Conectando con Google…"); const t = await requestToken(clientId); const r = await driveLoad(t, o.app);
+          if (!r) { say("No hay un respaldo de esta app en tu Google Drive."); return; }
+          await applyBackup(r.text, o); say("Respaldo restaurado desde tu Drive. Recargando…"); setTimeout(() => location.reload(), 400);
+        } catch (e) { say((e as Error).message); }
+      } }, "Restaurar desde mi Google Drive"))) : null;
   return h("details", { class: "backup", "data-testid": "backup" },
     h("summary", {}, "Respaldo de tus datos"),
     h("p", { class: "hint" }, "Tus datos viven solo en este navegador. Descarga un respaldo para guardarlo o pasarlo a otro teléfono, y restáuralo aquí cuando lo necesites."),
@@ -69,5 +85,6 @@ export function backupPanel(o: BackupOptions): HTMLElement {
         try { await applyBackup(await f.text(), o); say("Respaldo restaurado. Recargando…"); setTimeout(() => location.reload(), 400); }
         catch (err) { say((err as Error).message); }
       } }))),
+    cloud,
     status);
 }

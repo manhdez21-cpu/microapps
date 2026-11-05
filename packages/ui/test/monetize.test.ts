@@ -19,6 +19,7 @@ describe("monetize", () => {
 
 import { adPlacements, needsConsent } from "../src/monetize.ts";
 import { appFromPath, ga4Enabled, nextVisits, parseVisits } from "../src/analytics.ts";
+import { cloudEnabled, cloudFileName, driveFind, driveLoad, driveSave } from "../src/cloud.ts";
 import { othersThan, shareText, whatsappUrl, APPS, relatedFor, RELATED } from "../src/growth.ts";
 describe("anuncios sin invadir", () => {
   it("máximo dos anuncios; uno solo en la app instalada", () => {
@@ -63,5 +64,48 @@ describe("crecimiento", () => {
     assert.equal(othersThan("splitflow").length, 6);
     assert.equal(othersThan("splitflow").some((a) => a.slug === "splitflow"), false);
     assert.equal(whatsappUrl(shareText("X", "https://a.b/c")).startsWith("https://wa.me/?text="), true);
+  });
+});
+
+describe("respaldo en Google Drive", () => {
+  const ID = "123456789012-abcdefghij0123456789.apps.googleusercontent.com";
+  /** Drive simulado en memoria. */
+  const fakeDrive = () => {
+    const files = new Map<string, { name: string; body: string }>(); const calls: string[] = [];
+    const f = async (url: string, init: RequestInit = {}): Promise<Response> => {
+      calls.push(`${init.method ?? "GET"} ${url.split("?")[0]}`);
+      if ((init.headers as Record<string, string>).Authorization !== "Bearer tok") return new Response("", { status: 401 });
+      if (url.includes("/upload/")) {
+        const m = /\r\n\r\n(\{.*?\})\r\n--[\s\S]*?\r\n\r\n([\s\S]*?)\r\n--[\w]+--$/.exec(String(init.body))!;
+        const meta = JSON.parse(m[1]!); const id = url.match(/files\/([^?]+)\?/)?.[1] ?? `id${files.size + 1}`;
+        files.set(id, { name: meta.name, body: m[2]! }); return new Response("{}");
+      }
+      if (url.includes("alt=media")) return new Response(files.get(url.match(/files\/([^?]+)\?/)![1]!)!.body);
+      const name = decodeURIComponent(/name%3D'([^']+)'/.exec(url)?.[1] ?? "");
+      const hit = [...files].find(([, v]) => v.name === name);
+      return new Response(JSON.stringify({ files: hit ? [{ id: hit[0], modifiedTime: "2026-11-05T00:00:00Z" }] : [] }));
+    };
+    return { f, files, calls };
+  };
+  it("valida el ID de cliente (solo formato público de Google)", () => {
+    assert.equal(cloudEnabled(ID), true);
+    assert.equal(cloudEnabled(""), false);
+    assert.equal(cloudEnabled("G-ABCDEF1234"), false);
+    assert.equal(cloudEnabled(undefined), false);
+  });
+  it("guarda, reemplaza y descarga el respaldo; sin respaldo devuelve null", async () => {
+    const d = fakeDrive();
+    assert.equal(await driveLoad("tok", "caja-clara", d.f), null);
+    await driveSave("tok", "caja-clara", '{"a":1}', d.f);
+    assert.equal(d.files.size, 1);
+    assert.equal((await driveLoad("tok", "caja-clara", d.f))?.text, '{"a":1}');
+    await driveSave("tok", "caja-clara", '{"a":2}', d.f);
+    assert.equal(d.files.size, 1, "reemplaza, no duplica");
+    assert.equal((await driveLoad("tok", "caja-clara", d.f))?.text, '{"a":2}');
+    assert.equal(await driveFind("tok", "otra", d.f), null);
+    assert.equal(cloudFileName("huella-al-dia"), "respaldo-huella-al-dia.json");
+  });
+  it("un token rechazado da un mensaje claro", async () => {
+    await assert.rejects(driveSave("malo", "x", "{}", fakeDrive().f), /no autorizó/);
   });
 });

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T15:17:04.177Z",
+  "generatedAt": "2026-11-05T19:05:25.632Z",
   "tests": [
     {
       "name": "packages/core",
@@ -9,8 +9,8 @@
     },
     {
       "name": "packages/ui",
-      "tests": 22,
-      "pass": 22,
+      "tests": 25,
+      "pass": 25,
       "fail": 0
     },
     {

@@ -29,8 +29,8 @@ export function headTags(html, url, siteName = "Microapps") {
 export const injectHead = (html, tags) => (tags.length ? html.replace("</head>", "  " + tags.join("\n  ") + "\n</head>") : html);
 
 export function siteConfigJs(env, prev) {
-  const c = { adsenseClient: "", adSlot: "", adSlotInline: "", ga4Id: "", siteUrl: "", playUrl: "" };
-  const map = { adsenseClient: "ADSENSE_CLIENT", adSlot: "ADSENSE_SLOT", adSlotInline: "ADSENSE_SLOT_INLINE", ga4Id: "GA4_ID", siteUrl: "SITE_URL", playUrl: "PLAY_URL" };
+  const c = { adsenseClient: "", adSlot: "", adSlotInline: "", ga4Id: "", googleClientId: "", siteUrl: "", playUrl: "" };
+  const map = { adsenseClient: "ADSENSE_CLIENT", adSlot: "ADSENSE_SLOT", adSlotInline: "ADSENSE_SLOT_INLINE", ga4Id: "GA4_ID", googleClientId: "GOOGLE_CLIENT_ID", siteUrl: "SITE_URL", playUrl: "PLAY_URL" };
   for (const [k, e] of Object.entries(map)) c[k] = (env[e] ?? "").trim();
   c.siteUrl = normUrl(c.siteUrl);
   return `// Generado en el despliegue desde variables públicas (no son secretos).\nwindow.MICROAPPS_CONFIG = window.MICROAPPS_CONFIG || ${JSON.stringify(c)};\n`;

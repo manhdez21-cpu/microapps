@@ -98,3 +98,10 @@ Formato: fecha · decisión · motivo · alternativas · estado.
 - AdMob: no implementado. Requiere app nativa (Capacitor/Kotlin) y npm está bloqueado; AdSense no se permite en apps nativas/WebView. iOS = PWA con anuncios web; Android = PWA/TWA con AdSense web, a confirmar con AdSense.
 - Medición: GA4 solo con consentimiento y sin enviar texto del usuario; eventos `app_open`, `first_use`, `install_click`, `share_click`, `cross_link`. Cifras al panel con `tools/fetch-metrics.mjs` (cuenta de servicio, variables de entorno). Sin credenciales el panel dice «Sin datos».
 - SEO de despliegue en `tools/gen-seo.mjs`, configuración desde variables públicas del repositorio (no secretos).
+
+## D-021 · Respaldo opcional en el Google Drive del usuario (sin servidor propio)
+- Fecha: 2026-11-05. Sin login obligatorio: las apps siguen funcionando sin cuenta.
+- Botones «Guardar/Restaurar en mi Google Drive» dentro del panel de respaldo de las 7 apps; permiso `drive.appdata` (carpeta privada de la app). Token solo en memoria; el script de Google se carga al tocar el botón.
+- Se activa con la variable pública `GOOGLE_CLIENT_ID` (ID de cliente OAuth web, origen autorizado https://chispatools.com + Google Drive API habilitada). Sin ella, el botón no aparece.
+- Estado: Implementado y probado con Drive simulado; Pendiente de credenciales reales (ID de cliente) y no verificado contra Google.
+- No cubre sincronización en vivo ni notificaciones con la app cerrada (requeriría servidor).

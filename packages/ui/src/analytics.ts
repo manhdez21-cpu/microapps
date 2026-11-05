@@ -1,5 +1,5 @@
 /** Medición con Google Analytics 4. Solo se carga si hay ID válido Y la persona aceptó. Nunca se envían datos escritos por la persona. */
-export interface AnalyticsConfig { ga4Id?: string }
+export interface AnalyticsConfig { ga4Id?: string; googleClientId?: string }
 export const ga4Enabled = (c: AnalyticsConfig | undefined): boolean => !!c && /^G-[A-Z0-9]{6,14}$/.test(c.ga4Id ?? "");
 
 /** Nombre de la app según la ruta (`/apps/<slug>/`) o «portada». */
