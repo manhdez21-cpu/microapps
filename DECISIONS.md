@@ -108,3 +108,6 @@ Formato: fecha · decisión · motivo · alternativas · estado.
 
 ## D-022 Panel de negocio privado
 Pestaña «Negocio» en el Control Center (por app + total: usuarios, visitas, ingresos AdSense vía GA4, RPM, eventos propios, serie diaria, Search Console). Datos de `tools/fetch-metrics.mjs` (cuenta de servicio, solo lectura). Workflow diario `panel.yml` publica en Cloudflare Pages tras Cloudflare Access (panel.chispatools.com); sin secretos no hace nada y nunca va a GitHub Pages. Sin datos reales muestra «Pendiente»; no verificado contra Google real (solo simulado).
+
+## D-023 Modelo de ingresos mixto (decisión de Manuel, 2026-11-05)
+Se abandona «100 % gratis» como regla fija. Plan: dos apps con más tráfico pasan a pago único de USD 15 vía pasarela de pago (fuera de las tiendas; la política de Google Play no se tiene en cuenta para las recomendaciones, por decisión de Manuel). El resto sigue gratis con anuncios. Se decide con datos del panel tras ~4 semanas de tráfico. Pendiente: elegir las 2 apps, pasarela (Colombia), forma de desbloqueo sin servidor, términos y precio a validar. Nada de esto está implementado.

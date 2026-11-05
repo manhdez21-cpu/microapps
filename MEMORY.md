@@ -35,3 +35,5 @@
 - Esta sesión: espacio Linux en la nube (/home/claude/Microapps). Sin acceso aún a archivos del equipo de Manuel.
 - Red de la nube: GitHub accesible; registry.npmjs.org bloqueado por política (403). No reintentar ni rodear.
 - Node 22.23, pnpm 10, tsc 7 global, Git 2.43.
+
+- 2026-11-05: Manuel decidió modelo mixto: 2 apps con más tráfico a pago único USD 15 por pasarela; resto gratis con anuncios. Se decide tras ~4 semanas con datos del panel (https://panel.chispatools.com, actualización diaria). Idea de barbería/manicura aplazada (lógica y 9 pruebas guardadas aparte, fuera del repo). Foco ahora: tráfico con las 7 apps (estados WhatsApp, indexación, guías diarias).
