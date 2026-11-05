@@ -25,8 +25,15 @@ jobs:
       - run: node tools/gen-status.mjs
       - run: node tools/build.mjs
       - run: rm -rf dist/apps/control-center  # panel interno: no se publica
-      - uses: actions/upload-pages-artifact@v3
-        with: { path: dist }
+      # Se empaqueta a mano para incluir .well-known (upload-pages-artifact omite archivos ocultos).
+      - name: Empaquetar sitio
+        run: tar --dereference --hard-dereference -cf "$RUNNER_TEMP/artifact.tar" -C dist .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          retention-days: 1
+          if-no-files-found: error
   deploy:
     needs: build
     runs-on: ubuntu-latest

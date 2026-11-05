@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.chispatools.priceright",
+      "sha256_cert_fingerprints": ["B9:D6:68:6B:96:41:C0:11:F1:12:F7:A6:C1:1E:B5:E1:F9:49:F9:DE:72:84:34:75:EE:8A:65:4C:B6:5C:70:8E"]
+    }
+  }
+]
