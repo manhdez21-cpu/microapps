@@ -133,3 +133,12 @@ button:hover { filter: brightness(0.97); }
 .more-tools .related a { color: var(--accent); }
 .share-row { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin-top: 1rem; }
 .consent a { color: var(--accent); }
+
+/* Respaldo en Google Drive: tarjeta visible arriba de la app */
+.cloud-card { display: grid; gap: 0.75rem; margin: 0 0 1.25rem; padding: 1rem 1.1rem; border: 2px solid var(--accent); border-radius: var(--radius); background: var(--surface); }
+.cloud-text { display: grid; gap: 0.2rem; } .cloud-text strong { font-size: 1.05rem; } .cloud-text span { font-size: 0.9rem; color: var(--ink-soft); }
+.cloud-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.cloud-main { flex: 1 1 14rem; min-height: 48px; font-size: 1.05rem; font-weight: 700; }
+.cloud-alt { flex: 1 1 10rem; min-height: 48px; }
+.cloud-status { margin: 0; min-height: 1.2em; }
+@media (min-width: 900px) { .cloud-card { grid-template-columns: minmax(0, 1fr) minmax(0, 24rem); align-items: center; column-gap: 1.5rem; } .cloud-actions { flex-direction: column; } .cloud-main, .cloud-alt { flex: 0 0 auto; width: 100%; } .cloud-status { grid-column: 1 / -1; } }

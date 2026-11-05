@@ -92,13 +92,13 @@ console.log("Respaldo en Google Drive (simulado)");
   await step("no carga el script de Google hasta tocar el botón", async () => { assert.equal(gsiLoaded, 0); });
   await step("guarda en Drive, borra los datos locales y restaura desde Drive", async () => {
     await p.getByLabel("Fondo inicial (efectivo con el que abres)").fill("77000");
-    await p.getByTestId("backup").locator("summary").click();
+    assert.equal(await p.getByTestId("cloud-save").isVisible(), true, "el botón está visible sin abrir nada");
     await p.getByTestId("cloud-save").click();
-    await p.waitForFunction(() => /guardado en tu Google Drive/.test(document.querySelector('[data-testid="backup-status"]')?.textContent ?? ""), null, { timeout: 5000 });
+    await p.waitForFunction(() => /guardado en tu Google Drive/.test(document.querySelector('[data-testid="cloud-status"]')?.textContent ?? ""), null, { timeout: 5000 });
     assert.equal(gsiLoaded, 1);
     assert.match(drive.get("f1").name, /respaldo-caja-clara\.json/);
     await p.evaluate(() => localStorage.clear());
-    await p.reload(); await p.getByTestId("backup").locator("summary").click();
+    await p.reload();
     await p.getByTestId("cloud-restore").click();
     await p.waitForLoadState("load");
     await p.waitForFunction(() => document.querySelector("input")?.value !== undefined, null, { timeout: 5000 });
@@ -107,7 +107,6 @@ console.log("Respaldo en Google Drive (simulado)");
   });
   await step("sin ID de cliente no aparece el botón de Drive", async () => {
     const p2 = await ctx.newPage(); await p2.goto(`${B}caja-clara/index.html`);
-    await p2.getByTestId("backup").locator("summary").click();
     assert.equal(await p2.getByTestId("cloud").count(), 0);
   });
   assert.deepEqual(errs, []);

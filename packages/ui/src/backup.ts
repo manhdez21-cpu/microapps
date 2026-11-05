@@ -52,21 +52,7 @@ export async function applyBackup(text: string, o: BackupOptions): Promise<numbe
 export function backupPanel(o: BackupOptions): HTMLElement {
   const status = h("p", { class: "hint", role: "status", "data-testid": "backup-status" });
   const say = (t: string) => { status.textContent = t; };
-  const clientId = (globalThis as any).MICROAPPS_CONFIG?.googleClientId;
-  const cloud = cloudEnabled(clientId) ? h("div", { class: "cloud", "data-testid": "cloud" },
-    h("p", { class: "hint" }, "Opcional: guarda tu respaldo en tu propio Google Drive, en una carpeta privada de esta app. Se abre Google para que elijas tu cuenta. Nosotros no vemos ni guardamos tus datos."),
-    h("div", { class: "actions" },
-      h("button", { type: "button", "data-testid": "cloud-save", onClick: async () => {
-        try { say("Conectando con Google…"); const t = await requestToken(clientId); await driveSave(t, o.app, await createBackup(o)); say("Respaldo guardado en tu Google Drive."); }
-        catch (e) { say((e as Error).message); }
-      } }, "Guardar en mi Google Drive"),
-      h("button", { type: "button", "data-testid": "cloud-restore", onClick: async () => {
-        try {
-          say("Conectando con Google…"); const t = await requestToken(clientId); const r = await driveLoad(t, o.app);
-          if (!r) { say("No hay un respaldo de esta app en tu Google Drive."); return; }
-          await applyBackup(r.text, o); say("Respaldo restaurado desde tu Drive. Recargando…"); setTimeout(() => location.reload(), 400);
-        } catch (e) { say((e as Error).message); }
-      } }, "Restaurar desde mi Google Drive"))) : null;
+  mountCloudCard(o);
   return h("details", { class: "backup", "data-testid": "backup" },
     h("summary", {}, "Respaldo de tus datos"),
     h("p", { class: "hint" }, "Tus datos viven solo en este navegador. Descarga un respaldo para guardarlo o pasarlo a otro teléfono, y restáuralo aquí cuando lo necesites."),
@@ -85,6 +71,41 @@ export function backupPanel(o: BackupOptions): HTMLElement {
         try { await applyBackup(await f.text(), o); say("Respaldo restaurado. Recargando…"); setTimeout(() => location.reload(), 400); }
         catch (err) { say((err as Error).message); }
       } }))),
-    cloud,
     status);
+}
+
+/** Tarjeta visible (arriba de la app) para guardar/restaurar en el Google Drive de la persona. Solo existe si hay ID de cliente configurado. */
+let current: BackupOptions | null = null;
+function mountCloudCard(o: BackupOptions): void {
+  current = o; // se actualiza en cada dibujo: los adjuntos dependen de los datos actuales
+  const clientId = (globalThis as any).MICROAPPS_CONFIG?.googleClientId;
+  if (!cloudEnabled(clientId) || typeof document === "undefined" || document.querySelector('[data-testid="cloud"]')) return;
+  const host = document.querySelector("#app") ?? document.querySelector("main");
+  if (!host) return;
+  const status = h("p", { class: "hint cloud-status", role: "status", "aria-live": "polite", "data-testid": "cloud-status" });
+  const say = (t: string) => { status.textContent = t; };
+  const busy = (btns: HTMLButtonElement[], on: boolean) => btns.forEach((b) => { b.disabled = on; });
+  const save = h("button", { type: "button", class: "primary cloud-main", "data-testid": "cloud-save" }, "☁ Guardar en mi Google Drive") as HTMLButtonElement;
+  const restore = h("button", { type: "button", class: "cloud-alt", "data-testid": "cloud-restore" }, "Restaurar desde mi Drive") as HTMLButtonElement;
+  const all = [save, restore];
+  save.onclick = async () => {
+    busy(all, true);
+    try { say("Conectando con Google…"); const t = await requestToken(clientId); await driveSave(t, current!.app, await createBackup(current!)); say("✓ Respaldo guardado en tu Google Drive."); }
+    catch (e) { say((e as Error).message); } finally { busy(all, false); }
+  };
+  restore.onclick = async () => {
+    busy(all, true);
+    try {
+      say("Conectando con Google…"); const t = await requestToken(clientId); const r = await driveLoad(t, current!.app);
+      if (!r) { say("No hay un respaldo de esta app en tu Google Drive."); return; }
+      await applyBackup(r.text, current!); say("✓ Restaurado desde tu Drive. Recargando…"); setTimeout(() => location.reload(), 400);
+    } catch (e) { say((e as Error).message); } finally { busy(all, false); }
+  };
+  const card = h("section", { class: "cloud-card", "data-testid": "cloud", "aria-label": "Respaldo en Google Drive" },
+    h("div", { class: "cloud-text" },
+      h("strong", {}, "No pierdas tus datos"),
+      h("span", {}, "Guárdalos en tu propio Google Drive y recupéralos si cambias de celular o borras el navegador. Opcional; nosotros nunca vemos tus datos.")),
+    h("div", { class: "cloud-actions" }, save, restore),
+    status);
+  host.before(card);
 }

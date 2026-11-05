@@ -31,3 +31,7 @@
 .brand { display: flex; align-items: center; gap: 0.65rem; }
 .brand .logo { width: 44px; height: 44px; flex: none; border-radius: 11px; box-shadow: 0 1px 0 rgba(0,0,0,.15); }
 .brand .es { display: block; font: 500 0.42em/1.2 var(--font-body); letter-spacing: 0.02em; text-transform: none; opacity: 0.75; margin-top: 0.15em; }
+
+/* Escritorio: más ancho y texto algo mayor; en celular no cambia nada. */
+@media (min-width: 900px) { body .shell { max-width: 880px; padding-top: 1.5rem; } html { font-size: 106.25%; } .lede, .prose { max-width: 70ch; } }
+@media (min-width: 1280px) { body .shell { max-width: 960px; } }
