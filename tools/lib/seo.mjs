@@ -35,3 +35,9 @@ export function siteConfigJs(env, prev) {
   c.siteUrl = normUrl(c.siteUrl);
   return `// Generado en el despliegue desde variables públicas (no son secretos).\nwindow.MICROAPPS_CONFIG = window.MICROAPPS_CONFIG || ${JSON.stringify(c)};\n`;
 }
+
+/** Enlace corto `/<slug>/` que lleva a la app real. El canonical apunta a la ruta real para no duplicar contenido. */
+export function redirectStub(slug) {
+  const to = `../apps/${slug}/`;
+  return `<!doctype html>\n<html lang="es"><head><meta charset="utf-8"><title>Redirigiendo…</title>\n<meta name="robots" content="noindex">\n<link rel="canonical" href="${to}">\n<meta http-equiv="refresh" content="0; url=${to}">\n<script>location.replace(${JSON.stringify(to)} + location.search + location.hash);</script></head>\n<body><p><a href="${to}">Abrir la app</a></p></body></html>\n`;
+}

@@ -1,18 +1,21 @@
 // Post-proceso de dist/: sitemap, robots, ads.txt, canonical/Open Graph y site-config.js según variables de entorno.
 // Variables (todas públicas, ninguna es secreto): SITE_URL, ADSENSE_CLIENT, ADSENSE_SLOT, ADSENSE_SLOT_INLINE, GA4_ID, PLAY_URL.
-import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
-import { adsTxt, headTags, injectHead, isUrl, normUrl, publicPaths, robotsTxt, siteConfigJs, sitemapXml } from "./lib/seo.mjs";
+import { redirectStub, adsTxt, headTags, injectHead, isUrl, normUrl, publicPaths, robotsTxt, siteConfigJs, sitemapXml } from "./lib/seo.mjs";
 
 const dist = join(new URL("..", import.meta.url).pathname, "dist");
 const walk = (d) => readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; });
 const files = walk(dist).map((f) => relative(dist, f));
 const base = normUrl(process.env.SITE_URL);
+// Enlaces cortos /<app>/ (antes del sitemap, para que no entren en él).
+const slugs = files.filter((f) => /^apps\/[a-z0-9-]+\/index\.html$/.test(f)).map((f) => f.split("/")[1]).filter((n) => n !== "control-center");
+for (const slug of slugs) { mkdirSync(join(dist, slug), { recursive: true }); writeFileSync(join(dist, slug, "index.html"), redirectStub(slug)); }
 const notes = [];
 
 if (Object.keys(process.env).some((k) => /^(SITE_URL|ADSENSE_|GA4_ID|PLAY_URL)/.test(k))) writeFileSync(join(dist, "site-config.js"), siteConfigJs(process.env));
 if (base && isUrl(base)) {
-  const paths = publicPaths(files);
+  const paths = publicPaths(files); // `files` se leyó antes de crear los enlaces cortos: no entran al sitemap
   for (const p of paths) {
     const file = join(dist, p.endsWith("/") ? p + "index.html" : p);
     const html = readFileSync(file, "utf8");

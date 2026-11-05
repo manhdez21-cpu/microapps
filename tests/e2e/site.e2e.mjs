@@ -154,6 +154,14 @@ await step("escritorio sin soporte: no aparece el botón; /instalar.html carga y
   await p2.goto(`${base}/instalar.html`);
   assert.equal(await p2.getByTestId("play-link").isVisible(), true);
 });
+await step("enlaces cortos /<app>/ llevan a cada app", async () => {
+  const { page } = await newPage();
+  for (const a of ["splitflow", "caja-clara", "priceright", "cuanto-me-sobra", "expiryhub", "warranty-keeper", "huella-al-dia"]) {
+    await page.goto(`${base}/${a}/`);
+    await page.waitForURL(new RegExp(`/apps/${a}/`));
+    assert.equal(await page.locator("h1").count() >= 1, true, a);
+  }
+});
 await step("política de privacidad accesible", async () => {
   const { page } = await newPage();
   const r = await page.goto(`${base}/privacidad.html`);

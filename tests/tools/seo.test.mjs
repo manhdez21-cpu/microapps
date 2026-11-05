@@ -35,3 +35,11 @@ describe("seo", () => {
     assert.equal(/SECRET|"x"/.test(js), false);
   });
 });
+import { redirectStub } from "../../tools/lib/seo.mjs";
+describe("enlaces cortos", () => {
+  it("redirigen a la app real y no se indexan", () => {
+    const h = redirectStub("splitflow");
+    assert.match(h, /url=\.\.\/apps\/splitflow\//);
+    assert.match(h, /noindex/);
+  });
+});
