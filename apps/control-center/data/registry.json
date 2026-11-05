@@ -131,8 +131,8 @@
     },
     {
       "name": "Google Analytics 4 (medición)",
-      "state": "pendiente de credenciales",
-      "needs": "ID de medición G-… en la variable GA4_ID. El código (carga solo con consentimiento, eventos app_open/first_use/share) está probado con GA4 simulado"
+      "state": "implementado",
+      "needs": "ID G-PE91ZVWREB configurado en el despliegue; falta confirmar datos reales en Informes → Tiempo real"
     },
     {
       "name": "API de datos de GA4 → este panel",
@@ -141,13 +141,13 @@
     },
     {
       "name": "Search Console (SEO)",
-      "state": "pendiente de credenciales",
-      "needs": "Verificar la propiedad (cuenta de Manuel) y enviar sitemap.xml"
+      "state": "conectado",
+      "needs": "Propiedad verificada y sitemap enviado el 2026-11-04. Falta esperar la indexación (días a semanas)"
     },
     {
       "name": "Hosting y despliegue",
-      "state": "pendiente de credenciales",
-      "needs": "Repositorio en GitHub con Pages activado (workflow listo)"
+      "state": "conectado",
+      "needs": "GitHub Pages: https://manhdez21-cpu.github.io/microapps/ (despliegue automático por push a main)"
     }
   ],
   "costs": {
@@ -186,7 +186,7 @@
     },
     {
       "item": "Despliegue en hosting",
-      "state": "pendiente de credenciales"
+      "state": "conectado"
     },
     {
       "item": "Cuenta AdSense y ids",

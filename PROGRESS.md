@@ -27,3 +27,8 @@
 - Verificado con simulación (sin Google real): carga de AdSense/GA4, API de datos GA4. NO verificado: aprobación de AdSense, indexación, tráfico, ingresos (no existen).
 - `node tools/check-all.mjs` en verde (unitarias, 10 pruebas de herramientas, 9 suites E2E).
 - Pendiente de Manuel: ver `GUIA_MANUEL.md` §1–6 (GitHub/Pages, variables públicas, GA4, Search Console, AdSense, correo de contacto).
+
+## 2026-11-04 (tarde) · Publicación
+- Repositorio https://github.com/manhdez21-cpu/microapps; sitio en https://manhdez21-cpu.github.io/microapps/ (Pages con GitHub Actions; deploy en verde).
+- GA4 configurado (G-PE91ZVWREB, en el workflow). Search Console verificado (etiqueta en la portada) y sitemap enviado.
+- Pendiente de Manuel: correo de contacto en privacidad, dominio propio, AdSense (luego ADSENSE_CLIENT/ADSENSE_SLOT), confirmar datos en Tiempo real de GA4.
