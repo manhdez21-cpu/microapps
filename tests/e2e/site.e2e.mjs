@@ -106,12 +106,11 @@ await step("cambiar preferencias vuelve a preguntar", async () => {
   await page.getByTestId("consent-manage").click();
   await page.waitForSelector('[data-testid="consent"]');
 });
-await step("cada app enlaza a las otras 6 y permite compartir", async () => {
+await step("cada app sugiere una sola app relacionada (solo en la web) y permite compartir", async () => {
   const { page } = await newPage();
   await page.goto(`${base}/apps/huella-al-dia/index.html`);
   const hrefs = await page.$$eval("[data-testid=more-tools] a", (a) => a.map((x) => x.getAttribute("href")));
-  assert.equal(hrefs.length, 6);
-  assert.equal(hrefs.includes("../huella-al-dia/index.html"), false);
+  assert.deepEqual(hrefs, ["../expiryhub/index.html"]);
   for (const h of hrefs) assert.equal((await page.request.get(`${base}/apps/huella-al-dia/${h}`)).status(), 200, h);
   await page.evaluate(() => { window.__opened = null; window.open = (u) => { window.__opened = u; return null; }; });
   await page.getByTestId("share-app").click();

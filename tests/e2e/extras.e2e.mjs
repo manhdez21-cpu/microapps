@@ -68,6 +68,7 @@ console.log("SplitFlow");
     writeFileSync(`${OUT}/otra.json`, JSON.stringify({ app: "otra", version: 1, exportedAt: "", data: { "splitflow:v1": "{}" }, blobs: {} }));
     await p.getByTestId("backup").locator("summary").click().catch(() => undefined);
     await p.getByTestId("backup-file").setInputFiles(`${OUT}/otra.json`);
+    await p.waitForFunction(() => /otra app/.test(document.querySelector('[data-testid="backup-status"]')?.textContent ?? ""), null, { timeout: 5000 });
     assert.match(await p.getByTestId("backup-status").innerText(), /otra app/);
   });
 }

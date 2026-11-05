@@ -19,7 +19,7 @@ describe("monetize", () => {
 
 import { adPlacements, needsConsent } from "../src/monetize.ts";
 import { appFromPath, ga4Enabled, nextVisits, parseVisits } from "../src/analytics.ts";
-import { othersThan, shareText, whatsappUrl, APPS } from "../src/growth.ts";
+import { othersThan, shareText, whatsappUrl, APPS, relatedFor, RELATED } from "../src/growth.ts";
 describe("anuncios sin invadir", () => {
   it("máximo dos anuncios; uno solo en la app instalada", () => {
     assert.deepEqual(adPlacements(false), ["tool", "end"]);
@@ -54,6 +54,10 @@ describe("analytics", () => {
   });
 });
 describe("crecimiento", () => {
+  it("cada app sugiere una sola app relacionada, distinta de sí misma", () => {
+    for (const a of APPS) { const r = relatedFor(a.slug); assert.ok(r, a.slug); assert.notEqual(r!.app.slug, a.slug); }
+    assert.equal(Object.keys(RELATED).length, 7);
+  });
   it("lista las otras 6 apps y arma el texto para compartir", () => {
     assert.equal(APPS.length, 7);
     assert.equal(othersThan("splitflow").length, 6);
