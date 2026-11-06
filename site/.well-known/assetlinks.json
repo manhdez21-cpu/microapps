@@ -1,10 +1,38 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
     "target": {
       "namespace": "android_app",
       "package_name": "com.chispatools.priceright",
-      "sha256_cert_fingerprints": ["B9:D6:68:6B:96:41:C0:11:F1:12:F7:A6:C1:1E:B5:E1:F9:49:F9:DE:72:84:34:75:EE:8A:65:4C:B6:5C:70:8E"]
+      "sha256_cert_fingerprints": [
+        "B9:D6:68:6B:96:41:C0:11:F1:12:F7:A6:C1:1E:B5:E1:F9:49:F9:DE:72:84:34:75:EE:8A:65:4C:B6:5C:70:8E"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.chispatools.cajaclara",
+      "sha256_cert_fingerprints": [
+        "3D:25:ED:38:9B:F2:53:73:68:16:5C:12:2D:2C:78:F1:83:3A:21:EC:AE:2A:85:DF:24:04:56:51:6A:20:1D:A5"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.chispatools.huellaaldia",
+      "sha256_cert_fingerprints": [
+        "D1:45:8E:37:79:0B:99:5C:9B:68:DB:0F:3E:AE:22:BD:60:B1:94:43:9B:14:79:1D:B1:BF:8C:58:96:3E:20:53"
+      ]
     }
   }
 ]
