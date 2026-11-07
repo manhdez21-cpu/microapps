@@ -2,7 +2,7 @@
 # Nunca se publica en GitHub Pages. Sin los secretos, el trabajo termina sin hacer nada.
 name: panel
 on:
-  schedule: [{ cron: "17 9 * * *" }]
+  schedule: [{ cron: "7 * * * *" }]
   workflow_dispatch:
 permissions: { contents: read }
 jobs:

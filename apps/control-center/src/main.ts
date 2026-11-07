@@ -170,7 +170,7 @@ function negocio(s: Status): HTMLElement {
     h("tr", {}, h("th", { scope: "row" }, label),
       ...(r ? [num(r.users), num(r.newUsers), num(r.returningUsers), num(r.views), money(r.adRevenue), rpm(r), clicks, ev(r, "install_click"), ev(r, "share_click"), ev(r, "feedback_click")] : Array(10).fill("—")).map((x: string) => h("td", {}, x)));
   return h("section", { "aria-labelledby": "t-neg", "data-testid": "negocio" }, head,
-    h("p", { class: "lead" }, `Fuente: ${m.source}. ${m.range}. Actualizado ${m.fetchedAt.slice(0, 16).replace("T", " ")} UTC (se refresca a diario).`),
+    h("p", { class: "lead" }, `Fuente: ${m.source}. ${m.range}. Actualizado ${m.fetchedAt.slice(0, 16).replace("T", " ")} UTC (se refresca cada hora; Google Analytics tarda unos minutos y Search Console 2–3 días).`),
     h("div", { class: "tiles" },
       tile("Ingresos por anuncios", money(t.adRevenue), "Real", "Moneda de la propiedad de GA4; llega si AdSense está vinculado."),
       tile("Usuarios activos", num(t.users), "Real", `${num(t.newUsers)} nuevos, ${num(t.returningUsers)} que regresan.`),
