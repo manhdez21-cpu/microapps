@@ -66,6 +66,11 @@ function init(): void {
     row.appendChild(a);
   }
   sec.appendChild(row);
+  if (fb) {
+    const note = document.createElement("p"); note.className = "muted"; note.setAttribute("data-testid", "feedback-note");
+    note.textContent = fb.startsWith("https://wa.me/") ? "Se abrirá WhatsApp con un mensaje listo: pulsa «Enviar» para que nos llegue." : "Se abrirá tu correo con un mensaje listo: pulsa «Enviar» para que nos llegue.";
+    sec.appendChild(note);
+  }
   const foot = document.querySelector(".site-foot");
   if (foot && !foot.querySelector("[data-testid=legal-links]")) {
     const sp = document.createElement("span"); sp.setAttribute("data-testid", "legal-links"); sp.append(" · ");
