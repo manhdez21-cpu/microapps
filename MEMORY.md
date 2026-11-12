@@ -38,7 +38,8 @@
 
 - 2026-11-05: Manuel decidió modelo mixto: 2 apps con más tráfico a pago único USD 15 por pasarela; resto gratis con anuncios. Se decide tras ~4 semanas con datos del panel (https://panel.chispatools.com, actualización diaria). Idea de barbería/manicura aplazada (lógica y 9 pruebas guardadas aparte, fuera del repo). Foco ahora: tráfico con las 7 apps (estados WhatsApp, indexación, guías diarias).
 
-## Pro (desde 2026-11-12)
+## Pro (desde 2026-11-12) — EN STANDBY
+- **2026-11-12: Manuel pone Pro en standby (D-028).** El código de `shared/pro/` se queda tal cual, sin enganchar en ninguna app; se retoma más adelante. Foco: apps gratis, tráfico y esperar los 14 días de testers de Google Play para publicar.
 - Premium SOLO en 4 apps: SplitFlow, Caja Clara, PriceRight, Huella al Día. Pago único USD 15 por app (D-023). Las otras 3 siguen gratis con anuncios.
 - Núcleo en `shared/pro/` (config única: `shared/pro/src/config.ts`). Auditoría y reparto propuesto: `docs/pro/AUDITORIA.md`. Las funciones Pro AÚN NO están enganchadas en las apps.
 - Entorno: Playwright en `/opt/node-tools/node_modules/playwright` → `PLAYWRIGHT_PATH=/opt/node-tools/node_modules/playwright node tools/check-all.mjs`.
@@ -59,3 +60,6 @@ Formato `CT1.<datos>.<firma>` (base64url), ECDSA P-256 + SHA-256 con WebCrypto (
 ### Pendiente Pro
 - Manuel: aprobar reparto gratis/Pro, confirmar precio ancla, elegir pasarela (enlace de pago https por app).
 - Técnico: generar el par de claves real y decidir quién emite la licencia tras el pago (manual o función en servidor); enganchar funciones (Tarea 2); términos/privacidad de la compra.
+
+### D-028 · 2026-11-12 · Pro en standby
+Decisión de Manuel: no se hace la versión Premium por ahora. Se conserva `shared/pro/` y sus pruebas (siguen en check-all) sin conectarlo a ninguna app; nada visible cambia para el usuario. Se sigue el plan inicial: 7 apps gratis con anuncios, tráfico orgánico (guías, WhatsApp, indexación) y publicación en Google Play cuando los testers cumplan los 14 días.

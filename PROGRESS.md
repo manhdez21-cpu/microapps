@@ -40,4 +40,9 @@
 - Hecho: `docs/pro/AUDITORIA.md` (qué es gratis, qué pasaría a Pro y dónde se engancha) y `shared/pro/` (`initPro`, `isPro`, `requirePro`, licencia firmada, guardado local, flag Google Play, `openUpgradeProModal`), `tools/pro-license.mjs`, `.env.example`.
 - Probado: 23 unitarias (`shared/pro/test`) + E2E `tests/e2e/pro.e2e.mjs` (15 pasos) + `check-all` en verde. Las apps no cambian: ninguna carga el módulo todavía.
 - No verificado: Safari/iPhone real, TWA real (referrer `android-app://`), lector de pantalla real, compra real (no hay pasarela ni clave pública real).
-- Siguiente (Tarea 2): enganchar las funciones Pro según el reparto que apruebe Manuel.
+- **Pro en standby por decisión de Manuel (D-028).** El módulo queda en el repo sin usar.
+
+## 2026-11-12 · Plan inicial: tráfico con las apps gratis
+- 6 guías nuevas (30 en total), sobre todo de las apps con menos guías: suscripciones y documentos del vehículo (ExpiryHub), garantía legal vs. extendida y facturas en el celular (Warranty Keeper), control de peso (Huella al Día), «la vaca» (SplitFlow). Enlazadas entre sí y en la portada; entran solas al sitemap.
+- E2E nueva en `site.e2e.mjs`: recorre todas las guías (carga, una sola h1, descripción ≤160, botón a una app que existe, enlaces a las demás, sin desborde).
+- Pendiente de Manuel: esperar los 14 días de testers en Play Console y luego solicitar producción (`docs/play/GUIA_PLAY.md` §3).

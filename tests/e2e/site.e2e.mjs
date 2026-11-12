@@ -26,6 +26,25 @@ await step("portada enlaza las 7 apps y todas cargan sin errores", async () => {
   for (const h of hrefs) { const r = await page.goto(`${base}/${h.replace("./", "")}`); assert.equal(r.status(), 200, h); assert.equal(await page.locator("h1").count() >= 1, true, h); }
   assert.deepEqual(errors, []);
 });
+await step("todas las guías de la portada cargan, enlazan a una app real y a las demás guías", async () => {
+  const { page, errors } = await newPage();
+  await page.goto(`${base}/index.html`);
+  const guides = await page.$$eval('a[href^="./guias/"]', (a) => a.map((x) => x.getAttribute("href").replace("./", "")));
+  assert.ok(guides.length >= 30, `solo ${guides.length} guías`);
+  for (const g of guides) {
+    assert.equal((await page.goto(`${base}/${g}`)).status(), 200, g);
+    assert.equal(await page.locator("h1").count(), 1, g);
+    const desc = await page.getAttribute('meta[name="description"]', "content");
+    assert.ok(desc && desc.length <= 160, g);
+    const cta = await page.getAttribute('[data-track="guide_to_app"]', "href");
+    assert.equal((await page.request.get(new URL(cta, page.url()).href)).status(), 200, `${g} → ${cta}`);
+    const links = await page.$$eval("section.prose li a", (a) => a.map((x) => x.getAttribute("href")));
+    assert.equal(links.length, guides.length - 1, g);
+    assert.equal(links.includes(`./${g.split("/").pop()}`), false, `${g} se enlaza a sí misma`);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, g);
+  }
+  assert.deepEqual(errors, []);
+});
 await step("sin configuración no hay banner, anuncios ni peticiones a Google", async () => {
   const { page, requests } = await newPage();
   await page.goto(`${base}/apps/caja-clara/index.html`);
