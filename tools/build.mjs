@@ -36,6 +36,7 @@ function copySrcStatic(dir) {
 }
 for (const app of readdirSync(join(root, "apps"))) copyStatic(join("apps", app));
 copyStatic("packages/ui/src");
+copyStatic("shared/pro"); // estilos del módulo Pro (el código lo compila tsc)
 for (const name of readdirSync(join(root, "site"))) { mkdirSync(dist, { recursive: true }); cpSync(join(root, "site", name), join(dist, name), { recursive: true }); }
 execFileSync("node", [join(root, "tools/gen-seo.mjs")], { stdio: "inherit" });
 console.log("build ok →", dist);

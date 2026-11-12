@@ -9,5 +9,5 @@
     "types": [],
     "lib": ["ES2022", "DOM", "DOM.Iterable"]
   },
-  "include": ["packages/core/src", "packages/ui/src", "apps/*/src"]
+  "include": ["packages/core/src", "packages/ui/src", "shared/pro/src", "apps/*/src"]
 }

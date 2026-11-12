@@ -35,3 +35,9 @@
 - Dominio chispatools.com comprado en Cloudflare (renovación USD 11,17/año, vence 2027-11-04), DNS hacia GitHub Pages, HTTPS activo. SITE_URL del despliegue = https://chispatools.com. Enlaces cortos /<app>/.
 
 - Panel de negocio (D-022): pestaña Negocio, fetch-metrics ampliado, panel.yml, guía 4b. Pendiente de Manuel: cuenta de servicio, secretos, Cloudflare Pages + Access, vincular AdSense a GA4. Sugerencias/WhatsApp y Términos publicados en código.
+
+## 2026-11-12 · Tarea 1 Pro: auditoría y núcleo
+- Hecho: `docs/pro/AUDITORIA.md` (qué es gratis, qué pasaría a Pro y dónde se engancha) y `shared/pro/` (`initPro`, `isPro`, `requirePro`, licencia firmada, guardado local, flag Google Play, `openUpgradeProModal`), `tools/pro-license.mjs`, `.env.example`.
+- Probado: 23 unitarias (`shared/pro/test`) + E2E `tests/e2e/pro.e2e.mjs` (15 pasos) + `check-all` en verde. Las apps no cambian: ninguna carga el módulo todavía.
+- No verificado: Safari/iPhone real, TWA real (referrer `android-app://`), lector de pantalla real, compra real (no hay pasarela ni clave pública real).
+- Siguiente (Tarea 2): enganchar las funciones Pro según el reparto que apruebe Manuel.

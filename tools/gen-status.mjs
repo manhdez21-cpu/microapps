@@ -5,7 +5,7 @@ import { join } from "node:path";
 
 const root = new URL("..", import.meta.url).pathname;
 const suites = [];
-for (const base of ["packages", "apps"]) {
+for (const base of ["packages", "shared", "apps"]) {
   for (const name of readdirSync(join(root, base))) {
     const dir = join(root, base, name, "test");
     if (!existsSync(dir)) continue;

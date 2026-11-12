@@ -1,6 +1,6 @@
 # MEMORY — Microapps Factory (memoria propia del proyecto)
 
-Última actualización: 2026-11-04
+Última actualización: 2026-11-12
 
 ## Propietario y preferencias
 - Propietario: Manuel (Cali, Colombia; zona horaria America/Bogota). Idioma: español, trato de "tú".
@@ -37,3 +37,25 @@
 - Node 22.23, pnpm 10, tsc 7 global, Git 2.43.
 
 - 2026-11-05: Manuel decidió modelo mixto: 2 apps con más tráfico a pago único USD 15 por pasarela; resto gratis con anuncios. Se decide tras ~4 semanas con datos del panel (https://panel.chispatools.com, actualización diaria). Idea de barbería/manicura aplazada (lógica y 9 pruebas guardadas aparte, fuera del repo). Foco ahora: tráfico con las 7 apps (estados WhatsApp, indexación, guías diarias).
+
+## Pro (desde 2026-11-12)
+- Premium SOLO en 4 apps: SplitFlow, Caja Clara, PriceRight, Huella al Día. Pago único USD 15 por app (D-023). Las otras 3 siguen gratis con anuncios.
+- Núcleo en `shared/pro/` (config única: `shared/pro/src/config.ts`). Auditoría y reparto propuesto: `docs/pro/AUDITORIA.md`. Las funciones Pro AÚN NO están enganchadas en las apps.
+- Entorno: Playwright en `/opt/node-tools/node_modules/playwright` → `PLAYWRIGHT_PATH=/opt/node-tools/node_modules/playwright node tools/check-all.mjs`.
+- Reglas de Manuel: no romper lo gratis; sin dependencias; validadores propios; tras cada tarea check-all verde, commit y `git push origin HEAD:main`.
+
+### D-024 · 2026-11-12 · Licencia Pro firmada, sin servidor
+Formato `CT1.<datos>.<firma>` (base64url), ECDSA P-256 + SHA-256 con WebCrypto (sin dependencias). El cliente solo tiene la clave pública (`PRO_PUBLIC_KEYS`, admite rotación); la privada vive solo en la variable `PRO_PRIVATE_KEY` (`.env.example`) y firma con `tools/pro-license.mjs`. Una licencia por app, guardada en `localStorage["chispatools.pro.v1"]`, verificada en cada arranque (`initPro`). Falla cerrado: sin clave pública o sin WebCrypto nadie es Pro. Límites aceptados: no atada a dispositivo, no revocable, saltable por alguien técnico.
+
+### D-025 · 2026-11-12 · Precio ancla
+`PRO_ANCHOR_USD = 29` tachado junto a USD 15. PROVISIONAL: debe ser un precio real (el «precio regular» que se cobrará tras el lanzamiento); si Manuel no lo confirma, poner 0 y no se muestra. Los textos de beneficios por app también son provisionales hasta aprobar el reparto.
+
+### D-026 · 2026-11-12 · Compra oculta en Google Play (TWA)
+`purchaseHidden()` oculta precio y enlace de pago (deja solo «activar licencia») si: `proHidePurchase` en MICROAPPS_CONFIG (variable pública `PRO_HIDE_PURCHASE=1`), referrer `android-app://`, o URL de inicio con `?tienda=play` (recordado en sessionStorage). Al generar cada .aab hay que poner la URL de inicio con `?tienda=play`. No verificado en un TWA real.
+
+### D-027 · 2026-11-12 · Ubicación y pruebas del módulo
+`shared/pro/` (pedido por Manuel) fuera de `packages/`: se añadió a `tsconfig.web.json`, `tools/build.mjs` y `tools/gen-status.mjs`. La E2E (`tests/e2e/pro.e2e.mjs`) carga el módulo dentro de las apps compiladas e inyecta una clave de prueba interceptando `config.js`; no hay ganchos de prueba en producción.
+
+### Pendiente Pro
+- Manuel: aprobar reparto gratis/Pro, confirmar precio ancla, elegir pasarela (enlace de pago https por app).
+- Técnico: generar el par de claves real y decidir quién emite la licencia tras el pago (manual o función en servidor); enganchar funciones (Tarea 2); términos/privacidad de la compra.

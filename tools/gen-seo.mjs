@@ -1,5 +1,5 @@
 // Post-proceso de dist/: sitemap, robots, ads.txt, canonical/Open Graph y site-config.js según variables de entorno.
-// Variables (todas públicas, ninguna es secreto): SITE_URL, ADSENSE_CLIENT, ADSENSE_SLOT, ADSENSE_SLOT_INLINE, GA4_ID, PLAY_URL.
+// Variables (todas públicas, ninguna es secreto): SITE_URL, ADSENSE_CLIENT, ADSENSE_SLOT, ADSENSE_SLOT_INLINE, GA4_ID, PLAY_URL, PRO_HIDE_PURCHASE.
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { redirectStub, adsTxt, headTags, injectHead, isUrl, normUrl, publicPaths, robotsTxt, siteConfigJs, sitemapXml } from "./lib/seo.mjs";
@@ -19,7 +19,7 @@ if (adClient) for (const f of files.filter((f) => f.endsWith(".html") && !f.star
   if (!html.includes("google-adsense-account")) writeFileSync(file, html.replace("</head>", `  <meta name="google-adsense-account" content="${adClient}">\n</head>`));
 }
 
-if (Object.keys(process.env).some((k) => /^(SITE_URL|ADSENSE_|GA4_ID|PLAY_URL)/.test(k))) writeFileSync(join(dist, "site-config.js"), siteConfigJs(process.env));
+if (Object.keys(process.env).some((k) => /^(SITE_URL|ADSENSE_|GA4_ID|PLAY_URL|PRO_HIDE_PURCHASE)/.test(k))) writeFileSync(join(dist, "site-config.js"), siteConfigJs(process.env));
 if (base && isUrl(base)) {
   const paths = publicPaths(files); // `files` se leyó antes de crear los enlaces cortos: no entran al sitemap
   for (const p of paths) {

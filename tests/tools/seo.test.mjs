@@ -43,3 +43,10 @@ describe("enlaces cortos", () => {
     assert.match(h, /noindex/);
   });
 });
+describe("compilación para Google Play", () => {
+  it("PRO_HIDE_PURCHASE activa el flag; sin ella no aparece", () => {
+    assert.match(siteConfigJs({ PRO_HIDE_PURCHASE: "1" }), /"proHidePurchase":true/);
+    assert.equal(/proHidePurchase/.test(siteConfigJs({ SITE_URL: "https://e.com" })), false);
+    assert.equal(/proHidePurchase/.test(siteConfigJs({ PRO_HIDE_PURCHASE: "0" })), false);
+  });
+});

@@ -1,7 +1,7 @@
 /** Anuncios (AdSense) y estadísticas, inactivos hasta que exista configuración real (site-config.js). Sin consentimiento no se carga nada de terceros. Todo es gratis para la persona: la publicidad es la única fuente de ingresos. */
 import { ga4Enabled, startAnalytics, type AnalyticsConfig } from "./analytics.ts";
 
-export interface SiteConfig extends AnalyticsConfig { adsenseClient?: string; adSlot?: string; adSlotInline?: string; adDelayMs?: number; playUrl?: string; siteUrl?: string }
+export interface SiteConfig extends AnalyticsConfig { adsenseClient?: string; adSlot?: string; adSlotInline?: string; adDelayMs?: number; playUrl?: string; siteUrl?: string; proHidePurchase?: boolean }
 export type Consent = "granted" | "denied" | null;
 
 export function adsEnabled(c: SiteConfig | undefined): boolean {

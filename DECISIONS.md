@@ -111,3 +111,7 @@ Pestaña «Negocio» en el Control Center (por app + total: usuarios, visitas, i
 
 ## D-023 Modelo de ingresos mixto (decisión de Manuel, 2026-11-05)
 Se abandona «100 % gratis» como regla fija. Plan: dos apps con más tráfico pasan a pago único de USD 15 vía pasarela de pago (fuera de las tiendas; la política de Google Play no se tiene en cuenta para las recomendaciones, por decisión de Manuel). El resto sigue gratis con anuncios. Se decide con datos del panel tras ~4 semanas de tráfico. Pendiente: elegir las 2 apps, pasarela (Colombia), forma de desbloqueo sin servidor, términos y precio a validar. Nada de esto está implementado.
+
+
+## D-024 … D-027 · 2026-11-12 · Núcleo Pro
+Licencia firmada sin servidor, precio ancla, compra oculta en Google Play y ubicación de `shared/pro/`. Detalle en `MEMORY.md` (sección Pro), por indicación de Manuel.

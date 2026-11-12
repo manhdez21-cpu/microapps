@@ -36,6 +36,7 @@ export function siteConfigJs(env, prev) {
   c.contactWhatsapp = c.contactWhatsapp.replace(/\D/g, "");
   if (!/^\d{8,15}$/.test(c.contactWhatsapp)) c.contactWhatsapp = "";
   if (!/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(c.contactEmail)) c.contactEmail = "";
+  if (/^(1|true)$/i.test((env.PRO_HIDE_PURCHASE ?? "").trim())) c.proHidePurchase = true; // compilación para Google Play: sin precio ni enlace de pago
   return `// Generado en el despliegue desde variables públicas (no son secretos).\nwindow.MICROAPPS_CONFIG = window.MICROAPPS_CONFIG || ${JSON.stringify(c)};\n`;
 }
 
