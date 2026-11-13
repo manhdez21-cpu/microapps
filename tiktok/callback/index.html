@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Authorization complete - Chispatools</title>
+<style>body{font:16px/1.6 system-ui,sans-serif;max-width:720px;margin:40px auto;padding:0 16px;color:#1a1a1a}textarea{width:100%;height:110px;font:14px monospace}button{padding:8px 16px;margin-top:8px}</style></head><body>
+<h1>Authorization complete</h1>
+<p id="msg">Copy the full address of this page and paste it into the Chispatools dashboard to finish connecting the account.</p>
+<textarea id="u" readonly></textarea><br><button onclick="navigator.clipboard.writeText(document.getElementById('u').value)">Copy</button>
+<p><a href="/">Home</a> · <a href="/privacidad/">Privacy Policy</a> · <a href="/terminos/">Terms of Service</a></p>
+<script>document.getElementById('u').value=location.href;if(new URLSearchParams(location.search).get('error'))document.getElementById('msg').textContent='Authorization was cancelled or failed.';</script>
+</body></html>
